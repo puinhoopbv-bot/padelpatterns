@@ -1,0 +1,2574 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pista 3D — Padel Strategie Lab</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-night: #07090d;
+    --bg-panel: rgba(17, 22, 31, 0.85);
+    --bg-elev: rgba(26, 33, 45, 0.9);
+    --border: #2a3340;
+    --border-light: rgba(255, 255, 255, 0.08);
+    --text: #e8e4dc;
+    --text-dim: #8a9099;
+    --text-faint: #525a66;
+    --accent: #d4ff00;
+    --accent-warm: #ff6b35;
+    --court-blue: #1e6091;
+    --player-a: #ff6b35;
+    --player-b: #4a9eff;
+    --ball: #d4ff00;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg-night);
+    color: var(--text);
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 300;
+    height: 100vh;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #scene-container {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+  }
+
+  #scene-container canvas {
+    display: block;
+  }
+
+  /* Atmospheric overlay */
+  .vignette {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    background:
+      radial-gradient(ellipse at center, transparent 30%, rgba(7, 9, 13, 0.6) 100%);
+  }
+
+  .grain {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+    opacity: 0.04;
+    mix-blend-mode: overlay;
+  }
+
+  /* HEADER */
+  header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    padding: 18px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, rgba(7, 9, 13, 0.85), transparent);
+    pointer-events: none;
+  }
+
+  header > * { pointer-events: auto; }
+
+  .brand {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+  }
+
+  .brand-mark {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 38px;
+    letter-spacing: 0.04em;
+    color: var(--text);
+    line-height: 0.85;
+  }
+
+  .brand-mark span {
+    color: var(--accent);
+  }
+
+  .brand-mark sup {
+    font-size: 14px;
+    color: var(--accent-warm);
+    margin-left: 4px;
+    letter-spacing: 0.1em;
+  }
+
+  .brand-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    padding-left: 14px;
+    border-left: 1px solid var(--border);
+  }
+
+  .mode-switch {
+    display: flex;
+    gap: 0;
+    background: var(--bg-panel);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-light);
+  }
+
+  .mode-switch button {
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    padding: 10px 22px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-right: 1px solid var(--border-light);
+  }
+
+  .mode-switch button:last-child { border-right: none; }
+
+  .mode-switch button.active {
+    background: var(--accent);
+    color: var(--bg-night);
+  }
+
+  .mode-switch button:hover:not(.active) {
+    color: var(--text);
+  }
+
+  /* LEFT PANEL — strategy list */
+  .panel-left {
+    position: fixed;
+    left: 24px;
+    top: 86px;
+    bottom: 24px;
+    width: 320px;
+    z-index: 10;
+    background: var(--bg-panel);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-light);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .panel-left.collapsed {
+    transform: translateX(calc(-100% - 24px));
+    transition: transform 0.3s ease-out;
+  }
+
+  .panel-header {
+    padding: 16px 18px 12px;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .panel-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    color: var(--text-dim);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .panel-title .count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-faint);
+    letter-spacing: 0;
+  }
+
+  .filters {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border-light);
+    overflow-y: auto;
+    max-height: 30vh;
+  }
+
+  .filter-group {
+    margin-bottom: 12px;
+  }
+
+  .filter-group:last-child { margin-bottom: 0; }
+
+  .filter-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--text-faint);
+    margin-bottom: 6px;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .chip {
+    background: transparent;
+    border: 1px solid var(--border-light);
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .chip:hover { border-color: var(--text-dim); color: var(--text); }
+
+  .chip.active {
+    background: var(--text);
+    color: var(--bg-night);
+    border-color: var(--text);
+  }
+
+  .strategy-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+  }
+
+  .strategy-list::-webkit-scrollbar { width: 4px; }
+  .strategy-list::-webkit-scrollbar-track { background: transparent; }
+  .strategy-list::-webkit-scrollbar-thumb { background: var(--border); }
+
+  .strat-item {
+    background: transparent;
+    border-left: 2px solid transparent;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-bottom: 2px;
+  }
+
+  .strat-item:hover {
+    border-left-color: var(--text-dim);
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .strat-item.active {
+    border-left-color: var(--accent);
+    background: rgba(212, 255, 0, 0.05);
+  }
+
+  .strat-item-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 0.06em;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+
+  .strat-item-name em {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 11px;
+    color: var(--text-faint);
+    letter-spacing: 0;
+    text-transform: lowercase;
+    margin-left: 4px;
+    font-weight: 300;
+  }
+
+  .strat-item-meta {
+    display: flex;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-faint);
+  }
+
+  .strat-item-meta .lvl {
+    padding: 1px 4px;
+    border: 1px solid var(--border);
+  }
+
+  .strat-item-meta .lvl.beginner { color: #7dbfff; border-color: #7dbfff44; }
+  .strat-item-meta .lvl.intermediate { color: #ffaa5e; border-color: #ffaa5e44; }
+  .strat-item-meta .lvl.advanced { color: #ff6b35; border-color: #ff6b3544; }
+
+  /* RIGHT PANEL — detail */
+  .panel-right {
+    position: fixed;
+    right: 24px;
+    top: 86px;
+    bottom: 100px;
+    width: 360px;
+    z-index: 10;
+    background: var(--bg-panel);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-light);
+    overflow-y: auto;
+    padding: 20px;
+  }
+
+  .panel-right.collapsed {
+    transform: translateX(calc(100% + 24px));
+    transition: transform 0.3s ease-out;
+  }
+
+  .strat-name-big {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 0.03em;
+    line-height: 1;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .strat-spanish-big {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .strat-summary-big {
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    margin-bottom: 18px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .detail-section {
+    margin-bottom: 18px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .detail-section:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .detail-h {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+
+  .detail-body {
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.55;
+  }
+
+  .detail-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .detail-list li {
+    font-family: 'Fraunces', serif;
+    font-size: 12px;
+    color: var(--text-dim);
+    padding: 5px 0 5px 16px;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .detail-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+  }
+
+  .key-shots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .key-shots span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    padding: 3px 6px;
+    background: var(--bg-elev);
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border: 1px solid var(--border-light);
+  }
+
+  .coach-tip {
+    font-style: italic;
+    color: var(--accent);
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 12px 14px;
+    background: rgba(212, 255, 0, 0.04);
+    border-left: 2px solid var(--accent);
+  }
+
+  /* PLAYBACK BAR */
+  .playback {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    background: var(--bg-panel);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-light);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    min-width: 600px;
+    max-width: 90vw;
+  }
+
+  @media (max-width: 768px) {
+    .playback { min-width: auto; width: calc(100% - 32px); padding: 12px 14px; gap: 12px; }
+  }
+
+  .play-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--bg-night);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+
+  .play-btn:hover { transform: scale(1.05); box-shadow: 0 0 24px rgba(212, 255, 0, 0.5); }
+  .play-btn svg { width: 18px; height: 18px; }
+
+  .step-info {
+    flex-grow: 1;
+    min-width: 0;
+  }
+
+  .step-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--text-faint);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+
+  .step-text {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .step-progress {
+    display: flex;
+    gap: 3px;
+    margin-top: 8px;
+  }
+
+  .step-progress span {
+    flex: 1;
+    height: 2px;
+    background: var(--border);
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .step-progress span.played { background: var(--text-dim); }
+  .step-progress span.current { background: var(--accent); }
+
+  .speed-toggle {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--border-light);
+    flex-shrink: 0;
+  }
+
+  .speed-toggle button {
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 6px 9px;
+    cursor: pointer;
+    border-right: 1px solid var(--border-light);
+  }
+
+  .speed-toggle button:last-child { border-right: none; }
+  .speed-toggle button.active { background: var(--text-dim); color: var(--bg-night); }
+
+  /* Camera presets */
+  .camera-controls {
+    position: fixed;
+    top: 86px;
+    right: 24px;
+    z-index: 11;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    background: var(--bg-panel);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-light);
+    padding: 8px;
+    transform: translateX(calc(360px + 28px));
+    transition: transform 0.3s;
+  }
+
+  .panel-right.collapsed ~ .camera-controls,
+  body:has(.panel-right.collapsed) .camera-controls {
+    transform: translateX(0);
+  }
+
+  .cam-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 7px 10px;
+    cursor: pointer;
+    text-align: left;
+    letter-spacing: 0.08em;
+    transition: all 0.15s;
+    text-transform: uppercase;
+    border-left: 2px solid transparent;
+  }
+
+  .cam-btn:hover { color: var(--text); border-left-color: var(--text-dim); }
+  .cam-btn.active { color: var(--accent); border-left-color: var(--accent); }
+
+  /* PANEL TOGGLES */
+  .panel-toggle {
+    position: fixed;
+    z-index: 11;
+    background: var(--bg-panel);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-light);
+    color: var(--text-dim);
+    width: 28px;
+    height: 36px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    transition: all 0.2s;
+  }
+
+  .panel-toggle:hover { color: var(--accent); }
+
+  .toggle-left {
+    left: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-left: none;
+    transition: left 0.3s;
+  }
+
+  .panel-left:not(.collapsed) ~ .toggle-left {
+    left: 344px;
+  }
+
+  .toggle-right {
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-right: none;
+    transition: right 0.3s;
+  }
+
+  .panel-right:not(.collapsed) ~ .toggle-right {
+    right: 384px;
+  }
+
+  /* Sandbox controls */
+  .sandbox-toolbar {
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: none;
+    gap: 8px;
+    background: var(--bg-panel);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-light);
+    padding: 10px;
+  }
+
+  body.mode-sandbox .sandbox-toolbar { display: flex; }
+  body.mode-sandbox .playback { display: none; }
+  body.mode-sandbox .panel-left { display: none; }
+
+  .sb-btn {
+    background: transparent;
+    border: 1px solid var(--border-light);
+    color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 7px 12px;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    transition: all 0.15s;
+    text-transform: uppercase;
+  }
+
+  .sb-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .sb-btn.primary { background: var(--accent); color: var(--bg-night); border-color: var(--accent); }
+
+  /* LOADING */
+  .loading {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-night);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    transition: opacity 0.5s;
+  }
+
+  .loading.hidden { opacity: 0; pointer-events: none; }
+
+  .loading-mark {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 80px;
+    letter-spacing: 0.04em;
+    color: var(--text);
+  }
+
+  .loading-mark span { color: var(--accent); }
+
+  .loading-bar {
+    width: 200px;
+    height: 1px;
+    background: var(--border);
+    overflow: hidden;
+  }
+
+  .loading-bar::after {
+    content: '';
+    display: block;
+    width: 30%;
+    height: 100%;
+    background: var(--accent);
+    animation: load 1.2s ease-in-out infinite;
+  }
+
+  @keyframes load {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(400%); }
+  }
+
+  .loading-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-faint);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  /* Mobile */
+  @media (max-width: 1024px) {
+    .panel-left, .panel-right {
+      width: 280px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .panel-left, .panel-right {
+      width: calc(100vw - 48px);
+      max-height: 40vh;
+    }
+    .brand-mark { font-size: 28px; }
+    .brand-tag { display: none; }
+    .camera-controls { display: none; }
+  }
+</style>
+</head>
+<body class="mode-library">
+
+  <div class="loading" id="loading">
+    <div class="loading-mark">PIST<span>A</span></div>
+    <div class="loading-bar"></div>
+    <div class="loading-text">building the court · 3D engine warming up</div>
+  </div>
+
+  <div id="scene-container"></div>
+  <div class="vignette"></div>
+  <div class="grain"></div>
+
+  <header>
+    <div class="brand">
+      <div class="brand-mark">PIST<span>A</span><sup>3D</sup></div>
+      <div class="brand-tag">Padel<br>Strategie<br>Lab</div>
+    </div>
+
+    <div class="mode-switch">
+      <button class="active" data-mode="library">Bibliotheek</button>
+      <button data-mode="sandbox">Sandbox</button>
+    </div>
+  </header>
+
+  <!-- LEFT PANEL -->
+  <aside class="panel-left" id="panel-left">
+    <div class="panel-header">
+      <div class="panel-title">Strategieën <span class="count" id="strat-count">12</span></div>
+    </div>
+
+    <div class="filters">
+      <div class="filter-group">
+        <div class="filter-label">Niveau</div>
+        <div class="chips" data-filter="level">
+          <button class="chip active" data-val="all">Alles</button>
+          <button class="chip" data-val="beginner">Beginner</button>
+          <button class="chip" data-val="intermediate">Gevorderd</button>
+          <button class="chip" data-val="advanced">Comp.</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">Intentie</div>
+        <div class="chips" data-filter="intent">
+          <button class="chip active" data-val="all">Alles</button>
+          <button class="chip" data-val="offensive">Aanval</button>
+          <button class="chip" data-val="defensive">Verdediging</button>
+          <button class="chip" data-val="positional">Positie</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="strategy-list" id="strat-list"></div>
+  </aside>
+
+  <button class="panel-toggle toggle-left" id="toggle-left">‹</button>
+
+  <!-- RIGHT PANEL -->
+  <aside class="panel-right" id="panel-right">
+    <div class="strat-name-big" id="strat-title">—</div>
+    <div class="strat-spanish-big" id="strat-spanish"></div>
+    <div class="strat-summary-big" id="strat-summary"></div>
+
+    <div class="detail-section">
+      <div class="detail-h">Wanneer toepassen</div>
+      <ul class="detail-list" id="d-when"></ul>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-h">Sleutelslagen</div>
+      <div class="key-shots" id="d-shots"></div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-h">Veelgemaakte fouten</div>
+      <ul class="detail-list" id="d-mistakes"></ul>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-h">Coach-tip</div>
+      <div class="coach-tip" id="d-tip"></div>
+    </div>
+  </aside>
+
+  <button class="panel-toggle toggle-right" id="toggle-right">›</button>
+
+  <!-- CAMERA CONTROLS -->
+  <div class="camera-controls" id="camera-controls">
+    <button class="cam-btn active" data-cam="default">↗ Hoek</button>
+    <button class="cam-btn" data-cam="top">↓ Top</button>
+    <button class="cam-btn" data-cam="side">→ Zij</button>
+    <button class="cam-btn" data-cam="player">◉ Speler</button>
+    <button class="cam-btn" data-cam="cinematic">▸ Cinema</button>
+  </div>
+
+  <!-- PLAYBACK BAR -->
+  <div class="playback">
+    <button class="play-btn" id="play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="step-info">
+      <div class="step-num" id="step-num">FASE 0/0</div>
+      <div class="step-text" id="step-text">Selecteer een strategie om te beginnen.</div>
+      <div class="step-progress" id="step-progress"></div>
+    </div>
+    <div class="speed-toggle">
+      <button data-speed="0.5">0.5×</button>
+      <button class="active" data-speed="1">1×</button>
+      <button data-speed="2">2×</button>
+    </div>
+  </div>
+
+  <!-- SANDBOX TOOLBAR -->
+  <div class="sandbox-toolbar">
+    <button class="sb-btn" id="sb-reset">Reset</button>
+    <button class="sb-btn" id="sb-preset-1">Aanvallend</button>
+    <button class="sb-btn" id="sb-preset-2">Verdedigend</button>
+    <button class="sb-btn" id="sb-preset-3">Lob-setup</button>
+    <button class="sb-btn primary" id="sb-instructions">Klik & sleep spelers</button>
+  </div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.module.js"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+
+/* =====================================================================
+   PADEL COURT — real dimensions
+   Court: 10m × 20m. Net at center (height 0.88m at center, 0.92m sides).
+   Wall heights: 3m back glass + 1m mesh on top = 4m total at back.
+   Side: 3m glass for 2m, then 4m fence above to corner.
+   We'll use 1 unit = 1 meter.
+   ===================================================================== */
+
+const COURT_W = 10;        // width (x-axis)
+const COURT_L = 20;        // length (z-axis)
+const NET_H = 0.88;        // net height
+const GLASS_H = 3;         // back glass
+const FENCE_H = 4;         // total fence height
+const SERVICE_LINE_DIST = 6.95; // from net
+
+/* =====================================================================
+   STRATEGIES — same content as v1, with positions in 3D space
+   Positions: { x, z } in meters. x: -5 to 5 (width). z: -10 to 10 (length).
+   Negative z = team A side (top). Positive z = team B side (bottom).
+   ===================================================================== */
+
+const POS = {
+  // Team A (negative z)
+  A_RETURN_R: { x: 3.5, z: -9 },
+  A_RETURN_L: { x: -3.5, z: -9 },
+  A_NET_R:    { x: 2.5, z: -3 },
+  A_NET_L:    { x: -2.5, z: -3 },
+  A_DEFEND_R: { x: 3, z: -8.5 },
+  A_DEFEND_L: { x: -3, z: -8.5 },
+  A_MID_R:    { x: 2.8, z: -5.5 },
+  A_MID_L:    { x: -2.8, z: -5.5 },
+  // Team B (positive z)
+  B_NET_R:    { x: 2.5, z: 3 },
+  B_NET_L:    { x: -2.5, z: 3 },
+  B_SERVE_R:  { x: 3.5, z: 9 },
+  B_SERVE_L:  { x: -3.5, z: 9 },
+  B_DEFEND_R: { x: 3, z: 8.5 },
+  B_DEFEND_L: { x: -3, z: 8.5 },
+  B_MID_R:    { x: 2.8, z: 5.5 },
+  B_MID_L:    { x: -2.8, z: 5.5 },
+};
+
+const STRATEGIES = [
+  {
+    id: 'invisible-rope',
+    name: 'Het Onzichtbare Touw',
+    spanish: 'la cuerda invisible',
+    level: 'beginner',
+    intent: 'positional',
+    summary: 'De gouden regel: jij en je partner zijn met een onzichtbaar touw verbonden. Beweegt de bal links, schuiven jullie samen links. Niemand staat ooit alleen.',
+    when: ['Altijd, in elke fase', 'Vooral kritisch bij verdediging', 'Na elke wisseling van zijde'],
+    shots: ['Pure positie'],
+    mistakes: ['Eén speler rent, ander blijft staan', 'Beide spelers schuiven naar de bal', 'Niet meebewegen na een lob'],
+    tip: 'Stel je een touw van 4 meter voor tussen jullie middens. Strakker = slechte spacing, slap = jullie staan te ver uit elkaar.',
+    steps: [
+      {
+        text: 'Startpositie — Team B aan het net, Team A verdedigt achterin.',
+        players: { A1: POS.A_DEFEND_L, A2: POS.A_DEFEND_R, B1: POS.B_NET_L, B2: POS.B_NET_R },
+        ball: { x: 3, y: 1, z: -8.5 }
+      },
+      {
+        text: 'Bal gaat cross-court. Beide A-spelers schuiven mee naar links — het touw blijft strak.',
+        players: { A1: { x: -4, z: -8.5 }, A2: { x: -1, z: -8.5 }, B1: { x: -3.5, z: 3 }, B2: { x: -1, z: 3 } },
+        ball: { x: -3.5, y: 1, z: 3 },
+        ballArc: 'lob'
+      },
+      {
+        text: 'Antwoord komt diagonaal terug naar rechts. Alle vier verschuiven samen — geen gaten.',
+        players: { A1: { x: -1, z: -8.5 }, A2: { x: 4, z: -8.5 }, B1: { x: -1, z: 3 }, B2: { x: 4, z: 3 } },
+        ball: { x: 4, y: 1, z: -8.5 },
+        ballArc: 'lob'
+      }
+    ]
+  },
+  {
+    id: 'globo-take-net',
+    name: 'Lob → Net Veroveren',
+    spanish: 'globo y subir',
+    level: 'intermediate',
+    intent: 'offensive',
+    summary: 'Hét aanvalspatroon van padel: lob over de net-spelers, sprint naar het net terwijl zij teruglopen. Verdediger wordt aanvaller in één slag.',
+    when: ['Wanneer tegenstanders strak op het net staan', 'Bij comfortabele bal vanuit rode zone', 'Om het ritme te breken'],
+    shots: ['Globo cross of langs de lijn', 'Bandeja als follow-up'],
+    mistakes: ['Lob te kort = gratis smash', 'Lob slaan en blijven staan', 'Niet samen oprukken'],
+    tip: 'Kijk naar hun voeten vóór je lobt. Hielen aan het net = perfect lob-moment.',
+    steps: [
+      {
+        text: 'Tegenstanders staan strak aan het net. Team A heeft een comfortabele bal achterin.',
+        players: { A1: POS.A_DEFEND_L, A2: POS.A_DEFEND_R, B1: POS.B_NET_L, B2: POS.B_NET_R },
+        ball: { x: 3, y: 1, z: -8.5 }
+      },
+      {
+        text: 'A2 slaat een hoge globo cross-court over B1 heen. De bal stijgt en zoekt de hoek.',
+        players: { A1: POS.A_DEFEND_L, A2: POS.A_DEFEND_R, B1: POS.B_NET_L, B2: POS.B_NET_R },
+        ball: { x: -3.5, y: 0.5, z: 8.5 },
+        ballArc: 'high-lob'
+      },
+      {
+        text: 'B1 moet zich omdraaien en sprinten. A1 én A2 stormen naar het net — als één eenheid.',
+        players: { A1: { x: -2.5, z: -2.5 }, A2: { x: 2.5, z: -2.5 }, B1: { x: -3.5, z: 8.5 }, B2: { x: 0, z: 5 } },
+        ball: { x: -3.5, y: 0.3, z: 8.5 }
+      },
+      {
+        text: 'Net is veroverd. B speelt een verdedigende lob terug, A staat klaar voor de bandeja.',
+        players: { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
+        ball: { x: 2.5, y: 1, z: -3 },
+        ballArc: 'lob'
+      }
+    ]
+  },
+  {
+    id: 'chiquita',
+    name: 'Chiquita',
+    spanish: 'la chiquita',
+    level: 'intermediate',
+    intent: 'offensive',
+    summary: 'Een zachte, lage bal die net over het net valt en bij de voeten van de net-spelers landt. Dwingt hen omhoog te slaan.',
+    when: ['Net-spelers iets te ver van het net', 'Als alternatief voor de lob', 'Bij rustige opbouw'],
+    shots: ['Chiquita (sliced underspin, kort en laag)'],
+    mistakes: ['Te hoog = gratis volley', 'Te diep = gratis smash', 'Niet meelopen na de chiquita'],
+    tip: 'Verberg je racket tot het laatste moment. Bewegen alsof je gaat lobben verwart de tegenstander.',
+    steps: [
+      {
+        text: 'Tegenstanders aan het net, maar net iets te ver afgestaan.',
+        players: { A1: POS.A_DEFEND_L, A2: POS.A_DEFEND_R, B1: { x: -2.5, z: 4 }, B2: { x: 2.5, z: 4 } },
+        ball: { x: 3, y: 1, z: -8 }
+      },
+      {
+        text: 'A2 verbergt zijn racket. Slaat een zachte, gesneden chiquita die net over het net valt.',
+        players: { A1: POS.A_DEFEND_L, A2: POS.A_DEFEND_R, B1: { x: -2.5, z: 4 }, B2: { x: 2.5, z: 4 } },
+        ball: { x: 2, y: 0.3, z: 1.5 },
+        ballArc: 'chiquita'
+      },
+      {
+        text: 'B2 moet bukken en omhoog spelen. Antwoord komt traag en hoog.',
+        players: { A1: POS.A_DEFEND_L, A2: POS.A_DEFEND_R, B1: { x: -2.5, z: 4 }, B2: { x: 2, z: 1.5 } },
+        ball: { x: 0, y: 1.5, z: -5 },
+        ballArc: 'high-lob'
+      },
+      {
+        text: 'A2 (en A1) doorgelopen naar het net en finishen met een volley.',
+        players: { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: { x: -2.5, z: 4 }, B2: { x: 2.5, z: 4 } },
+        ball: { x: 0, y: 0.5, z: 0 }
+      }
+    ]
+  },
+  {
+    id: 'bandeja',
+    name: 'Bandeja',
+    spanish: 'la bandeja',
+    level: 'intermediate',
+    intent: 'positional',
+    summary: 'De controle-overhead. Geen smash — wel een gecontroleerde, vlakke slag met snijspin om diep te plaatsen en aan het net te blijven.',
+    when: ['Op elke lob die niet écht over je heen gaat', 'Als je geen tijd hebt voor een smash', 'Defensief tegen goede globos'],
+    shots: ['Bandeja (geslepen snij-overhead)'],
+    mistakes: ['Bandeja vervangen door risicovolle smash', 'Te kort plaatsen', 'Niet snel terug naar netpositie'],
+    tip: '80% kracht, 100% plaatsing. Mik op de hoek waar zij- en achterglas elkaar raken — onspeelbaar.',
+    steps: [
+      {
+        text: 'Team A staat aan het net. Team B speelt een lob over A2 heen.',
+        players: { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
+        ball: { x: 3, y: 1, z: 9 }
+      },
+      {
+        text: 'A2 stapt zijwaarts mee, ziet dat smash niet kan. Kiest bandeja: geslepen, kortere zwaai.',
+        players: { A1: POS.A_NET_L, A2: { x: 3, z: -4.5 }, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
+        ball: { x: 3, y: 2.5, z: -4 },
+        ballArc: 'high-lob'
+      },
+      {
+        text: 'Bandeja landt diep in de hoek bij B2. A2 spurt direct terug naar netpositie.',
+        players: { A1: POS.A_NET_L, A2: { x: 2.8, z: -3.5 }, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
+        ball: { x: 4, y: 0.5, z: 9 },
+        ballArc: 'bandeja'
+      },
+      {
+        text: 'A staat weer compleet aan het net. Druk is behouden.',
+        players: { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: POS.B_DEFEND_L, B2: { x: 4, z: 9 } },
+        ball: { x: 4, y: 0.3, z: 9 }
+      }
+    ]
+  },
+  {
+    id: 'vibora',
+    name: 'Víbora',
+    spanish: 'la víbora',
+    level: 'advanced',
+    intent: 'offensive',
+    summary: 'De adder. Agressieve overhead met heftige zijspin, die laag het glas in glipt en de bal onspeelbaar tegen de hoek perst.',
+    when: ['Op rechte lobs in de rechterzone', 'Als je netpositie wil houden én druk opvoeren', 'Tegen verdedigers die slecht uit de hoek komen'],
+    shots: ['Víbora — continentale grip, gesneden, schuin neerwaarts'],
+    mistakes: ['Te recht = gewone bandeja zonder spin', 'Te hard = controle weg', 'Verkeerde grip = geen spin'],
+    tip: 'Stel je voor dat je een steen over het wateroppervlak laat ketsen. De zwaai is vlak en zijwaarts.',
+    steps: [
+      {
+        text: 'A staat aan het net. B speelt een lob — niet diep genoeg, A2 ziet zijn kans.',
+        players: { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
+        ball: { x: 3, y: 1, z: 8.5 }
+      },
+      {
+        text: 'A2 maakt continentale grip, racket hoog en gesloten. "Stenen ketsen"-positie.',
+        players: { A1: POS.A_NET_L, A2: { x: 3, z: -5 }, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
+        ball: { x: 3, y: 2.8, z: -5 },
+        ballArc: 'high-lob'
+      },
+      {
+        text: 'Vibora! Snijspin, schuine baan. Bal landt kort en glipt zijwaarts richting hoek-glas.',
+        players: { A1: POS.A_NET_L, A2: { x: 3, z: -5 }, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
+        ball: { x: 4.5, y: 0.4, z: 8.5 },
+        ballArc: 'vibora'
+      },
+      {
+        text: 'B2 zit klem tussen zij- en achterglas. A in volledige controle.',
+        players: { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: POS.B_DEFEND_L, B2: { x: 4.5, z: 9 } },
+        ball: { x: 4.5, y: 0.3, z: 8.5 }
+      }
+    ]
+  },
+  {
+    id: 'bajada',
+    name: 'Bajada',
+    spanish: 'la bajada',
+    level: 'advanced',
+    intent: 'offensive',
+    summary: 'De omkeerslag: bal stuit van het achterglas omhoog. Je slaat aanvallend cross terwijl hij daalt — het punt kantelt.',
+    when: ['Diepe bal stuit zacht van achterglas', 'Bij snelle herkenning (0,5 sec)', 'Tegen voorspelbare bandeja-spelers'],
+    shots: ['Bajada (drive op dalende bal vanuit hoge stuit)'],
+    mistakes: ['Te lang wachten → bal te laag', 'Te hard zonder placement', 'Niet meekomen naar voren'],
+    tip: 'Lees het achterglas vóór de bal het raakt. 1 op 5 ballen kun je hem slaan.',
+    steps: [
+      {
+        text: 'A verdedigt achterin. B aan het net heeft een diepe slag geslagen.',
+        players: { A1: POS.A_DEFEND_L, A2: POS.A_DEFEND_R, B1: POS.B_NET_L, B2: POS.B_NET_R },
+        ball: { x: 3, y: 0.5, z: -9.5 }
+      },
+      {
+        text: 'Bal stuit omhoog van het achterglas. A2 herkent het — bal komt op heuphoogte.',
+        players: { A1: POS.A_DEFEND_L, A2: { x: 3.5, z: -8 }, B1: POS.B_NET_L, B2: POS.B_NET_R },
+        ball: { x: 3.5, y: 1.5, z: -8 }
+      },
+      {
+        text: 'BAJADA! Aanvallende drive cross-court — bal daalt naar de voeten van B1.',
+        players: { A1: POS.A_DEFEND_L, A2: { x: 3.5, z: -8 }, B1: POS.B_NET_L, B2: POS.B_NET_R },
+        ball: { x: -2.5, y: 0.3, z: 3 },
+        ballArc: 'drive'
+      },
+      {
+        text: 'B1 op zijn voeten gevangen. A2 (en A1) volgen direct naar voren — punt gekanteld.',
+        players: { A1: { x: -2.5, z: -3 }, A2: { x: 2.5, z: -4 }, B1: POS.B_NET_L, B2: POS.B_NET_R },
+        ball: { x: -2.5, y: 0.3, z: 3 }
+      }
+    ]
+  },
+  {
+    id: 'serve-and-volley',
+    name: 'Serve & First Volley',
+    spanish: 'saque y primera volea',
+    level: 'intermediate',
+    intent: 'offensive',
+    summary: 'Klassieke opening: serve breed naar het glas, partner stapt direct in voor de eerste volley naar de voeten.',
+    when: ['Op je eerste service als servicepatroon werkt', 'Sterke partner aan het net', 'Tegen returners die graag chiquita slaan'],
+    shots: ['Slice service naar glas of T', 'Eerste volley laag naar voeten'],
+    mistakes: ['Server loopt te traag mee', 'Partner staat te ver achterin', 'Eerste volley te hoog'],
+    tip: 'Server en partner bewegen als duo vanaf het moment dat de bal het racket verlaat.',
+    steps: [
+      {
+        text: 'B serveert vanaf rechts. Partner B1 dicht bij de servicelijn, klaar om in te stappen.',
+        players: { A1: POS.A_RETURN_L, A2: POS.A_RETURN_R, B1: { x: -2.5, z: 4 }, B2: POS.B_SERVE_R },
+        ball: { x: 3.5, y: 0.8, z: 9 }
+      },
+      {
+        text: 'Service breed naar het glas. A2 moet uitwijken om te returneren.',
+        players: { A1: POS.A_RETURN_L, A2: { x: 4.5, z: -9 }, B1: { x: -2.5, z: 4 }, B2: POS.B_SERVE_R },
+        ball: { x: 4.5, y: 0.5, z: -9 },
+        ballArc: 'serve'
+      },
+      {
+        text: 'A2 returnt onder druk. B1 stapt in en volleert laag naar de voeten.',
+        players: { A1: POS.A_RETURN_L, A2: { x: 4.5, z: -9 }, B1: { x: -1.5, z: 1.5 }, B2: { x: 2.5, z: 3 } },
+        ball: { x: -3.5, y: 0.3, z: -9 },
+        ballArc: 'volley'
+      },
+      {
+        text: 'Volley landt op de voeten van A1. Team B heeft het net en de controle.',
+        players: { A1: POS.A_RETURN_L, A2: POS.A_RETURN_R, B1: POS.B_NET_L, B2: POS.B_NET_R },
+        ball: { x: -3.5, y: 0.3, z: -9 }
+      }
+    ]
+  },
+  {
+    id: 'por-tres',
+    name: 'X3 — Por Tres',
+    spanish: 'por tres',
+    level: 'intermediate',
+    intent: 'offensive',
+    summary: 'De smash die de bal de baan uit slaat — over de zijkooi heen. Het ultieme finishing-shot.',
+    when: ['Op een korte, hoge lob in jouw groene zone', 'Wanneer tegenstander dicht bij zijwand staat', 'Sleutelmomenten — psychologisch effect'],
+    shots: ['Smash met zijwaartse snijspin'],
+    mistakes: ['Te recht = bal stuit in de baan', 'Verkeerde hoek = bal raakt zijglas', 'Forceren bij niet-ideale ballen'],
+    tip: 'Mik niet op de baan — mik 2 meter búíten de baan, in de lucht. De stuit doet de rest.',
+    steps: [
+      {
+        text: 'Team A aan het net. B speelt een korte lob — fataal in de groene zone.',
+        players: { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
+        ball: { x: 0, y: 1, z: 9 }
+      },
+      {
+        text: 'A2 herkent de korte lob. Hij positioneert onder de bal voor een full smash.',
+        players: { A1: POS.A_NET_L, A2: { x: 1.5, z: -5 }, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
+        ball: { x: 1.5, y: 3, z: -5 },
+        ballArc: 'high-lob'
+      },
+      {
+        text: 'POR TRES — smash met zijspin, mikt diagonaal naar de zijhoek. Bal stuit en vliegt over de kooi.',
+        players: { A1: POS.A_NET_L, A2: { x: 1.5, z: -5 }, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
+        ball: { x: 7, y: 2, z: 9 },
+        ballArc: 'por-tres'
+      },
+      {
+        text: 'Bal verdwijnt over de zijkooi. Punt voor team A.',
+        players: { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
+        ball: { x: 8, y: 3, z: 10 }
+      }
+    ]
+  },
+  {
+    id: 'three-zones',
+    name: 'De Drie Zones',
+    spanish: 'rojo · naranja · verde',
+    level: 'beginner',
+    intent: 'positional',
+    summary: 'De baan in drie zones: rood (achterin, defensief), oranje (middenveld, opbouwend), groen (net, aanvallend).',
+    when: ['Tijdens elke rally', 'Bij twijfel over slagkeuze', 'Bij lezen van tegenstander'],
+    shots: ['Globo (rood)', 'Chiquita (oranje)', 'Volley/Bandeja/Smash (groen)'],
+    mistakes: ['Vanuit het rood proberen te winnen', 'Vanuit het groen passief blijven', 'In het oranje blijven hangen'],
+    tip: 'Roep tijdens de rally "rood" of "groen" — helpt jullie de juiste mindset kiezen.',
+    steps: [
+      {
+        text: 'Rode zone — laatste 2 meter voor het glas. Doel: in de rally blijven. Slag: globo of trage cross.',
+        players: { A1: POS.A_DEFEND_L, A2: POS.A_DEFEND_R, B1: POS.B_NET_L, B2: POS.B_NET_R },
+        ball: { x: 3, y: 0.5, z: -9 },
+        zone: 'red'
+      },
+      {
+        text: 'Oranje zone — middenveld. Doel: opbouwen. Slag: chiquita naar de voeten.',
+        players: { A1: POS.A_MID_L, A2: POS.A_MID_R, B1: POS.B_NET_L, B2: POS.B_NET_R },
+        ball: { x: 2.8, y: 0.8, z: -5.5 },
+        zone: 'orange'
+      },
+      {
+        text: 'Groene zone — 3 meter voor het net. Doel: finishen. Slag: volley, smash, vibora.',
+        players: { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
+        ball: { x: 2.5, y: 1, z: -3 },
+        zone: 'green'
+      }
+    ]
+  },
+  {
+    id: 'middle-ball',
+    name: 'De Middenbal',
+    spanish: 'la bola del medio',
+    level: 'beginner',
+    intent: 'positional',
+    summary: 'Een bal door het midden is het zwakke punt van elk dubbel. Standaardregel: forehand-speler op het midden neemt hem.',
+    when: ['Elke bal binnen 2 meter van middenlijn', 'Bij hoge bandeja-kansen', 'Snelle ballen tussen net-spelers'],
+    shots: ['Volley', 'Bandeja', 'Vibora'],
+    mistakes: ['Allebei naar de bal lopen', 'Allebei wachten', 'Aanroepen tijdens de slag'],
+    tip: 'Spreek het af vóór de wedstrijd: "Forehand neemt het tenzij ik MIJN! roep."',
+    steps: [
+      {
+        text: 'Beide A-spelers aan het net, formatie strak. Bal komt door het midden.',
+        players: { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
+        ball: { x: 0, y: 0.8, z: 8.5 }
+      },
+      {
+        text: 'A2 (rechts, forehand naar het midden) roept "MIJN!" en stapt in.',
+        players: { A1: POS.A_NET_L, A2: { x: 0.5, z: -3 }, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
+        ball: { x: 0, y: 0.8, z: 0 },
+        ballArc: 'volley'
+      },
+      {
+        text: 'A1 dekt de lijn die A2 leeg laat. Verschuiven samen — gat is gedicht.',
+        players: { A1: { x: -3.5, z: -3.5 }, A2: { x: 1, z: -3 }, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
+        ball: { x: -2.5, y: 0.3, z: 3 },
+        ballArc: 'volley'
+      }
+    ]
+  },
+  {
+    id: 'poach-trap',
+    name: 'De Poach Trap',
+    spanish: 'la trampa cruzada',
+    level: 'advanced',
+    intent: 'offensive',
+    summary: 'Vooraf afgesproken set-play: één net-speler doet alsof hij blijft, partner steekt diagonaal over om bal te onderscheppen.',
+    when: ['Tegen voorspelbare cross-court spelers', 'Op sleutelpunten', 'Wanneer hand-signalen afgesproken zijn'],
+    shots: ['Volley diagonaal omlaag — finishing'],
+    mistakes: ['Te vroeg bewegen', 'Geen dekking achter', 'Te vaak gebruiken'],
+    tip: 'Hand-signalen achter rug. Open hand = poach, vuist = blijven. Eén keer per set.',
+    steps: [
+      {
+        text: 'A aan het net. B speelt vanaf links — patroon is altijd cross-court naar A2.',
+        players: { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
+        ball: { x: -3, y: 0.5, z: 9 }
+      },
+      {
+        text: 'A2 geeft hand-signaal achter rug: open hand = ik ga poachen. A1 ziet het.',
+        players: { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
+        ball: { x: -3, y: 0.5, z: 9 }
+      },
+      {
+        text: 'B1 slaat zijn standaard cross. A2 stapt diagonaal door het midden, A1 dekt de lijn.',
+        players: { A1: { x: 0, z: -3 }, A2: { x: -0.5, z: -3.5 }, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
+        ball: { x: -0.5, y: 0.8, z: -3.5 },
+        ballArc: 'drive'
+      },
+      {
+        text: 'A2 onderschept en volleert hard naar de open hoek. B compleet verrast.',
+        players: { A1: { x: 0, z: -3 }, A2: { x: -0.5, z: -3.5 }, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
+        ball: { x: 4, y: 0.3, z: 9 },
+        ballArc: 'drive'
+      }
+    ]
+  },
+  {
+    id: 'contralob',
+    name: 'Contralob',
+    spanish: 'el contraglobo',
+    level: 'advanced',
+    intent: 'defensive',
+    summary: 'Reset na een aanvalslob: in plaats van paniekerig terug aanvallen, lob je zelf hoog terug. Geduld breekt de tegenstander.',
+    when: ['In de rode zone, klem in de hoek', 'Lange rallies waar geduld wint', 'Tegen tegenstanders die op fouten wachten'],
+    shots: ['Contraglobo — hoge, diepe lob met topspin'],
+    mistakes: ['Aanvallen vanuit defensie', 'Lob te kort', 'Te plat slaan'],
+    tip: 'Eerst overleven, dan winnen. Rally heeft 30 ballen — geduld breekt hen.',
+    steps: [
+      {
+        text: 'B heeft een goede bandeja gespeeld, bal is diep gelandt. A is in de rode zone.',
+        players: { A1: { x: -3.5, z: -9 }, A2: { x: 3.5, z: -9 }, B1: POS.B_NET_L, B2: POS.B_NET_R },
+        ball: { x: 3.5, y: 0.5, z: -9 }
+      },
+      {
+        text: 'A2 weerstaat de impuls om aan te vallen. Kiest contralob — hoog, diep, geduldig.',
+        players: { A1: { x: -3.5, z: -9 }, A2: { x: 3.5, z: -9 }, B1: POS.B_NET_L, B2: POS.B_NET_R },
+        ball: { x: 0, y: 4, z: 0 },
+        ballArc: 'high-lob'
+      },
+      {
+        text: 'Bal stijgt hoog over het net. B moet kiezen: overhead spelen of laten stuiteren?',
+        players: { A1: { x: -3.5, z: -9 }, A2: { x: 3.5, z: -9 }, B1: POS.B_NET_L, B2: POS.B_NET_R },
+        ball: { x: 0, y: 0.5, z: 9 },
+        ballArc: 'high-lob'
+      },
+      {
+        text: 'B speelt zelf een bandeja terug. A staat klaar — uitwisseling is gereset.',
+        players: { A1: POS.A_DEFEND_L, A2: POS.A_DEFEND_R, B1: POS.B_NET_L, B2: { x: 3, z: -5 } },
+        ball: { x: 3, y: 1, z: -5 }
+      }
+    ]
+  }
+];
+
+/* =====================================================================
+   SETUP THREE.JS
+   ===================================================================== */
+
+const container = document.getElementById('scene-container');
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x07090d, 0.018);
+
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 200);
+const cameraTarget = new THREE.Vector3(0, 0, 0);
+const desiredCamPos = new THREE.Vector3(18, 16, 22);
+camera.position.copy(desiredCamPos);
+camera.lookAt(cameraTarget);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setClearColor(0x07090d, 1);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+container.appendChild(renderer.domElement);
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+/* =====================================================================
+   LIGHTING — moody, padel-club night-style
+   ===================================================================== */
+
+const ambient = new THREE.AmbientLight(0xb0c4de, 0.35);
+scene.add(ambient);
+
+// Main key light from above (court floodlight)
+const keyLight = new THREE.DirectionalLight(0xfff8e7, 1.4);
+keyLight.position.set(8, 25, 5);
+keyLight.castShadow = true;
+keyLight.shadow.mapSize.width = 2048;
+keyLight.shadow.mapSize.height = 2048;
+keyLight.shadow.camera.near = 0.5;
+keyLight.shadow.camera.far = 60;
+keyLight.shadow.camera.left = -15;
+keyLight.shadow.camera.right = 15;
+keyLight.shadow.camera.top = 20;
+keyLight.shadow.camera.bottom = -20;
+keyLight.shadow.bias = -0.0005;
+scene.add(keyLight);
+
+// Fill light from opposite side
+const fillLight = new THREE.DirectionalLight(0x6db3d4, 0.5);
+fillLight.position.set(-10, 15, -8);
+scene.add(fillLight);
+
+// Rim accent light
+const rimLight = new THREE.DirectionalLight(0xff6b35, 0.25);
+rimLight.position.set(0, 5, -15);
+scene.add(rimLight);
+
+// Hemisphere (soft sky/ground)
+const hemi = new THREE.HemisphereLight(0x556677, 0x111111, 0.4);
+scene.add(hemi);
+
+/* =====================================================================
+   COURT GEOMETRY
+   ===================================================================== */
+
+const courtGroup = new THREE.Group();
+scene.add(courtGroup);
+
+// === COURT FLOOR ===
+const floorMat = new THREE.MeshStandardMaterial({
+  color: 0x1e6091,
+  roughness: 0.65,
+  metalness: 0.05
+});
+const floorGeo = new THREE.PlaneGeometry(COURT_W, COURT_L);
+const floor = new THREE.Mesh(floorGeo, floorMat);
+floor.rotation.x = -Math.PI / 2;
+floor.receiveShadow = true;
+courtGroup.add(floor);
+
+// === SURROUNDING GROUND (darker, makes court pop) ===
+const surroundGeo = new THREE.PlaneGeometry(60, 60);
+const surroundMat = new THREE.MeshStandardMaterial({
+  color: 0x0a0e14,
+  roughness: 0.95
+});
+const surround = new THREE.Mesh(surroundGeo, surroundMat);
+surround.rotation.x = -Math.PI / 2;
+surround.position.y = -0.01;
+surround.receiveShadow = true;
+scene.add(surround);
+
+// === COURT LINES ===
+function makeLine(x1, z1, x2, z2, width = 0.05, color = 0xf4f1e8) {
+  const length = Math.hypot(x2 - x1, z2 - z1);
+  const lineGeo = new THREE.PlaneGeometry(length, width);
+  const lineMat = new THREE.MeshBasicMaterial({ color: color });
+  const line = new THREE.Mesh(lineGeo, lineMat);
+  line.rotation.x = -Math.PI / 2;
+  line.position.set((x1 + x2) / 2, 0.005, (z1 + z2) / 2);
+  line.rotation.z = -Math.atan2(z2 - z1, x2 - x1);
+  return line;
+}
+
+// Outer baseline + sidelines (the perimeter)
+courtGroup.add(makeLine(-COURT_W/2, -COURT_L/2, COURT_W/2, -COURT_L/2, 0.07));
+courtGroup.add(makeLine(-COURT_W/2, COURT_L/2, COURT_W/2, COURT_L/2, 0.07));
+courtGroup.add(makeLine(-COURT_W/2, -COURT_L/2, -COURT_W/2, COURT_L/2, 0.07));
+courtGroup.add(makeLine(COURT_W/2, -COURT_L/2, COURT_W/2, COURT_L/2, 0.07));
+
+// Service lines
+courtGroup.add(makeLine(-COURT_W/2, -SERVICE_LINE_DIST, COURT_W/2, -SERVICE_LINE_DIST));
+courtGroup.add(makeLine(-COURT_W/2, SERVICE_LINE_DIST, COURT_W/2, SERVICE_LINE_DIST));
+
+// Center service line (between service lines, only)
+courtGroup.add(makeLine(0, -SERVICE_LINE_DIST, 0, SERVICE_LINE_DIST));
+
+// === NET ===
+const netGroup = new THREE.Group();
+scene.add(netGroup);
+
+// Net mesh - using a plane with a procedural texture
+const netCanvas = document.createElement('canvas');
+netCanvas.width = 512;
+netCanvas.height = 64;
+const ctx = netCanvas.getContext('2d');
+ctx.fillStyle = 'rgba(0,0,0,0)';
+ctx.fillRect(0, 0, 512, 64);
+ctx.strokeStyle = 'rgba(220,220,220,0.85)';
+ctx.lineWidth = 1.2;
+for (let x = 0; x < 512; x += 6) {
+  ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 64); ctx.stroke();
+}
+for (let y = 0; y < 64; y += 6) {
+  ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(512, y); ctx.stroke();
+}
+const netTex = new THREE.CanvasTexture(netCanvas);
+netTex.wrapS = THREE.RepeatWrapping;
+netTex.wrapT = THREE.RepeatWrapping;
+
+const netMat = new THREE.MeshBasicMaterial({
+  map: netTex,
+  transparent: true,
+  side: THREE.DoubleSide,
+  opacity: 0.85
+});
+const netGeo = new THREE.PlaneGeometry(COURT_W + 0.4, NET_H);
+const net = new THREE.Mesh(netGeo, netMat);
+net.position.y = NET_H / 2;
+net.position.z = 0;
+netGroup.add(net);
+
+// Net top band (white)
+const netBandGeo = new THREE.BoxGeometry(COURT_W + 0.4, 0.06, 0.04);
+const netBandMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.4 });
+const netBand = new THREE.Mesh(netBandGeo, netBandMat);
+netBand.position.set(0, NET_H, 0);
+netGroup.add(netBand);
+
+// Net posts
+const postGeo = new THREE.CylinderGeometry(0.08, 0.08, NET_H + 0.1, 8);
+const postMat = new THREE.MeshStandardMaterial({ color: 0x222222, metalness: 0.7, roughness: 0.3 });
+const postL = new THREE.Mesh(postGeo, postMat);
+postL.position.set(-COURT_W/2 - 0.2, (NET_H + 0.1) / 2, 0);
+postL.castShadow = true;
+netGroup.add(postL);
+const postR = new THREE.Mesh(postGeo, postMat);
+postR.position.set(COURT_W/2 + 0.2, (NET_H + 0.1) / 2, 0);
+postR.castShadow = true;
+netGroup.add(postR);
+
+// === GLASS WALLS ===
+const glassMat = new THREE.MeshPhysicalMaterial({
+  color: 0x6db3d4,
+  metalness: 0,
+  roughness: 0.05,
+  transmission: 0.85,
+  thickness: 0.1,
+  ior: 1.4,
+  transparent: true,
+  opacity: 0.18,
+  side: THREE.DoubleSide
+});
+
+// Back glass walls (full width, 3m high) at z = ±10
+function addBackGlass(zPos) {
+  const geo = new THREE.PlaneGeometry(COURT_W, GLASS_H);
+  const glass = new THREE.Mesh(geo, glassMat);
+  glass.position.set(0, GLASS_H / 2, zPos);
+  glass.rotation.y = zPos > 0 ? Math.PI : 0;
+  courtGroup.add(glass);
+
+  // Glass frame top edge
+  const frameGeo = new THREE.BoxGeometry(COURT_W, 0.04, 0.06);
+  const frameMat = new THREE.MeshStandardMaterial({ color: 0x111111, metalness: 0.8 });
+  const frame = new THREE.Mesh(frameGeo, frameMat);
+  frame.position.set(0, GLASS_H, zPos);
+  courtGroup.add(frame);
+}
+addBackGlass(-COURT_L/2);
+addBackGlass(COURT_L/2);
+
+// Side glass walls — 3m for the back 2m, then steps down
+// In a real court: back 2m has 3m glass, then 4m fence. Side has glass for ~4m corners.
+function addSideGlassCorner(xPos, zStart, zEnd, mirror = false) {
+  const length = Math.abs(zEnd - zStart);
+  const geo = new THREE.PlaneGeometry(length, GLASS_H);
+  const glass = new THREE.Mesh(geo, glassMat);
+  glass.position.set(xPos, GLASS_H / 2, (zStart + zEnd) / 2);
+  glass.rotation.y = mirror ? -Math.PI / 2 : Math.PI / 2;
+  courtGroup.add(glass);
+
+  // top frame
+  const frameGeo = new THREE.BoxGeometry(0.06, 0.04, length);
+  const frameMat = new THREE.MeshStandardMaterial({ color: 0x111111, metalness: 0.8 });
+  const frame = new THREE.Mesh(frameGeo, frameMat);
+  frame.position.set(xPos, GLASS_H, (zStart + zEnd) / 2);
+  courtGroup.add(frame);
+}
+
+// Side corner glass (last 2m near each back wall)
+addSideGlassCorner(-COURT_W/2, -COURT_L/2, -COURT_L/2 + 2);
+addSideGlassCorner(-COURT_W/2, COURT_L/2 - 2, COURT_L/2);
+addSideGlassCorner(COURT_W/2, -COURT_L/2, -COURT_L/2 + 2, true);
+addSideGlassCorner(COURT_W/2, COURT_L/2 - 2, COURT_L/2, true);
+
+// === FENCE / MESH (the rest of the side walls and tops) ===
+const fenceMat = new THREE.MeshBasicMaterial({
+  color: 0x2a3340,
+  wireframe: true,
+  transparent: true,
+  opacity: 0.55
+});
+
+function addFence(xPos, zStart, zEnd, height, mirror = false) {
+  const length = Math.abs(zEnd - zStart);
+  // Build a wireframe-like grid
+  const segGeo = new THREE.PlaneGeometry(length, height, Math.floor(length * 4), Math.floor(height * 4));
+  const fence = new THREE.Mesh(segGeo, fenceMat);
+  fence.position.set(xPos, height / 2, (zStart + zEnd) / 2);
+  fence.rotation.y = mirror ? -Math.PI / 2 : Math.PI / 2;
+  courtGroup.add(fence);
+}
+
+// Side fence (between glass corners)
+addFence(-COURT_W/2, -COURT_L/2 + 2, COURT_L/2 - 2, FENCE_H);
+addFence(COURT_W/2, -COURT_L/2 + 2, COURT_L/2 - 2, FENCE_H, true);
+
+// Mesh on top of back glass walls (1m extra)
+function addBackFence(zPos) {
+  const geo = new THREE.PlaneGeometry(COURT_W, FENCE_H - GLASS_H, Math.floor(COURT_W * 4), 4);
+  const fence = new THREE.Mesh(geo, fenceMat);
+  fence.position.set(0, GLASS_H + (FENCE_H - GLASS_H) / 2, zPos);
+  fence.rotation.y = zPos > 0 ? Math.PI : 0;
+  courtGroup.add(fence);
+}
+addBackFence(-COURT_L/2);
+addBackFence(COURT_L/2);
+
+// Mesh on top of side corners (1m extra above glass)
+function addSideTopFence(xPos, zStart, zEnd, mirror = false) {
+  const length = Math.abs(zEnd - zStart);
+  const geo = new THREE.PlaneGeometry(length, FENCE_H - GLASS_H, Math.floor(length * 4), 4);
+  const fence = new THREE.Mesh(geo, fenceMat);
+  fence.position.set(xPos, GLASS_H + (FENCE_H - GLASS_H) / 2, (zStart + zEnd) / 2);
+  fence.rotation.y = mirror ? -Math.PI / 2 : Math.PI / 2;
+  courtGroup.add(fence);
+}
+addSideTopFence(-COURT_W/2, -COURT_L/2, -COURT_L/2 + 2);
+addSideTopFence(-COURT_W/2, COURT_L/2 - 2, COURT_L/2);
+addSideTopFence(COURT_W/2, -COURT_L/2, -COURT_L/2 + 2, true);
+addSideTopFence(COURT_W/2, COURT_L/2 - 2, COURT_L/2, true);
+
+// Vertical posts at corners
+const cornerPostGeo = new THREE.CylinderGeometry(0.06, 0.06, FENCE_H, 6);
+const cornerPostMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, metalness: 0.7 });
+[
+  [-COURT_W/2, -COURT_L/2],
+  [COURT_W/2, -COURT_L/2],
+  [-COURT_W/2, COURT_L/2],
+  [COURT_W/2, COURT_L/2],
+  [-COURT_W/2, -COURT_L/2 + 2],
+  [COURT_W/2, -COURT_L/2 + 2],
+  [-COURT_W/2, COURT_L/2 - 2],
+  [COURT_W/2, COURT_L/2 - 2],
+].forEach(([x, z]) => {
+  const post = new THREE.Mesh(cornerPostGeo, cornerPostMat);
+  post.position.set(x, FENCE_H / 2, z);
+  post.castShadow = true;
+  courtGroup.add(post);
+});
+
+/* =====================================================================
+   ZONE OVERLAYS (toggle for "three zones" strategy)
+   ===================================================================== */
+
+const zoneOverlays = new THREE.Group();
+zoneOverlays.visible = false;
+scene.add(zoneOverlays);
+
+function addZoneOverlay(z1, z2, color) {
+  const geo = new THREE.PlaneGeometry(COURT_W, Math.abs(z2 - z1));
+  const mat = new THREE.MeshBasicMaterial({
+    color: color,
+    transparent: true,
+    opacity: 0.18,
+    side: THREE.DoubleSide
+  });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.rotation.x = -Math.PI / 2;
+  mesh.position.set(0, 0.01, (z1 + z2) / 2);
+  zoneOverlays.add(mesh);
+}
+// Team A side zones (negative z)
+addZoneOverlay(-10, -7, 0xff3030); // red
+addZoneOverlay(-7, -3, 0xff8c00);  // orange
+addZoneOverlay(-3, 0, 0x00d050);   // green
+// Team B side zones
+addZoneOverlay(0, 3, 0x00d050);
+addZoneOverlay(3, 7, 0xff8c00);
+addZoneOverlay(7, 10, 0xff3030);
+
+/* =====================================================================
+   PLAYERS — stylized 3D figures
+   ===================================================================== */
+
+function createPlayer(label, teamColor, accentColor) {
+  const group = new THREE.Group();
+
+  // Body (capsule-like using cylinders + spheres)
+  const bodyGeo = new THREE.CylinderGeometry(0.3, 0.32, 1.0, 12);
+  const bodyMat = new THREE.MeshStandardMaterial({
+    color: teamColor,
+    roughness: 0.45,
+    metalness: 0.05
+  });
+  const body = new THREE.Mesh(bodyGeo, bodyMat);
+  body.position.y = 1.0;
+  body.castShadow = true;
+  group.add(body);
+
+  // Head
+  const headGeo = new THREE.SphereGeometry(0.22, 16, 16);
+  const headMat = new THREE.MeshStandardMaterial({
+    color: 0xf4d4b0,
+    roughness: 0.55
+  });
+  const head = new THREE.Mesh(headGeo, headMat);
+  head.position.y = 1.75;
+  head.castShadow = true;
+  group.add(head);
+
+  // Cap on top of head (accent color)
+  const capGeo = new THREE.SphereGeometry(0.23, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2.3);
+  const capMat = new THREE.MeshStandardMaterial({
+    color: accentColor,
+    roughness: 0.4
+  });
+  const cap = new THREE.Mesh(capGeo, capMat);
+  cap.position.y = 1.78;
+  cap.castShadow = true;
+  group.add(cap);
+
+  // Legs (two cylinders)
+  const legGeo = new THREE.CylinderGeometry(0.11, 0.10, 0.55, 8);
+  const legMat = new THREE.MeshStandardMaterial({
+    color: 0x222831,
+    roughness: 0.6
+  });
+  const legL = new THREE.Mesh(legGeo, legMat);
+  legL.position.set(-0.13, 0.27, 0);
+  legL.castShadow = true;
+  group.add(legL);
+  const legR = new THREE.Mesh(legGeo, legMat);
+  legR.position.set(0.13, 0.27, 0);
+  legR.castShadow = true;
+  group.add(legR);
+
+  // Racket (very stylized)
+  const racketHandleGeo = new THREE.CylinderGeometry(0.025, 0.025, 0.3, 6);
+  const racketHandleMat = new THREE.MeshStandardMaterial({ color: 0x111111 });
+  const racketHandle = new THREE.Mesh(racketHandleGeo, racketHandleMat);
+  racketHandle.position.set(0.4, 1.1, 0);
+  racketHandle.rotation.z = -Math.PI / 4;
+  group.add(racketHandle);
+
+  const racketHeadGeo = new THREE.CylinderGeometry(0.18, 0.18, 0.04, 12);
+  const racketHeadMat = new THREE.MeshStandardMaterial({
+    color: accentColor,
+    roughness: 0.3,
+    metalness: 0.4
+  });
+  const racketHead = new THREE.Mesh(racketHeadGeo, racketHeadMat);
+  racketHead.position.set(0.6, 1.3, 0);
+  racketHead.rotation.x = Math.PI / 2;
+  racketHead.rotation.z = Math.PI / 4;
+  group.add(racketHead);
+
+  // Floating label above head
+  const labelCanvas = document.createElement('canvas');
+  labelCanvas.width = 128;
+  labelCanvas.height = 64;
+  const lctx = labelCanvas.getContext('2d');
+  lctx.fillStyle = '#0a0e14';
+  lctx.globalAlpha = 0.85;
+  lctx.fillRect(0, 0, 128, 64);
+  lctx.globalAlpha = 1;
+  lctx.strokeStyle = accentColor;
+  lctx.lineWidth = 2;
+  lctx.strokeRect(2, 2, 124, 60);
+  lctx.fillStyle = '#ffffff';
+  lctx.font = 'bold 36px sans-serif';
+  lctx.textAlign = 'center';
+  lctx.textBaseline = 'middle';
+  lctx.fillText(label, 64, 34);
+  const labelTex = new THREE.CanvasTexture(labelCanvas);
+  labelTex.minFilter = THREE.LinearFilter;
+  const labelMat = new THREE.SpriteMaterial({ map: labelTex });
+  const labelSprite = new THREE.Sprite(labelMat);
+  labelSprite.scale.set(0.6, 0.3, 1);
+  labelSprite.position.y = 2.4;
+  group.add(labelSprite);
+
+  // Shadow ground indicator (always visible)
+  const ringGeo = new THREE.RingGeometry(0.4, 0.5, 32);
+  const ringMat = new THREE.MeshBasicMaterial({
+    color: accentColor,
+    transparent: true,
+    opacity: 0.7,
+    side: THREE.DoubleSide
+  });
+  const ring = new THREE.Mesh(ringGeo, ringMat);
+  ring.rotation.x = -Math.PI / 2;
+  ring.position.y = 0.02;
+  group.add(ring);
+
+  group.userData.body = body;
+  group.userData.ring = ring;
+  group.userData.label = labelSprite;
+
+  return group;
+}
+
+const players = {
+  A1: createPlayer('A1', 0xc94a1f, 0xff6b35),
+  A2: createPlayer('A2', 0xc94a1f, 0xffaa5e),
+  B1: createPlayer('B1', 0x2a6cb8, 0x4a9eff),
+  B2: createPlayer('B2', 0x2a6cb8, 0x7dbfff),
+};
+
+Object.values(players).forEach(p => scene.add(p));
+
+// Movement trails (will hold spline objects per player)
+const trailLines = {};
+
+/* =====================================================================
+   BALL
+   ===================================================================== */
+
+const ballGroup = new THREE.Group();
+scene.add(ballGroup);
+
+const ballGeo = new THREE.SphereGeometry(0.12, 24, 24);
+const ballMat = new THREE.MeshStandardMaterial({
+  color: 0xd4ff00,
+  emissive: 0xd4ff00,
+  emissiveIntensity: 0.4,
+  roughness: 0.4
+});
+const ball = new THREE.Mesh(ballGeo, ballMat);
+ball.castShadow = true;
+ballGroup.add(ball);
+
+// Ball glow
+const glowGeo = new THREE.SphereGeometry(0.25, 16, 16);
+const glowMat = new THREE.MeshBasicMaterial({
+  color: 0xd4ff00,
+  transparent: true,
+  opacity: 0.15
+});
+const glow = new THREE.Mesh(glowGeo, glowMat);
+ballGroup.add(glow);
+
+// Ball ground shadow indicator (small dot, always visible)
+const ballShadowGeo = new THREE.CircleGeometry(0.15, 16);
+const ballShadowMat = new THREE.MeshBasicMaterial({
+  color: 0x000000,
+  transparent: true,
+  opacity: 0.4
+});
+const ballShadow = new THREE.Mesh(ballShadowGeo, ballShadowMat);
+ballShadow.rotation.x = -Math.PI / 2;
+ballShadow.position.y = 0.005;
+scene.add(ballShadow);
+
+// Ball trail handled by continuous trail buffer below (trailLineCont)
+
+function setBallPosition(x, y, z) {
+  ballGroup.position.set(x, y, z);
+  ballShadow.position.set(x, 0.005, z);
+  // Shadow scale based on height
+  const s = Math.max(0.3, 1 - y * 0.15);
+  ballShadow.scale.set(s, s, s);
+}
+
+setBallPosition(0, 0.5, 0);
+
+/* =====================================================================
+   CAMERA PRESETS
+   ===================================================================== */
+
+const CAM_PRESETS = {
+  default: { pos: new THREE.Vector3(15, 14, 18), target: new THREE.Vector3(0, 0, 0) },
+  top:     { pos: new THREE.Vector3(0.01, 28, 0), target: new THREE.Vector3(0, 0, 0) },
+  side:    { pos: new THREE.Vector3(28, 6, 0), target: new THREE.Vector3(0, 1, 0) },
+  player:  { pos: new THREE.Vector3(0, 4, -16), target: new THREE.Vector3(0, 1.5, 5) },
+  cinematic: { pos: new THREE.Vector3(12, 3, 14), target: new THREE.Vector3(0, 1, 0) }
+};
+
+let activeCam = 'default';
+let camLerping = false;
+let camLerpStart = 0;
+let camLerpFrom = { pos: new THREE.Vector3(), target: new THREE.Vector3() };
+let camLerpTo = { pos: new THREE.Vector3(), target: new THREE.Vector3() };
+const currentTarget = new THREE.Vector3(0, 0, 0);
+
+function setCamera(preset, instant = false) {
+  const p = CAM_PRESETS[preset];
+  if (!p) return;
+  activeCam = preset;
+  document.querySelectorAll('.cam-btn').forEach(b => b.classList.toggle('active', b.dataset.cam === preset));
+  if (instant) {
+    camera.position.copy(p.pos);
+    currentTarget.copy(p.target);
+    camera.lookAt(currentTarget);
+  } else {
+    camLerpFrom.pos.copy(camera.position);
+    camLerpFrom.target.copy(currentTarget);
+    camLerpTo.pos.copy(p.pos);
+    camLerpTo.target.copy(p.target);
+    camLerpStart = performance.now();
+    camLerping = true;
+  }
+}
+
+document.querySelectorAll('.cam-btn').forEach(btn => {
+  btn.addEventListener('click', () => setCamera(btn.dataset.cam));
+});
+
+/* =====================================================================
+   ORBIT CONTROLS — simple custom (no extra import)
+   ===================================================================== */
+
+let isDraggingCam = false;
+let lastMouseX = 0, lastMouseY = 0;
+let camAzim = Math.atan2(camera.position.x, camera.position.z);
+let camElev = Math.asin(camera.position.y / camera.position.length());
+let camDist = camera.position.length();
+let userControl = false;
+
+function updateCameraFromOrbit() {
+  camera.position.x = camDist * Math.cos(camElev) * Math.sin(camAzim);
+  camera.position.y = camDist * Math.sin(camElev);
+  camera.position.z = camDist * Math.cos(camElev) * Math.cos(camAzim);
+  camera.lookAt(currentTarget);
+}
+
+renderer.domElement.addEventListener('pointerdown', (e) => {
+  if (sandboxActive && raycastPlayer(e)) return;
+  isDraggingCam = true;
+  userControl = true;
+  lastMouseX = e.clientX;
+  lastMouseY = e.clientY;
+  renderer.domElement.style.cursor = 'grabbing';
+});
+
+window.addEventListener('pointerup', () => {
+  isDraggingCam = false;
+  renderer.domElement.style.cursor = '';
+});
+
+window.addEventListener('pointermove', (e) => {
+  if (!isDraggingCam) return;
+  if (sandboxActive && draggingPlayer) return;
+  const dx = e.clientX - lastMouseX;
+  const dy = e.clientY - lastMouseY;
+  lastMouseX = e.clientX;
+  lastMouseY = e.clientY;
+  camAzim -= dx * 0.005;
+  camElev = Math.max(0.05, Math.min(Math.PI / 2 - 0.05, camElev + dy * 0.005));
+  updateCameraFromOrbit();
+});
+
+renderer.domElement.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  camDist = Math.max(8, Math.min(50, camDist + e.deltaY * 0.02));
+  updateCameraFromOrbit();
+}, { passive: false });
+
+// Touch
+let touchStartDist = 0;
+renderer.domElement.addEventListener('touchstart', (e) => {
+  if (e.touches.length === 2) {
+    const dx = e.touches[0].clientX - e.touches[1].clientX;
+    const dy = e.touches[0].clientY - e.touches[1].clientY;
+    touchStartDist = Math.hypot(dx, dy);
+  }
+}, { passive: true });
+
+renderer.domElement.addEventListener('touchmove', (e) => {
+  if (e.touches.length === 2) {
+    const dx = e.touches[0].clientX - e.touches[1].clientX;
+    const dy = e.touches[0].clientY - e.touches[1].clientY;
+    const newDist = Math.hypot(dx, dy);
+    camDist = Math.max(8, Math.min(50, camDist - (newDist - touchStartDist) * 0.05));
+    touchStartDist = newDist;
+    updateCameraFromOrbit();
+  }
+}, { passive: true });
+
+/* =====================================================================
+   ANIMATION ENGINE — CONTINUOUS TIMELINE
+   The whole rally is one uninterrupted film. We pre-build a timeline
+   with all segments stitched together, then a single render-loop driver
+   advances time linearly. No setTimeout pauses, no per-step resets.
+   ===================================================================== */
+
+// Sandbox-specific tween queue (used by sandbox presets only)
+const animations = [];
+
+let currentStrategy = null;
+let currentStepIndex = 0;
+let isPlaying = false;
+let playSpeed = 1;
+
+let timeline = null;            // pre-built list of segments
+let playbackStartTime = 0;      // performance.now() when play started
+
+const SEGMENT_DURATION = 3.6;   // seconds per phase at 1× speed
+
+function easeInOutCubic(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+function easeInOutSine(t)  { return -(Math.cos(Math.PI * t) - 1) / 2; }
+
+function getPeakHeight(arcType, from, to) {
+  const dist = Math.hypot(to.x - from.x, to.z - from.z);
+  switch (arcType) {
+    case 'high-lob': return Math.max(5, dist * 0.4);
+    case 'lob':      return Math.max(3, dist * 0.25);
+    case 'chiquita': return Math.max(1.2, dist * 0.05);
+    case 'drive':    return Math.max(0.3, dist * 0.04);
+    case 'volley':   return Math.max(0.3, dist * 0.05);
+    case 'serve':    return Math.max(0.8, dist * 0.08);
+    case 'bandeja':  return Math.max(2, dist * 0.15);
+    case 'vibora':   return Math.max(2.5, dist * 0.18);
+    case 'por-tres': return Math.max(4, dist * 0.3);
+    default:         return Math.max(1.5, dist * 0.1);
+  }
+}
+
+function buildTimeline(strategy) {
+  // Each segment runs from cumulative startTime to startTime + SEGMENT_DURATION.
+  // Player paths: from previous step's positions to current step's positions.
+  // Ball: from previous step's ball position to current step's ball position
+  // (so the ball flight is continuous across the whole rally).
+  const segments = [];
+  let cumulative = 0;
+
+  for (let i = 0; i < strategy.steps.length; i++) {
+    const step = strategy.steps[i];
+    const prevStep = i > 0 ? strategy.steps[i - 1] : step;
+
+    const playerPaths = {};
+    ['A1', 'A2', 'B1', 'B2'].forEach(id => {
+      const fromPos = prevStep.players[id] || step.players[id];
+      const toPos = step.players[id] || fromPos;
+      playerPaths[id] = {
+        from: { x: fromPos.x, z: fromPos.z },
+        to:   { x: toPos.x,   z: toPos.z }
+      };
+    });
+
+    const prevBall = prevStep.ball || { x: 0, y: 0.5, z: 0 };
+    const ballFrom = i === 0 ? prevBall : (prevStep.ball || prevBall);
+    const ballTo = step.ball || ballFrom;
+
+    segments.push({
+      stepIndex: i,
+      text: step.text,
+      startTime: cumulative,
+      endTime: cumulative + SEGMENT_DURATION,
+      duration: SEGMENT_DURATION,
+      playerPaths,
+      ballFrom: { x: ballFrom.x, y: ballFrom.y || 0.5, z: ballFrom.z },
+      ballTo:   { x: ballTo.x,   y: ballTo.y   || 0.5, z: ballTo.z },
+      ballArc:  step.ballArc || 'idle'
+    });
+    cumulative += SEGMENT_DURATION;
+  }
+  return { segments, totalDuration: cumulative };
+}
+
+function getSegmentAt(time) {
+  if (!timeline) return null;
+  for (const seg of timeline.segments) {
+    if (time >= seg.startTime && time < seg.endTime) return seg;
+  }
+  return timeline.segments[timeline.segments.length - 1];
+}
+
+function applyTimelineState(tlTime) {
+  const seg = getSegmentAt(tlTime);
+  if (!seg) return;
+  const localT = Math.max(0, Math.min(1, (tlTime - seg.startTime) / seg.duration));
+
+  // === PLAYERS ===
+  const eP = easeInOutCubic(localT);
+  ['A1', 'A2', 'B1', 'B2'].forEach(id => {
+    const path = seg.playerPaths[id];
+    const x = path.from.x + (path.to.x - path.from.x) * eP;
+    const z = path.from.z + (path.to.z - path.from.z) * eP;
+    const player = players[id];
+
+    const dx = path.to.x - path.from.x;
+    const dz = path.to.z - path.from.z;
+    const moveDist = Math.hypot(dx, dz);
+    const isMoving = moveDist > 0.3 && localT > 0.02 && localT < 0.98;
+
+    player.position.x = x;
+    player.position.z = z;
+
+    if (isMoving) {
+      player.position.y = Math.abs(Math.sin(tlTime * 8 * playSpeed)) * 0.04;
+    } else {
+      player.position.y *= 0.85;
+    }
+
+    if (moveDist > 0.1) {
+      const targetRot = Math.atan2(dx, dz);
+      let dr = targetRot - player.rotation.y;
+      while (dr >  Math.PI) dr -= Math.PI * 2;
+      while (dr < -Math.PI) dr += Math.PI * 2;
+      player.rotation.y += dr * 0.15;
+    }
+  });
+
+  // === BALL ===
+  const peakH = getPeakHeight(seg.ballArc, seg.ballFrom, seg.ballTo);
+  const eB = (seg.ballArc === 'serve' || seg.ballArc === 'drive' || seg.ballArc === 'volley')
+    ? easeInOutSine(localT) : localT;
+  const bx = seg.ballFrom.x + (seg.ballTo.x - seg.ballFrom.x) * eB;
+  const bz = seg.ballFrom.z + (seg.ballTo.z - seg.ballFrom.z) * eB;
+  const baseY = seg.ballFrom.y + (seg.ballTo.y - seg.ballFrom.y) * eB;
+  const by = (seg.ballArc === 'idle')
+    ? baseY
+    : baseY + 4 * peakH * eB * (1 - eB);
+  setBallPosition(bx, by, bz);
+
+  if (seg.ballArc !== 'idle') pushTrailPoint(bx, by, bz);
+
+  zoneOverlays.visible = currentStrategy?.id === 'three-zones';
+
+  if (activeCam === 'cinematic') {
+    const tCam = tlTime * 0.4;
+    const camTarget = new THREE.Vector3(bx * 0.4, 1, bz * 0.4);
+    const camPos = new THREE.Vector3(
+      bx * 0.3 + Math.cos(tCam) * 14,
+      4 + Math.sin(tCam * 0.5) * 1,
+      bz * 0.3 + Math.sin(tCam) * 14
+    );
+    camera.position.lerp(camPos, 0.05);
+    currentTarget.lerp(camTarget, 0.05);
+    camera.lookAt(currentTarget);
+  }
+
+  if (seg.stepIndex !== currentStepIndex) {
+    currentStepIndex = seg.stepIndex;
+    setStepText(seg.text, seg.stepIndex, timeline.segments.length);
+  }
+  updateProgress(timeline.segments.length, seg.stepIndex);
+}
+
+// === Continuous trail buffer ===
+const TRAIL_MAX = 220;
+const trailPositions = new Float32Array(TRAIL_MAX * 3);
+let trailLength = 0;
+const trailGeoCont = new THREE.BufferGeometry();
+trailGeoCont.setAttribute('position', new THREE.BufferAttribute(trailPositions, 3));
+const trailMatCont = new THREE.LineBasicMaterial({ color: 0xd4ff00, transparent: true, opacity: 0.6 });
+const trailLineCont = new THREE.Line(trailGeoCont, trailMatCont);
+trailLineCont.frustumCulled = false;
+scene.add(trailLineCont);
+
+function pushTrailPoint(x, y, z) {
+  if (trailLength > 0) {
+    const ix = (trailLength - 1) * 3;
+    const dx = x - trailPositions[ix];
+    const dy = y - trailPositions[ix + 1];
+    const dz = z - trailPositions[ix + 2];
+    if (dx * dx + dy * dy + dz * dz < 0.0009) return;
+  }
+  if (trailLength >= TRAIL_MAX) {
+    for (let i = 0; i < (TRAIL_MAX - 1) * 3; i++) trailPositions[i] = trailPositions[i + 3];
+    trailLength = TRAIL_MAX - 1;
+  }
+  trailPositions[trailLength * 3]     = x;
+  trailPositions[trailLength * 3 + 1] = y;
+  trailPositions[trailLength * 3 + 2] = z;
+  trailLength++;
+  trailGeoCont.setDrawRange(0, trailLength);
+  trailGeoCont.attributes.position.needsUpdate = true;
+}
+
+function clearBallTrail() {
+  trailLength = 0;
+  trailGeoCont.setDrawRange(0, 0);
+}
+
+function setStepText(text, idx, total) {
+  const stepText = document.getElementById('step-text');
+  stepText.style.transition = 'opacity 0.25s';
+  stepText.style.opacity = '0';
+  setTimeout(() => {
+    stepText.textContent = text;
+    document.getElementById('step-num').textContent = `FASE ${idx + 1}/${total}`;
+    stepText.style.opacity = '1';
+  }, 200);
+}
+
+function updateProgress(total, currentIdx) {
+  const container = document.getElementById('step-progress');
+  if (container.children.length !== total) {
+    container.innerHTML = '';
+    for (let i = 0; i < total; i++) {
+      const span = document.createElement('span');
+      span.addEventListener('click', () => seekToStep(i));
+      container.appendChild(span);
+    }
+  }
+  Array.from(container.children).forEach((span, i) => {
+    span.classList.toggle('played', i < currentIdx);
+    span.classList.toggle('current', i === currentIdx);
+  });
+}
+
+function seekToStep(idx) {
+  if (!timeline) return;
+  const seg = timeline.segments[idx];
+  if (!seg) return;
+  playbackStartTime = performance.now() - (seg.startTime * 1000) / playSpeed;
+  currentStepIndex = idx;
+  clearBallTrail();
+  applyTimelineState(seg.startTime + 0.001);
+}
+
+function playStrategy() {
+  if (!currentStrategy) return;
+  if (isPlaying) {
+    stopPlayback();
+    return;
+  }
+  isPlaying = true;
+  document.querySelector('#play-btn svg').innerHTML = '<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>';
+  if (!timeline) timeline = buildTimeline(currentStrategy);
+  clearBallTrail();
+  playbackStartTime = performance.now();
+  currentStepIndex = -1;
+}
+
+function stopPlayback() {
+  isPlaying = false;
+  document.querySelector('#play-btn svg').innerHTML = '<path d="M8 5v14l11-7z"/>';
+}
+
+document.getElementById('play-btn').addEventListener('click', () => {
+  if (isPlaying) stopPlayback();
+  else playStrategy();
+});
+
+document.querySelectorAll('.speed-toggle button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.speed-toggle button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const newSpeed = parseFloat(btn.dataset.speed);
+    if (isPlaying && timeline) {
+      // Adjust start time so we keep current timeline position when speed changes
+      const elapsedMs = performance.now() - playbackStartTime;
+      const tlTime = (elapsedMs / 1000) * playSpeed;
+      playSpeed = newSpeed;
+      playbackStartTime = performance.now() - (tlTime * 1000) / playSpeed;
+    } else {
+      playSpeed = newSpeed;
+    }
+  });
+});
+
+/* =====================================================================
+   STRATEGY LIST + FILTERS
+   ===================================================================== */
+
+const filters = { level: 'all', intent: 'all' };
+
+function renderStrategyList() {
+  const list = document.getElementById('strat-list');
+  const filtered = STRATEGIES.filter(s => {
+    if (filters.level !== 'all' && s.level !== filters.level) return false;
+    if (filters.intent !== 'all' && s.intent !== filters.intent) return false;
+    return true;
+  });
+
+  document.getElementById('strat-count').textContent = filtered.length.toString().padStart(2, '0');
+
+  if (filtered.length === 0) {
+    list.innerHTML = '<div style="padding: 20px; color: var(--text-faint); font-style: italic; text-align: center; font-size: 12px;">Geen strategieën met deze filters.</div>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(s => `
+    <div class="strat-item ${currentStrategy?.id === s.id ? 'active' : ''}" data-id="${s.id}">
+      <div class="strat-item-name">${s.name} <em>${s.spanish}</em></div>
+      <div class="strat-item-meta">
+        <span class="lvl ${s.level}">${
+          s.level === 'beginner' ? 'Beg.' :
+          s.level === 'intermediate' ? 'Gevr.' : 'Comp.'
+        }</span>
+        <span>${s.intent === 'offensive' ? 'aanval' : s.intent === 'defensive' ? 'verdediging' : 'positie'}</span>
+      </div>
+    </div>
+  `).join('');
+
+  list.querySelectorAll('.strat-item').forEach(el => {
+    el.addEventListener('click', () => loadStrategy(el.dataset.id));
+  });
+}
+
+document.querySelectorAll('.chips').forEach(group => {
+  const filterType = group.dataset.filter;
+  group.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      group.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      filters[filterType] = chip.dataset.val;
+      renderStrategyList();
+    });
+  });
+});
+
+function loadStrategy(id) {
+  const s = STRATEGIES.find(s => s.id === id);
+  if (!s) return;
+  stopPlayback();
+  currentStrategy = s;
+  timeline = buildTimeline(s);
+  clearBallTrail();
+  // Set initial state without animation
+  const seg = timeline.segments[0];
+  ['A1','A2','B1','B2'].forEach(id => {
+    const path = seg.playerPaths[id];
+    players[id].position.set(path.from.x, 0, path.from.z);
+  });
+  setBallPosition(seg.ballFrom.x, seg.ballFrom.y, seg.ballFrom.z);
+  currentStepIndex = 0;
+  setStepText(seg.text, 0, timeline.segments.length);
+  updateProgress(timeline.segments.length, 0);
+  zoneOverlays.visible = s.id === 'three-zones';
+
+  renderStrategyList();
+  updateDetailPanel(s);
+}
+
+function updateDetailPanel(s) {
+  document.getElementById('strat-title').textContent = s.name;
+  document.getElementById('strat-spanish').textContent = s.spanish;
+  document.getElementById('strat-summary').textContent = s.summary;
+  document.getElementById('d-when').innerHTML = s.when.map(w => `<li>${w}</li>`).join('');
+  document.getElementById('d-shots').innerHTML = s.shots.map(sh => `<span>${sh}</span>`).join('');
+  document.getElementById('d-mistakes').innerHTML = s.mistakes.map(m => `<li>${m}</li>`).join('');
+  document.getElementById('d-tip').textContent = '"' + s.tip + '"';
+}
+
+/* =====================================================================
+   PANEL TOGGLES
+   ===================================================================== */
+
+document.getElementById('toggle-left').addEventListener('click', (e) => {
+  const panel = document.getElementById('panel-left');
+  panel.classList.toggle('collapsed');
+  e.target.textContent = panel.classList.contains('collapsed') ? '›' : '‹';
+});
+
+document.getElementById('toggle-right').addEventListener('click', (e) => {
+  const panel = document.getElementById('panel-right');
+  panel.classList.toggle('collapsed');
+  e.target.textContent = panel.classList.contains('collapsed') ? '‹' : '›';
+});
+
+/* =====================================================================
+   MODE SWITCH (Library / Sandbox)
+   ===================================================================== */
+
+let sandboxActive = false;
+
+document.querySelectorAll('.mode-switch button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.mode-switch button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const mode = btn.dataset.mode;
+    document.body.className = `mode-${mode}`;
+    sandboxActive = (mode === 'sandbox');
+    if (sandboxActive) {
+      stopPlayback();
+      setupSandbox();
+    } else {
+      teardownSandbox();
+    }
+  });
+});
+
+function setupSandbox() {
+  // Reset to a neutral starting formation
+  const setup = { A1: { x: -2.5, z: -3 }, A2: { x: 2.5, z: -3 }, B1: { x: -2.5, z: 3 }, B2: { x: 2.5, z: 3 }, ball: { x: 0, y: 0.5, z: 0 } };
+  ['A1','A2','B1','B2'].forEach(id => {
+    players[id].position.set(setup[id].x, 0, setup[id].z);
+  });
+  setBallPosition(0, 0.5, 0);
+  clearBallTrail();
+  document.getElementById('strat-title').textContent = 'Sandbox';
+  document.getElementById('strat-spanish').textContent = 'jouw tactiekboard';
+  document.getElementById('strat-summary').textContent = 'Klik en sleep een speler om hun positie aan te passen. Bal sleept ook. Bouw je eigen formaties op.';
+  document.getElementById('d-when').innerHTML = '<li>Verken aanvalsformaties</li><li>Test verdedigingsposities</li><li>Bouw set-plays voor je team</li>';
+  document.getElementById('d-shots').innerHTML = '<span>Vrij spel</span>';
+  document.getElementById('d-mistakes').innerHTML = '<li>Spelers te ver uit elkaar</li><li>Niemandsland tussen zones</li><li>Splitsing voor / achter</li>';
+  document.getElementById('d-tip').textContent = '"Test elke positie: zou jouw paar deze gat-formatie kunnen verdedigen?"';
+}
+
+function teardownSandbox() {
+  draggingPlayer = null;
+  if (currentStrategy) loadStrategy(currentStrategy.id);
+}
+
+document.getElementById('sb-reset').addEventListener('click', setupSandbox);
+document.getElementById('sb-preset-1').addEventListener('click', () => {
+  const setup = { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R, ball: { x: 0, y: 0.5, z: 0 } };
+  applySandboxSetup(setup);
+});
+document.getElementById('sb-preset-2').addEventListener('click', () => {
+  const setup = { A1: POS.A_DEFEND_L, A2: POS.A_DEFEND_R, B1: POS.B_NET_L, B2: POS.B_NET_R, ball: { x: 3, y: 0.5, z: -8 } };
+  applySandboxSetup(setup);
+});
+document.getElementById('sb-preset-3').addEventListener('click', () => {
+  const setup = { A1: POS.A_DEFEND_L, A2: POS.A_DEFEND_R, B1: { x: -2.5, z: 4 }, B2: { x: 2.5, z: 4 }, ball: { x: 3, y: 0.5, z: -8 } };
+  applySandboxSetup(setup);
+});
+
+function applySandboxSetup(setup) {
+  ['A1','A2','B1','B2'].forEach(id => {
+    const p = setup[id];
+    if (p) {
+      const from = { x: players[id].position.x, y: 0, z: players[id].position.z };
+      const start = performance.now();
+      animations.push({
+        update: (now) => {
+          const t = Math.min(1, (now - start) / 600);
+          const eased = easeInOutCubic(t);
+          players[id].position.x = from.x + (p.x - from.x) * eased;
+          players[id].position.z = from.z + (p.z - from.z) * eased;
+          return t < 1;
+        }
+      });
+    }
+  });
+  if (setup.ball) {
+    const from = { x: ballGroup.position.x, y: ballGroup.position.y, z: ballGroup.position.z };
+    const to = setup.ball;
+    const start = performance.now();
+    animations.push({
+      update: (now) => {
+        const t = Math.min(1, (now - start) / 600);
+        const eased = easeInOutCubic(t);
+        setBallPosition(
+          from.x + (to.x - from.x) * eased,
+          from.y + (to.y - from.y) * eased,
+          from.z + (to.z - from.z) * eased
+        );
+        return t < 1;
+      }
+    });
+  }
+  clearBallTrail();
+}
+
+/* =====================================================================
+   SANDBOX DRAGGING (raycasting onto ground plane)
+   ===================================================================== */
+
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+let draggingPlayer = null;
+let dragOffset = new THREE.Vector3();
+
+function raycastPlayer(e) {
+  if (!sandboxActive) return null;
+  const rect = renderer.domElement.getBoundingClientRect();
+  mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+  mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+  raycaster.setFromCamera(mouse, camera);
+
+  // Check intersection with each player and ball
+  const intersectables = [];
+  Object.entries(players).forEach(([id, p]) => intersectables.push({ id, group: p, type: 'player' }));
+  intersectables.push({ id: 'ball', group: ballGroup, type: 'ball' });
+
+  for (const item of intersectables) {
+    const meshes = [];
+    item.group.traverse(o => { if (o.isMesh) meshes.push(o); });
+    const hits = raycaster.intersectObjects(meshes, false);
+    if (hits.length > 0) {
+      draggingPlayer = item;
+      // compute drag plane intersection at floor
+      const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+      const intersect = new THREE.Vector3();
+      raycaster.ray.intersectPlane(plane, intersect);
+      dragOffset.copy(intersect).sub(item.group.position);
+      dragOffset.y = 0;
+      renderer.domElement.style.cursor = 'grabbing';
+      return item;
+    }
+  }
+  return null;
+}
+
+renderer.domElement.addEventListener('pointermove', (e) => {
+  if (!sandboxActive) return;
+  if (draggingPlayer) {
+    const rect = renderer.domElement.getBoundingClientRect();
+    mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+    const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+    const intersect = new THREE.Vector3();
+    raycaster.ray.intersectPlane(plane, intersect);
+    let newPos = intersect.sub(dragOffset);
+    // Clamp to court area + a bit outside
+    newPos.x = Math.max(-COURT_W/2 - 1, Math.min(COURT_W/2 + 1, newPos.x));
+    newPos.z = Math.max(-COURT_L/2 - 1, Math.min(COURT_L/2 + 1, newPos.z));
+    if (draggingPlayer.type === 'player') {
+      draggingPlayer.group.position.x = newPos.x;
+      draggingPlayer.group.position.z = newPos.z;
+    } else {
+      // Ball: dragging on ground plane keeps Y at small height
+      setBallPosition(newPos.x, 0.5, newPos.z);
+    }
+  } else {
+    // hover cursor
+    const rect = renderer.domElement.getBoundingClientRect();
+    mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+    const meshes = [];
+    Object.values(players).forEach(p => p.traverse(o => { if (o.isMesh) meshes.push(o); }));
+    ballGroup.traverse(o => { if (o.isMesh) meshes.push(o); });
+    const hits = raycaster.intersectObjects(meshes);
+    renderer.domElement.style.cursor = hits.length > 0 ? 'grab' : '';
+  }
+});
+
+renderer.domElement.addEventListener('pointerup', () => {
+  draggingPlayer = null;
+});
+
+/* =====================================================================
+   RENDER LOOP
+   ===================================================================== */
+
+const clock = new THREE.Clock();
+
+function animate() {
+  requestAnimationFrame(animate);
+  const now = performance.now();
+  const elapsed = clock.getElapsedTime();
+
+  // === CONTINUOUS PLAYBACK — the rally as one film ===
+  if (isPlaying && timeline) {
+    const elapsedMs = now - playbackStartTime;
+    const tlTime = (elapsedMs / 1000) * playSpeed;
+    if (tlTime >= timeline.totalDuration) {
+      // Hold final state and stop
+      applyTimelineState(timeline.totalDuration - 0.001);
+      stopPlayback();
+    } else {
+      applyTimelineState(tlTime);
+    }
+  }
+
+  // Process sandbox tween animations (used by sandbox presets only)
+  for (let i = animations.length - 1; i >= 0; i--) {
+    const stillRunning = animations[i].update(now);
+    if (!stillRunning) animations.splice(i, 1);
+  }
+
+  // Camera lerp (for switching between camera presets)
+  if (camLerping) {
+    const t = Math.min(1, (now - camLerpStart) / 1200);
+    const eased = easeInOutCubic(t);
+    camera.position.lerpVectors(camLerpFrom.pos, camLerpTo.pos, eased);
+    currentTarget.lerpVectors(camLerpFrom.target, camLerpTo.target, eased);
+    camera.lookAt(currentTarget);
+    if (t >= 1) {
+      camLerping = false;
+      camDist = camera.position.distanceTo(currentTarget);
+      const dx = camera.position.x - currentTarget.x;
+      const dy = camera.position.y - currentTarget.y;
+      const dz = camera.position.z - currentTarget.z;
+      camAzim = Math.atan2(dx, dz);
+      camElev = Math.asin(dy / camDist);
+    }
+  }
+
+  // Subtle ball idle bob — only when not playing and ball is at rest height
+  if (!isPlaying && animations.length === 0 && Math.abs(ballGroup.position.y - 0.5) < 0.15) {
+    ballGroup.position.y = 0.5 + Math.sin(elapsed * 2) * 0.02;
+    glow.material.opacity = 0.12 + Math.sin(elapsed * 3) * 0.04;
+  }
+
+  // Player ring pulse
+  Object.values(players).forEach((p, i) => {
+    const ring = p.userData.ring;
+    if (ring) {
+      ring.material.opacity = 0.5 + Math.sin(elapsed * 2 + i) * 0.15;
+    }
+  });
+
+  renderer.render(scene, camera);
+}
+
+/* =====================================================================
+   INIT
+   ===================================================================== */
+
+renderStrategyList();
+loadStrategy('invisible-rope');
+animate();
+
+// Hide loader after a moment
+setTimeout(() => {
+  document.getElementById('loading').classList.add('hidden');
+  setTimeout(() => document.getElementById('loading').remove(), 600);
+}, 800);
+
+</script>
+</body>
+</html>
