@@ -2,9 +2,9 @@
 <html lang="nl">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<meta name="theme-color" content="#0a0e14" />
 <title>Pista 3D — Padel Strategie Lab</title>
-<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -705,6 +705,10 @@
     text-transform: uppercase;
   }
 
+  /* Mobile FABs hidden by default (only show under 768px) */
+  .mobile-fab { display: none; }
+  .mobile-backdrop { display: none; }
+
   /* Mobile */
   @media (max-width: 1024px) {
     .panel-left, .panel-right {
@@ -712,14 +716,207 @@
     }
   }
 
+  /* ========================================
+     MOBILE LAYOUT (under 768px)
+     The 3D court takes the full screen.
+     Both side panels become slide-in drawers.
+     ======================================== */
   @media (max-width: 768px) {
-    .panel-left, .panel-right {
-      width: calc(100vw - 48px);
-      max-height: 40vh;
+    /* Header — compact */
+    header {
+      padding: 10px 14px;
     }
-    .brand-mark { font-size: 28px; }
+    .brand-mark { font-size: 26px; }
+    .brand-mark sup { font-size: 10px; }
     .brand-tag { display: none; }
-    .camera-controls { display: none; }
+    .mode-switch button {
+      font-size: 11px;
+      padding: 7px 12px;
+      letter-spacing: 0.08em;
+    }
+
+    /* Left panel — becomes slide-in drawer from left */
+    .panel-left {
+      left: 0;
+      top: 64px;
+      bottom: 0;
+      width: 88vw;
+      max-width: 340px;
+      z-index: 20;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease-out;
+      border-left: none;
+    }
+    .panel-left.mobile-open {
+      transform: translateX(0);
+      box-shadow: 0 0 40px rgba(0,0,0,0.6);
+    }
+    .filters { max-height: 35vh; }
+
+    /* Right panel — slide-in from right */
+    .panel-right {
+      right: 0;
+      top: 64px;
+      bottom: 0;
+      width: 88vw;
+      max-width: 360px;
+      z-index: 20;
+      transform: translateX(100%);
+      transition: transform 0.3s ease-out;
+      padding: 18px;
+    }
+    .panel-right.mobile-open {
+      transform: translateX(0);
+      box-shadow: 0 0 40px rgba(0,0,0,0.6);
+    }
+    .strat-name-big { font-size: 26px; }
+    .strat-spanish-big { font-size: 14px; }
+    .strat-summary-big { font-size: 12px; }
+
+    /* Desktop toggle arrows — hide on mobile */
+    .toggle-left, .toggle-right {
+      display: none;
+    }
+
+    /* Mobile-only floating buttons for panel toggles */
+    .mobile-fab {
+      display: flex;
+      position: fixed;
+      z-index: 15;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--bg-panel);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-light);
+      color: var(--text);
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 18px;
+      letter-spacing: 0.05em;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+    }
+    .mobile-backdrop { display: block; }
+    .mobile-fab.fab-left {
+      left: 12px;
+      top: 80px;
+    }
+    .mobile-fab.fab-right {
+      right: 12px;
+      top: 80px;
+    }
+    .mobile-fab svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    /* Camera controls — small horizontal bar */
+    .camera-controls {
+      display: flex !important;
+      position: fixed;
+      top: auto;
+      bottom: 140px;
+      right: 12px;
+      transform: none !important;
+      flex-direction: row;
+      gap: 2px;
+      padding: 4px;
+      overflow-x: auto;
+      max-width: calc(100vw - 24px);
+      z-index: 12;
+    }
+    .cam-btn {
+      font-size: 9px;
+      padding: 6px 8px;
+      border-left: none;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+    }
+    .cam-btn:hover, .cam-btn.active {
+      border-left-color: transparent;
+      border-bottom-color: var(--accent);
+    }
+
+    /* Playback bar — compact at bottom */
+    .playback {
+      bottom: 12px;
+      left: 12px;
+      right: 12px;
+      transform: none;
+      min-width: 0;
+      width: auto;
+      max-width: none;
+      padding: 10px 12px;
+      gap: 10px;
+    }
+    .play-btn {
+      width: 38px;
+      height: 38px;
+    }
+    .play-btn svg { width: 16px; height: 16px; }
+    .step-num { font-size: 8px; letter-spacing: 0.12em; }
+    .step-text {
+      font-size: 12px;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .step-progress { margin-top: 6px; }
+    .speed-toggle button {
+      font-size: 9px;
+      padding: 5px 6px;
+    }
+
+    /* Sandbox toolbar */
+    .sandbox-toolbar {
+      bottom: 80px;
+      left: 12px;
+      right: 12px;
+      transform: none;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 8px;
+    }
+    .sb-btn {
+      font-size: 9px;
+      padding: 6px 10px;
+    }
+
+    .court-watermark { font-size: 9px; bottom: 14px; right: 14px; }
+
+    /* Overlay backdrop when a drawer is open */
+    .mobile-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 18;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .mobile-backdrop.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .loading-mark { font-size: 56px; }
+
+    /* Improve touch target sizes */
+    .strat-item { padding: 14px 14px; }
+    .chip { padding: 7px 10px; font-size: 11px; }
+  }
+
+  /* Very small screens */
+  @media (max-width: 380px) {
+    .mode-switch button { padding: 6px 10px; font-size: 10px; }
+    .brand-mark { font-size: 22px; }
+    .play-btn { width: 34px; height: 34px; }
+    .step-text { font-size: 11px; }
   }
 </style>
 </head>
@@ -807,6 +1004,15 @@
   </aside>
 
   <button class="panel-toggle toggle-right" id="toggle-right">›</button>
+
+  <!-- MOBILE FLOATING ACTION BUTTONS (only visible under 768px) -->
+  <button class="mobile-fab fab-left" id="mobile-fab-left" aria-label="Strategieën">
+    <svg viewBox="0 0 24 24"><path d="M3 5h18v2H3zm0 6h18v2H3zm0 6h18v2H3z"/></svg>
+  </button>
+  <button class="mobile-fab fab-right" id="mobile-fab-right" aria-label="Details">
+    <svg viewBox="0 0 24 24"><path d="M11 9h2V7h-2v2zm1 11c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-18C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h2v-6h-2v6z"/></svg>
+  </button>
+  <div class="mobile-backdrop" id="mobile-backdrop"></div>
 
   <!-- CAMERA CONTROLS -->
   <div class="camera-controls" id="camera-controls">
@@ -2314,6 +2520,38 @@ document.getElementById('toggle-right').addEventListener('click', (e) => {
   const panel = document.getElementById('panel-right');
   panel.classList.toggle('collapsed');
   e.target.textContent = panel.classList.contains('collapsed') ? '‹' : '›';
+});
+
+/* MOBILE PANEL TOGGLES */
+const mobileBackdrop = document.getElementById('mobile-backdrop');
+const panelLeft = document.getElementById('panel-left');
+const panelRight = document.getElementById('panel-right');
+
+function closeMobilePanels() {
+  panelLeft.classList.remove('mobile-open');
+  panelRight.classList.remove('mobile-open');
+  mobileBackdrop.classList.remove('visible');
+}
+
+document.getElementById('mobile-fab-left').addEventListener('click', () => {
+  panelRight.classList.remove('mobile-open');
+  panelLeft.classList.toggle('mobile-open');
+  mobileBackdrop.classList.toggle('visible', panelLeft.classList.contains('mobile-open'));
+});
+
+document.getElementById('mobile-fab-right').addEventListener('click', () => {
+  panelLeft.classList.remove('mobile-open');
+  panelRight.classList.toggle('mobile-open');
+  mobileBackdrop.classList.toggle('visible', panelRight.classList.contains('mobile-open'));
+});
+
+mobileBackdrop.addEventListener('click', closeMobilePanels);
+
+/* When a strategy is selected on mobile, auto-close the left drawer */
+document.addEventListener('click', (e) => {
+  if (window.innerWidth <= 768 && e.target.closest('.strat-item')) {
+    setTimeout(closeMobilePanels, 200);
+  }
 });
 
 /* =====================================================================
