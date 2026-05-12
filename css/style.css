@@ -317,15 +317,13 @@ body.has-bg-effects::before {
     0 0 80px rgba(212, 255, 0, 0.2);
 }
 
-/* When the rally-ball is hitting a word, light it up — bright flash */
+/* When the rally-ball is hitting a word, light it up — subtle flash */
 .hero-typo-title .word.hit {
   color: var(--accent);
   text-shadow:
-    0 0 8px rgba(255, 255, 255, 0.9),
-    0 0 24px rgba(212, 255, 0, 0.85),
-    0 0 60px rgba(212, 255, 0, 0.5),
-    0 0 100px rgba(212, 255, 0, 0.3);
-  transform: scale(1.012);
+    0 0 4px rgba(255, 255, 255, 0.6),
+    0 0 18px rgba(212, 255, 0, 0.65),
+    0 0 45px rgba(212, 255, 0, 0.35);
 }
 .hero-typo-title .word.small.hit {
   color: var(--accent);
@@ -333,7 +331,7 @@ body.has-bg-effects::before {
 
 /* Title transitions — smooth in/out for hit effect */
 .hero-typo-title .word {
-  transition: color 0.5s ease, text-shadow 0.5s ease, transform 0.4s ease;
+  transition: color 0.45s ease, text-shadow 0.45s ease;
 }
 
 /* THE SUBTITLE — the punchline */
