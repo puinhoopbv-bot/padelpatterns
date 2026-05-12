@@ -72,7 +72,7 @@
       </p>
 
       <p class="hero-typo-lede">
-        Drie tools voor wie verder kijkt dan de volgende slag.
+        Zes tools voor wie verder kijkt dan de volgende slag.
         <strong>Visualiseer rally's in 3D</strong>, kies de racket die echt bij je past,
         en weet exact welke regel waar geldt.
       </p>
@@ -90,35 +90,55 @@
       <svg class="hero-trail-svg" viewBox="0 0 1400 700" preserveAspectRatio="none" aria-hidden="true">
         <defs>
           <filter id="trailGlow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="6" result="glow"/>
+            <feGaussianBlur stdDeviation="8" result="glow"/>
             <feMerge>
               <feMergeNode in="glow"/>
               <feMergeNode in="SourceGraphic"/>
             </feMerge>
           </filter>
-          <filter id="ballGlow2" x="-100%" y="-100%" width="300%" height="300%">
-            <feGaussianBlur stdDeviation="10" result="glow"/>
+          <filter id="ballGlow2" x="-200%" y="-200%" width="500%" height="500%">
+            <feGaussianBlur stdDeviation="14" result="glow"/>
             <feMerge>
               <feMergeNode in="glow"/>
               <feMergeNode in="SourceGraphic"/>
             </feMerge>
           </filter>
+          <!-- Gradient for trail fade-out (older = more transparent) -->
+          <linearGradient id="trailFade" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#d4ff00" stop-opacity="0"/>
+            <stop offset="40%" stop-color="#d4ff00" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="#d4ff00" stop-opacity="0.95"/>
+          </linearGradient>
         </defs>
 
-        <!-- The trail (continuously updated by JS) -->
-        <path class="trail-line" d="" fill="none"
-              stroke="#d4ff00" stroke-width="3"
+        <!-- Outer faint trail (thick, blurred, low opacity) -->
+        <path class="trail-line-outer" d="" fill="none"
+              stroke="#d4ff00" stroke-width="10"
               stroke-linecap="round" stroke-linejoin="round"
-              opacity="0.55"
+              opacity="0.18"
               filter="url(#trailGlow)" />
 
-        <!-- The ball itself — bright glowing core -->
-        <circle class="trail-ball-glow" cx="0" cy="0" r="14"
-                fill="#d4ff00" opacity="0.6"
+        <!-- Inner sharp trail -->
+        <path class="trail-line" d="" fill="none"
+              stroke="#d4ff00" stroke-width="4"
+              stroke-linecap="round" stroke-linejoin="round"
+              opacity="0.75"
+              filter="url(#trailGlow)" />
+
+        <!-- The ball — multi-layered for proper neon look -->
+        <!-- Outermost faint halo -->
+        <circle class="trail-ball-halo" cx="0" cy="0" r="32"
+                fill="#d4ff00" opacity="0.18"
                 filter="url(#ballGlow2)" />
-        <circle class="trail-ball" cx="0" cy="0" r="8"
+        <!-- Mid glow -->
+        <circle class="trail-ball-glow" cx="0" cy="0" r="18"
+                fill="#d4ff00" opacity="0.55"
+                filter="url(#ballGlow2)" />
+        <!-- Solid ball body -->
+        <circle class="trail-ball" cx="0" cy="0" r="11"
                 fill="#d4ff00" />
-        <circle class="trail-ball-core" cx="0" cy="0" r="3"
+        <!-- White hot core -->
+        <circle class="trail-ball-core" cx="0" cy="0" r="4.5"
                 fill="#ffffff" />
       </svg>
 
@@ -294,7 +314,7 @@
     </div>
   </footer>
 
-  <div class="version-marker">v20-6tools</div>
+  <div class="version-marker">v21-finetune</div>
 
   <!-- TYPOGRAPHIC RALLY ANIMATION
        A glowing neon ball flies across the hero, hitting each word in turn.
@@ -308,8 +328,10 @@
     const svg = document.querySelector('.hero-trail-svg');
     const ballEl = svg && svg.querySelector('.trail-ball');
     const ballGlowEl = svg && svg.querySelector('.trail-ball-glow');
+    const ballHaloEl = svg && svg.querySelector('.trail-ball-halo');
     const ballCoreEl = svg && svg.querySelector('.trail-ball-core');
     const trailEl = svg && svg.querySelector('.trail-line');
+    const trailOuterEl = svg && svg.querySelector('.trail-line-outer');
     const words = Array.from(document.querySelectorAll('.hero-typo-title .word'));
     const heroSection = document.querySelector('.hero-typo');
 
@@ -320,9 +342,7 @@
 
     // Respect reduced-motion preference
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      ballEl.style.display = 'none';
-      ballGlowEl.style.display = 'none';
-      ballCoreEl.style.display = 'none';
+      [ballEl, ballGlowEl, ballHaloEl, ballCoreEl].forEach(el => { if (el) el.style.display = 'none'; });
       return;
     }
 
@@ -377,14 +397,15 @@
     // creating a "rally" feel — never linear.
     const sequence = [0, 2, 4, 1, 3, 0, 4, 2];
 
-    const SEGMENT_DURATION = 1100; // ms per ball-flight
-    const HIT_DURATION = 350;       // ms a word stays "hit" after impact
-    const TRAIL_LENGTH = 28;        // trail samples
+    const SEGMENT_DURATION = 950;   // ms per ball-flight (was 1100 - slightly faster)
+    const HIT_DURATION = 550;       // ms a word stays "hit" after impact (was 350 - longer fade)
+    const TRAIL_LENGTH = 38;        // trail samples (was 28 - longer trail)
 
     let segmentIdx = 0;
     let segmentStart = performance.now();
     let trail = [];
     let lastHitTimes = new Map(); // wordEl → time of last hit
+    let lastImpactTime = 0;       // for ball pulse-on-impact effect
     let ballPos = { x: 0, y: 0 };
 
     // Easing — slight curve so ball decelerates near the word
@@ -432,6 +453,7 @@
           target.el.classList.add('hit');
           lastHitTimes.set(target.el, now);
         }
+        lastImpactTime = now; // trigger ball pulse
         segmentIdx++;
         segmentStart = now;
         t = 0;
@@ -445,15 +467,28 @@
 
       ballPos = curvedPos(from, to, easeOutCubic(t), bend);
 
-      // Update ball position
-      ballEl.setAttribute('cx', ballPos.x);
-      ballEl.setAttribute('cy', ballPos.y);
-      ballGlowEl.setAttribute('cx', ballPos.x);
-      ballGlowEl.setAttribute('cy', ballPos.y);
-      ballCoreEl.setAttribute('cx', ballPos.x);
-      ballCoreEl.setAttribute('cy', ballPos.y);
+      // === BALL SIZE: pulse on impact + slight breathing during flight ===
+      const sinceImpact = now - lastImpactTime;
+      // Impact pulse: ball expands briefly (0-200ms after hit)
+      const pulseT = Math.min(sinceImpact / 200, 1);
+      const pulseSize = pulseT < 1 ? (1 + (1 - pulseT) * 0.8) : 1;
+      // Breathing while flying: slight oscillation so the ball feels alive
+      const breathe = 1 + Math.sin(t * Math.PI) * 0.1;
+      const ballScale = pulseSize * breathe;
 
-      // Update trail
+      // Update ball position + scaling (all layers)
+      const updateCircle = (el, baseR) => {
+        if (!el) return;
+        el.setAttribute('cx', ballPos.x);
+        el.setAttribute('cy', ballPos.y);
+        el.setAttribute('r', baseR * ballScale);
+      };
+      updateCircle(ballEl, 11);
+      updateCircle(ballGlowEl, 18);
+      updateCircle(ballHaloEl, 32);
+      updateCircle(ballCoreEl, 4.5);
+
+      // === TRAIL ===
       trail.push({ x: ballPos.x, y: ballPos.y });
       while (trail.length > TRAIL_LENGTH) trail.shift();
 
@@ -463,6 +498,7 @@
           d += ` L ${trail[i].x},${trail[i].y}`;
         }
         trailEl.setAttribute('d', d);
+        if (trailOuterEl) trailOuterEl.setAttribute('d', d);
       }
 
       // Remove "hit" class from words after their highlight duration
