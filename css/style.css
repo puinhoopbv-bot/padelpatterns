@@ -234,132 +234,162 @@ body.has-bg-effects::before {
 }
 
 /* =====================================================================
-   HERO CINEMA — live tactical rally background
+   HERO TYPO — typographic with neon-trail animation
+   The text IS the hero. A glowing ball flies across the words.
    ===================================================================== */
 
-.hero-cinema {
+.hero-typo {
   position: relative;
-  min-height: 92vh;
+  min-height: 96vh;
   display: flex;
   align-items: center;
   overflow: hidden;
-  padding: 140px 32px 80px;
+  padding: 140px 32px 100px;
 }
 
-.hero-court-wrap {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.hero-court {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.85;
-}
-
-/* Subtle vignette over the court so text reads clearly */
-.hero-court-wrap::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(90deg,
-      rgba(5, 7, 9, 0.92) 0%,
-      rgba(5, 7, 9, 0.55) 40%,
-      rgba(5, 7, 9, 0.25) 70%,
-      rgba(5, 7, 9, 0.65) 100%),
-    linear-gradient(180deg,
-      rgba(5, 7, 9, 0.5) 0%,
-      transparent 30%,
-      transparent 70%,
-      rgba(5, 7, 9, 0.7) 100%);
-  pointer-events: none;
-}
-
-.hero-cinema-content {
+.hero-typo-content {
   position: relative;
   z-index: 2;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   width: 100%;
 }
 
-.hero-cinema-title {
-  font-family: var(--font-display);
-  font-size: clamp(54px, 9vw, 110px);
-  line-height: 0.92;
-  letter-spacing: 0.005em;
-  margin: 0 0 28px;
-  color: var(--text);
-  /* Subtle glow for premium effect */
-  text-shadow: 0 4px 30px rgba(5, 7, 9, 0.6);
-}
-.hero-cinema-title em {
-  font-style: normal;
-  color: var(--accent);
-  /* The lime line gets a soft glow */
-  text-shadow:
-    0 0 30px rgba(212, 255, 0, 0.25),
-    0 4px 30px rgba(5, 7, 9, 0.6);
-}
-
-.hero-cinema-lede {
-  font-family: var(--font-body);
-  font-size: clamp(18px, 2vw, 22px);
-  line-height: 1.55;
-  color: var(--text);
-  max-width: 580px;
-  margin: 0 0 36px;
-  text-shadow: 0 2px 12px rgba(5, 7, 9, 0.8);
-}
-
-/* "LIVE" indicator at bottom of hero */
-.hero-live-indicator {
-  position: absolute;
-  bottom: 20px;
-  left: 0;
-  display: flex;
+/* "Live" indicator at top */
+.hero-typo-eyebrow {
+  display: inline-flex;
   align-items: center;
   gap: 10px;
   font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  color: var(--text-faint);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--accent);
   text-transform: uppercase;
+  margin-bottom: 36px;
+  padding: 6px 12px;
+  border: 1px solid rgba(212, 255, 0, 0.25);
+  background: rgba(212, 255, 0, 0.04);
 }
-.live-dot {
-  width: 8px;
-  height: 8px;
+.live-dot-mini {
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: var(--accent);
-  box-shadow: 0 0 12px var(--accent);
-  animation: live-pulse 1.6s ease-in-out infinite;
+  box-shadow: 0 0 10px var(--accent);
+  animation: pulse-live 1.4s ease-in-out infinite;
 }
-.live-text {
-  white-space: nowrap;
-}
-@keyframes live-pulse {
+@keyframes pulse-live {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.85); }
+  50% { opacity: 0.35; transform: scale(0.7); }
+}
+
+/* THE TITLE — broadcast-poster scale */
+.hero-typo-title {
+  font-family: var(--font-display);
+  font-size: clamp(64px, 11vw, 168px);
+  line-height: 0.88;
+  letter-spacing: 0.005em;
+  margin: 0 0 28px;
+  color: var(--text);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.16em 0.28em;
+  max-width: 1200px;
+}
+
+.hero-typo-title .word {
+  position: relative;
+  display: inline-block;
+  transition: color 0.45s ease, text-shadow 0.45s ease;
+}
+
+.hero-typo-title .word.small {
+  font-size: 0.55em;
+  align-self: flex-end;
+  padding-bottom: 0.15em;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+}
+
+.hero-typo-title .word.accent {
+  color: var(--accent);
+  text-shadow:
+    0 0 40px rgba(212, 255, 0, 0.4),
+    0 0 80px rgba(212, 255, 0, 0.2);
+}
+
+/* When the rally-ball is hitting a word, light it up */
+.hero-typo-title .word.hit {
+  color: var(--accent);
+  text-shadow:
+    0 0 30px rgba(212, 255, 0, 0.55),
+    0 0 60px rgba(212, 255, 0, 0.3);
+}
+.hero-typo-title .word.small.hit {
+  color: var(--accent);
+}
+
+/* THE SUBTITLE — the punchline */
+.hero-typo-subtitle {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: clamp(20px, 2.4vw, 32px);
+  line-height: 1.3;
+  color: var(--text-dim);
+  margin: 0 0 36px;
+  max-width: 720px;
+}
+
+/* THE LEDE — concrete tool description */
+.hero-typo-lede {
+  font-family: var(--font-body);
+  font-size: clamp(17px, 1.5vw, 20px);
+  line-height: 1.65;
+  color: var(--text);
+  margin: 0 0 40px;
+  max-width: 620px;
+}
+.hero-typo-lede strong {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+/* THE NEON RALLY SVG — absolute positioned over the title */
+.hero-trail-svg {
+  position: absolute;
+  /* Roughly aligns with the title area */
+  top: 110px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 75%;
+  pointer-events: none;
+  z-index: 1;
+  /* Below CTA buttons but above background */
+}
+
+/* Title needs higher z-index than the SVG but ball-glow should peek through */
+.hero-typo-title { position: relative; z-index: 3; }
+.hero-typo-subtitle, .hero-typo-lede, .hero-cta-row { position: relative; z-index: 3; }
+
+/* Make sure the ball draws "in front of" the text via mix-blend mode */
+.hero-trail-svg .trail-ball-glow,
+.hero-trail-svg .trail-ball,
+.hero-trail-svg .trail-line {
+  mix-blend-mode: screen;
+}
+
+/* CTA spacing */
+.hero-typo .hero-cta-row {
+  margin-top: 12px;
 }
 
 @media (max-width: 768px) {
-  .hero-cinema { padding: 100px 18px 80px; min-height: 85vh; }
-  .hero-cinema-title { font-size: clamp(42px, 11vw, 64px); }
-  .hero-court { opacity: 0.6; }
-  .hero-court-wrap::after {
-    background:
-      linear-gradient(180deg,
-        rgba(5, 7, 9, 0.6) 0%,
-        rgba(5, 7, 9, 0.4) 50%,
-        rgba(5, 7, 9, 0.85) 100%);
-  }
-  .hero-live-indicator { font-size: 9px; }
+  .hero-typo { padding: 100px 18px 80px; min-height: 88vh; }
+  .hero-typo-title { font-size: clamp(48px, 13vw, 80px); gap: 0.10em 0.20em; }
+  .hero-typo-title .word.small { font-size: 0.5em; }
+  .hero-typo-subtitle { font-size: clamp(17px, 4vw, 22px); }
+  .hero-trail-svg { top: 90px; height: 65%; }
 }
 
 /* =====================================================================

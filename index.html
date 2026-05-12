@@ -49,141 +49,91 @@
     </nav>
   </header>
 
-  <!-- HERO with live tactical rally background -->
-  <section class="hero-cinema">
+  <!-- HERO — typographic with neon-rally animation -->
+  <section class="hero-typo">
 
-    <!-- LIVE PADEL COURT VISUALIZATION -->
-    <div class="hero-court-wrap">
-      <svg class="hero-court" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <div class="hero-typo-content">
 
-        <!-- Subtle background gradient -->
+      <div class="hero-typo-eyebrow">
+        <span class="live-dot-mini"></span>
+        <span>Tactische tools · live</span>
+      </div>
+
+      <h1 class="hero-typo-title">
+        <span class="word" data-word="0">Padel</span>
+        <span class="word small" data-word="1">is</span>
+        <span class="word" data-word="2">schaken</span>
+        <span class="word small" data-word="3">op een</span>
+        <span class="word accent" data-word="4">blauw veld.</span>
+      </h1>
+
+      <p class="hero-typo-subtitle">
+        Met sneller racket-werk en luidere mensen.
+      </p>
+
+      <p class="hero-typo-lede">
+        Drie tools voor wie verder kijkt dan de volgende slag.
+        <strong>Visualiseer rally's in 3D</strong>, kies de racket die echt bij je past,
+        en weet exact welke regel waar geldt.
+      </p>
+
+      <div class="hero-cta-row">
+        <a href="/tools/patterns.html" class="cta-primary">
+          Start met Patterns 3D <span>→</span>
+        </a>
+        <a href="#tools" class="cta-secondary">
+          Bekijk alle tools
+        </a>
+      </div>
+
+      <!-- The animated neon ball that flies across the text -->
+      <svg class="hero-trail-svg" viewBox="0 0 1400 700" preserveAspectRatio="none" aria-hidden="true">
         <defs>
-          <radialGradient id="courtGlow" cx="50%" cy="50%" r="70%">
-            <stop offset="0%" stop-color="#2a7eb8" stop-opacity="0.18" />
-            <stop offset="60%" stop-color="#1e6091" stop-opacity="0.10" />
-            <stop offset="100%" stop-color="#050709" stop-opacity="0" />
-          </radialGradient>
-          <linearGradient id="ballTrail" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#d4ff00" stop-opacity="0" />
-            <stop offset="100%" stop-color="#d4ff00" stop-opacity="0.6" />
-          </linearGradient>
-          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+          <filter id="trailGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="6" result="glow"/>
             <feMerge>
-              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="glow"/>
               <feMergeNode in="SourceGraphic"/>
             </feMerge>
           </filter>
-          <filter id="ballGlow" x="-100%" y="-100%" width="300%" height="300%">
-            <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+          <filter id="ballGlow2" x="-100%" y="-100%" width="300%" height="300%">
+            <feGaussianBlur stdDeviation="10" result="glow"/>
             <feMerge>
-              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="glow"/>
               <feMergeNode in="SourceGraphic"/>
             </feMerge>
           </filter>
         </defs>
 
-        <!-- Soft glow under the court -->
-        <ellipse cx="500" cy="300" rx="460" ry="220" fill="url(#courtGlow)" />
+        <!-- The trail (continuously updated by JS) -->
+        <path class="trail-line" d="" fill="none"
+              stroke="#d4ff00" stroke-width="3"
+              stroke-linecap="round" stroke-linejoin="round"
+              opacity="0.55"
+              filter="url(#trailGlow)" />
 
-        <!-- PADEL COURT (top-down view, perspective-tilted via transform) -->
-        <!-- Court is 10x20m. Drawn here at scale roughly fitting 1000x600 viewport -->
-        <g class="court-group" transform="translate(500 300) rotate(-8) scale(1, 0.55)">
-
-          <!-- Court floor — broadcast blue with subtle stroke -->
-          <rect x="-200" y="-400" width="400" height="800"
-                fill="#1e4d6f" stroke="rgba(212, 255, 0, 0.08)" stroke-width="1" />
-
-          <!-- Floor inner glow (lighter center) -->
-          <rect x="-180" y="-380" width="360" height="760"
-                fill="rgba(80, 150, 200, 0.15)" />
-
-          <!-- Service lines -->
-          <line x1="-200" y1="-260" x2="200" y2="-260" stroke="rgba(255,255,255,0.55)" stroke-width="1.5" />
-          <line x1="-200" y1="260" x2="200" y2="260" stroke="rgba(255,255,255,0.55)" stroke-width="1.5" />
-
-          <!-- Center service line (only between service lines) -->
-          <line x1="0" y1="-260" x2="0" y2="260" stroke="rgba(255,255,255,0.55)" stroke-width="1.5" />
-
-          <!-- The NET — at center, with double-line treatment for depth -->
-          <line x1="-220" y1="0" x2="220" y2="0" stroke="rgba(255,255,255,0.25)" stroke-width="6" />
-          <line x1="-220" y1="0" x2="220" y2="0" stroke="rgba(255,255,255,0.85)" stroke-width="2" />
-
-          <!-- Net posts -->
-          <circle cx="-220" cy="0" r="6" fill="#2a3340" stroke="rgba(255,255,255,0.4)" stroke-width="1" />
-          <circle cx="220" cy="0" r="6" fill="#2a3340" stroke="rgba(255,255,255,0.4)" stroke-width="1" />
-
-          <!-- Visible trail rendering (drawn dynamically by JS) -->
-          <path class="trail-render" d="" fill="none"
-                stroke="#d4ff00" stroke-width="2.5"
-                stroke-linecap="round" opacity="0.4"
-                filter="url(#glow)" />
-
-          <!-- BALL — bright lime with glow -->
-          <circle class="ball" cx="0" cy="0" r="9"
-                  fill="#d4ff00" filter="url(#ballGlow)" />
-          <circle class="ball-core" cx="0" cy="0" r="4" fill="#ffffff" />
-
-          <!-- PLAYERS — four dots in team colors, with rings -->
-          <!-- Team A (lower half) -->
-          <g class="player-a1">
-            <circle r="22" fill="rgba(255, 61, 0, 0.18)" />
-            <circle r="14" fill="rgba(255, 61, 0, 0.35)" />
-            <circle r="7" fill="#ff3d00" />
-          </g>
-          <g class="player-a2">
-            <circle r="22" fill="rgba(255, 170, 0, 0.18)" />
-            <circle r="14" fill="rgba(255, 170, 0, 0.35)" />
-            <circle r="7" fill="#ffaa00" />
-          </g>
-
-          <!-- Team B (upper half) -->
-          <g class="player-b1">
-            <circle r="22" fill="rgba(0, 212, 255, 0.18)" />
-            <circle r="14" fill="rgba(0, 212, 255, 0.35)" />
-            <circle r="7" fill="#00d4ff" />
-          </g>
-          <g class="player-b2">
-            <circle r="22" fill="rgba(33, 150, 243, 0.18)" />
-            <circle r="14" fill="rgba(33, 150, 243, 0.35)" />
-            <circle r="7" fill="#2196f3" />
-          </g>
-
-        </g>
+        <!-- The ball itself — bright glowing core -->
+        <circle class="trail-ball-glow" cx="0" cy="0" r="14"
+                fill="#d4ff00" opacity="0.6"
+                filter="url(#ballGlow2)" />
+        <circle class="trail-ball" cx="0" cy="0" r="8"
+                fill="#d4ff00" />
+        <circle class="trail-ball-core" cx="0" cy="0" r="3"
+                fill="#ffffff" />
       </svg>
-    </div>
 
-    <!-- HERO CONTENT (overlaid on the rally) -->
-    <div class="hero-cinema-content">
-      <div class="hero-eyebrow">— Tactische tools voor padelspelers</div>
-      <h1 class="hero-cinema-title">
-        Speel padel met kop.<br>
-        <em>Niet alleen met racket.</em>
-      </h1>
-      <p class="hero-cinema-lede">
-        Geen oefenfilmpjes, geen rankings, geen ruis. Wel: tools die laten zien waar je staat,
-        welke slag past, en welke racket bij jou hoort.
-      </p>
-      <div class="hero-cta-row">
-        <a href="/tools/patterns.html" class="cta-primary">
-          Start met Patterns 3D <span>→</span>
-        </a>
-        <a href="#tools" class="cta-secondary">Bekijk alle tools</a>
-      </div>
-
-      <!-- Subtle "live" indicator -->
-      <div class="hero-live-indicator">
-        <span class="live-dot"></span>
-        <span class="live-text">LIVE TACTICAL · de onzichtbare touw, in beweging</span>
-      </div>
     </div>
 
   </section>
 
   <!-- TOOLS GRID -->
   <section class="tools-section" id="tools">
-    <div class="section-label">— De gereedschapskist</div>
-    <h2 class="section-title">Onze tools</h2>
+    <div class="section-label">— De gereedschapskist · 1 live, 2 onderweg</div>
+    <h2 class="section-title">Drie tools.<br><span style="color: var(--accent);">Eén missie.</span></h2>
+    <p style="font-family: var(--font-body); font-size: 18px; color: var(--text-dim); max-width: 640px; margin: -32px 0 56px; line-height: 1.55;">
+      Patterns laat je de rally <em>zien</em>. Racket Finder laat je de juiste pala <em>vinden</em>.
+      Spelregels Beslisser geeft eindelijk antwoord op de discussies na de wedstrijd.
+    </p>
 
     <div class="tool-grid">
 
@@ -226,32 +176,52 @@
     </div>
   </section>
 
-  <!-- WHY US -->
-  <section class="tools-section">
-    <div class="section-label">— De gedachte erachter</div>
-    <h2 class="section-title">Waarom PadelLab</h2>
+  <!-- MANIFESTO SECTION -->
+  <section class="tools-section manifesto" style="padding-top: 40px;">
+    <div class="section-label">— Het manifest</div>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; max-width: 960px;">
-      <div>
-        <h3 style="font-family: var(--font-display); font-size: 22px; letter-spacing: 0.05em; color: var(--accent); margin: 0 0 12px;">Onafhankelijk</h3>
-        <p style="font-family: var(--font-body); color: var(--text-dim); line-height: 1.65;">
-          Geen sponsoring van rackets-merken die onze aanbevelingen sturen. Affiliate links zijn er,
-          maar de aanbeveling is altijd vóór de uitbetaling.
+    <div style="max-width: 880px;">
+      <h2 class="section-title" style="margin-bottom: 48px;">
+        Padel-content is gratis.<br>
+        <span style="color: var(--accent);">Padel-inzicht is zeldzaam.</span>
+      </h2>
+
+      <div style="font-family: var(--font-body); font-size: 19px; line-height: 1.65; color: var(--text); max-width: 740px;">
+        <p style="margin: 0 0 20px;">
+          Open YouTube. Tien filmpjes over "de perfecte bandeja". Open Instagram. Honderd influencers met
+          dezelfde racket-promo. Open Reddit. Honderd meningen, geen structuur.
+        </p>
+        <p style="margin: 0 0 20px;">
+          PadelLab is geen filmpje. Geen ranking. Geen mening. <strong style="color: var(--accent); font-weight: 500;">Wel: tools die je dwingen
+          te denken.</strong> Niet hoe je het racket vasthoudt, maar wáár je staat. Niet welke pro het beste
+          is, maar welke beslissing hij maakte. Niet welk merk trendy is, maar welk racket bij jou hoort.
+        </p>
+        <p style="margin: 0; color: var(--text-dim); font-style: italic;">
+          Eén Nederlandse padel-liefhebber. Geen team, geen investeerders. Eén overtuiging: padel is een
+          denksport vermomd als slagsport. Wie dat doorheeft, wint meer punten.
         </p>
       </div>
+    </div>
+  </section>
+
+  <!-- TRUST STATS BAND -->
+  <section style="border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light); padding: 40px 32px; margin: 80px 0 40px; background: rgba(212, 255, 0, 0.02);">
+    <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 32px; text-align: center;">
       <div>
-        <h3 style="font-family: var(--font-display); font-size: 22px; letter-spacing: 0.05em; color: var(--accent); margin: 0 0 12px;">Inzicht</h3>
-        <p style="font-family: var(--font-body); color: var(--text-dim); line-height: 1.65;">
-          We laten je niet wennen aan filmpjes kijken. Onze tools dwingen je te denken: waar sta ik nu,
-          welke keuze maakt de pro, wat zou ik doen.
-        </p>
+        <div style="font-family: var(--font-display); font-size: 48px; color: var(--accent); line-height: 1; letter-spacing: 0.02em;">12</div>
+        <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; color: var(--text-dim); text-transform: uppercase; margin-top: 8px;">Tactische rally's</div>
       </div>
       <div>
-        <h3 style="font-family: var(--font-display); font-size: 22px; letter-spacing: 0.05em; color: var(--accent); margin: 0 0 12px;">Premium</h3>
-        <p style="font-family: var(--font-body); color: var(--text-dim); line-height: 1.65;">
-          Geen advertenties, geen pop-ups, geen tracking-cookies. Wel: tools die voelen als
-          gereedschap van een F1-team, niet een tweedehands tennistool.
-        </p>
+        <div style="font-family: var(--font-display); font-size: 48px; color: var(--accent); line-height: 1; letter-spacing: 0.02em;">3D</div>
+        <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; color: var(--text-dim); text-transform: uppercase; margin-top: 8px;">Volledig interactief</div>
+      </div>
+      <div>
+        <div style="font-family: var(--font-display); font-size: 48px; color: var(--accent); line-height: 1; letter-spacing: 0.02em;">€0</div>
+        <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; color: var(--text-dim); text-transform: uppercase; margin-top: 8px;">Geen abonnement</div>
+      </div>
+      <div>
+        <div style="font-family: var(--font-display); font-size: 48px; color: var(--accent); line-height: 1; letter-spacing: 0.02em;">∞</div>
+        <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; color: var(--text-dim); text-transform: uppercase; margin-top: 8px;">Onbeperkt gebruik</div>
       </div>
     </div>
   </section>
@@ -261,7 +231,7 @@
     <div class="site-footer-grid">
       <div class="site-footer-brand">
         <div class="site-logo-mark">PADEL<span style="color: var(--accent);">LAB</span></div>
-        <p>Tactische tools voor de denkende padelspeler. Door padelspelers, voor padelspelers.</p>
+        <p>Padel is schaken op een blauw veld. Hier zijn de tools.</p>
       </div>
       <div>
         <h4>Tools</h4>
@@ -285,212 +255,189 @@
     </div>
   </footer>
 
-  <div class="version-marker">v18-hero</div>
+  <div class="version-marker">v19-typo</div>
 
-  <!-- HERO RALLY ANIMATION SCRIPT -->
+  <!-- TYPOGRAPHIC RALLY ANIMATION
+       A glowing neon ball flies across the hero, hitting each word in turn.
+       The rally-path is computed from the actual word positions in the DOM,
+       so it adapts to any screen size automatically. -->
   <script>
   (function() {
     'use strict';
 
-    // Court coordinates inside the SVG (local to court-group, after transforms)
-    // Court is drawn from -200..200 (width) and -400..400 (length, B in top half, A in bottom)
-    // Same coordinate system as our 3D engine but mirrored to 2D
+    // Find elements
+    const svg = document.querySelector('.hero-trail-svg');
+    const ballEl = svg && svg.querySelector('.trail-ball');
+    const ballGlowEl = svg && svg.querySelector('.trail-ball-glow');
+    const ballCoreEl = svg && svg.querySelector('.trail-ball-core');
+    const trailEl = svg && svg.querySelector('.trail-line');
+    const words = Array.from(document.querySelectorAll('.hero-typo-title .word'));
+    const heroSection = document.querySelector('.hero-typo');
 
-    // === RALLY CHOREOGRAPHY ===
-    // Each phase: ball moves from one player to another, players reposition
-    // Total: 6 phases looping endlessly — a real tactical rally
-    const phases = [
-      // 1. Ball at A2 (lower right), serves to B (upper, cross)
-      {
-        ball:    { from: { x: 120, y: 360 }, to: { x: -80, y: -260 }, arc: 'serve' },
-        players: { a1: {x: -80, y: 360}, a2: {x: 120, y: 360}, b1: {x: -80, y: -260}, b2: {x: 80, y: -260} }
-      },
-      // 2. B1 returns with cross-court drive to A1
-      {
-        ball:    { from: { x: -80, y: -260 }, to: { x: 100, y: 340 }, arc: 'drive' },
-        players: { a1: {x: -100, y: 340}, a2: {x: 110, y: 340}, b1: {x: -100, y: -200}, b2: {x: 100, y: -200} }
-      },
-      // 3. A1 lobs over the net players — globo!
-      {
-        ball:    { from: { x: 100, y: 340 }, to: { x: -140, y: -360 }, arc: 'lob' },
-        players: { a1: {x: -80, y: 340}, a2: {x: 120, y: 340}, b1: {x: -100, y: -200}, b2: {x: 100, y: -200} }
-      },
-      // 4. B sprints back, B2 plays bandeja (controlled overhead)
-      {
-        ball:    { from: { x: -140, y: -360 }, to: { x: 140, y: 340 }, arc: 'bandeja' },
-        players: { a1: {x: -100, y: 280}, a2: {x: 100, y: 280}, b1: {x: -120, y: -340}, b2: {x: 100, y: -200} }
-      },
-      // 5. A2 chiquita short — to the feet of B2
-      {
-        ball:    { from: { x: 140, y: 340 }, to: { x: 60, y: -50 }, arc: 'chiquita' },
-        players: { a1: {x: -80, y: 280}, a2: {x: 80, y: 280}, b1: {x: -120, y: -340}, b2: {x: 70, y: -120} }
-      },
-      // 6. B2 forced to lift, A storms the net — winning volley
-      {
-        ball:    { from: { x: 60, y: -50 }, to: { x: -160, y: -340 }, arc: 'volley' },
-        players: { a1: {x: -90, y: -80}, a2: {x: 80, y: -80}, b1: {x: -180, y: -340}, b2: {x: 50, y: -150} }
-      }
-    ];
-
-    const PHASE_DURATION = 3500; // ms per phase — calm, hypnotic
-    const TRAIL_POINTS = 22;     // how many trail samples to remember
-
-    // SVG elements
-    const ballEl = document.querySelector('.hero-court .ball');
-    const ballCoreEl = document.querySelector('.hero-court .ball-core');
-    const trailEl = document.querySelector('.hero-court .trail-render');
-    const playerEls = {
-      a1: document.querySelector('.hero-court .player-a1'),
-      a2: document.querySelector('.hero-court .player-a2'),
-      b1: document.querySelector('.hero-court .player-b1'),
-      b2: document.querySelector('.hero-court .player-b2')
-    };
-
-    if (!ballEl || !playerEls.a1) return; // safety: SVG didn't render
-
-    // Easing function — smooth cinematic motion
-    const easeInOutCubic = (t) => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3) / 2;
-    const easeOutQuad = (t) => 1 - (1-t) * (1-t);
-
-    // Position helpers — set transform on a player group
-    function setPlayerPos(el, x, y, prev) {
-      // Interpolate from prev → (x,y)
-      el.setAttribute('transform', `translate(${x} ${y})`);
-    }
-
-    // Ball arc: returns scale based on shot type
-    // (gives a "rising/falling" effect by changing the ball-core inner circle size)
-    function ballScale(t, arc) {
-      switch(arc) {
-        case 'lob':      return 1 + 0.6 * Math.sin(t * Math.PI);       // big peak
-        case 'high-lob': return 1 + 0.7 * Math.sin(t * Math.PI);
-        case 'bandeja':  return 1 + 0.45 * Math.sin(t * Math.PI);
-        case 'drive':    return 1 + 0.1 * Math.sin(t * Math.PI);       // flat
-        case 'chiquita': return 1 + 0.2 * Math.sin(t * Math.PI * 0.6); // dips
-        case 'volley':   return 1.0;                                    // flat
-        case 'serve':    return 1 + 0.3 * Math.sin(t * Math.PI);
-        default: return 1;
-      }
-    }
-
-    // Curve helper — for lob shots, ball follows a curved path
-    // Returns (x,y) on quadratic bezier from `from` to `to` via control point
-    function curvedPath(from, to, t, arc) {
-      // Linear interpolation as base
-      const lx = from.x + (to.x - from.x) * t;
-      const ly = from.y + (to.y - from.y) * t;
-
-      // For lobs and arc shots, bend the y-coordinate toward center (away from court center)
-      let bend = 0;
-      if (arc === 'lob' || arc === 'high-lob') {
-        bend = -120 * Math.sin(t * Math.PI); // pulls upward (toward net)
-      } else if (arc === 'bandeja') {
-        bend = -80 * Math.sin(t * Math.PI);
-      } else if (arc === 'chiquita') {
-        bend = 40 * Math.sin(t * Math.PI); // dips toward feet
-      } else if (arc === 'serve') {
-        bend = -30 * Math.sin(t * Math.PI);
-      }
-      // For drives and volleys: nearly straight (no bend)
-      return { x: lx, y: ly + bend };
-    }
-
-    // Trail buffer
-    let trail = [];
-
-    // Previous player positions for interpolation
-    let prevPlayers = { ...phases[phases.length - 1].players };
-
-    let startTime = performance.now();
-    let currentPhase = 0;
-
-    function animate(now) {
-      const elapsed = now - startTime;
-      const t = (elapsed % PHASE_DURATION) / PHASE_DURATION;
-      const phaseIdx = Math.floor(elapsed / PHASE_DURATION) % phases.length;
-
-      // Detect phase change
-      if (phaseIdx !== currentPhase) {
-        prevPlayers = { ...phases[currentPhase].players };
-        currentPhase = phaseIdx;
-        // Don't clear trail at phase change — let it fade naturally
-      }
-
-      const phase = phases[phaseIdx];
-
-      // === BALL POSITION ===
-      // Ball flies during 0.15 → 0.75 of phase (rest is anticipation + hold)
-      const BALL_START = 0.15, BALL_END = 0.75;
-      let ballT = (t - BALL_START) / (BALL_END - BALL_START);
-      ballT = Math.max(0, Math.min(1, ballT));
-      const ballEased = easeOutQuad(ballT);
-
-      const ballPos = curvedPath(phase.ball.from, phase.ball.to, ballEased, phase.ball.arc);
-      ballEl.setAttribute('cx', ballPos.x);
-      ballEl.setAttribute('cy', ballPos.y);
-      ballCoreEl.setAttribute('cx', ballPos.x);
-      ballCoreEl.setAttribute('cy', ballPos.y);
-
-      // Ball scaling for shot type
-      const scale = ballScale(ballT, phase.ball.arc);
-      ballEl.setAttribute('r', 9 * scale);
-      ballCoreEl.setAttribute('r', 4 * scale);
-
-      // === TRAIL ===
-      // Only sample during the active ball-flight window
-      if (ballT > 0 && ballT < 1) {
-        trail.push({ x: ballPos.x, y: ballPos.y, age: 0 });
-      }
-      // Age existing points and remove old ones
-      trail = trail.filter(p => p.age < TRAIL_POINTS).map(p => ({ ...p, age: p.age + 0.8 }));
-
-      // Build trail path
-      if (trail.length > 1) {
-        let path = `M ${trail[0].x},${trail[0].y}`;
-        for (let i = 1; i < trail.length; i++) {
-          path += ` L ${trail[i].x},${trail[i].y}`;
-        }
-        trailEl.setAttribute('d', path);
-      } else {
-        trailEl.setAttribute('d', '');
-      }
-
-      // === PLAYERS ===
-      // Players reposition during 0.30 → 1.0 of phase (after ball)
-      const MOVE_START = 0.30, MOVE_END = 1.0;
-      let moveT = (t - MOVE_START) / (MOVE_END - MOVE_START);
-      moveT = Math.max(0, Math.min(1, moveT));
-      const moveEased = easeInOutCubic(moveT);
-
-      for (const key of ['a1', 'a2', 'b1', 'b2']) {
-        const from = prevPlayers[key];
-        const to = phase.players[key];
-        const x = from.x + (to.x - from.x) * moveEased;
-        const y = from.y + (to.y - from.y) * moveEased;
-        setPlayerPos(playerEls[key], x, y);
-      }
-
-      requestAnimationFrame(animate);
-    }
-
-    // Init: place ball and players at start of first phase
-    const firstPhase = phases[0];
-    ballEl.setAttribute('cx', firstPhase.ball.from.x);
-    ballEl.setAttribute('cy', firstPhase.ball.from.y);
-    ballCoreEl.setAttribute('cx', firstPhase.ball.from.x);
-    ballCoreEl.setAttribute('cy', firstPhase.ball.from.y);
-    for (const key of ['a1', 'a2', 'b1', 'b2']) {
-      const pos = firstPhase.players[key];
-      setPlayerPos(playerEls[key], pos.x, pos.y);
-    }
-
-    // Respect prefers-reduced-motion
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      // Show a static state instead
+    if (!svg || !ballEl || words.length === 0 || !heroSection) {
+      console.warn('[hero-rally] missing elements, animation skipped');
       return;
     }
 
-    requestAnimationFrame(animate);
+    // Respect reduced-motion preference
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      ballEl.style.display = 'none';
+      ballGlowEl.style.display = 'none';
+      ballCoreEl.style.display = 'none';
+      return;
+    }
+
+    // SVG uses viewBox 0 0 1400 700, but preserveAspectRatio="none"
+    // means it scales to the container size. So we work in pixel coords
+    // relative to the SVG element and let the browser map it.
+    //
+    // Easier: position the SVG with the same dimensions as the hero section,
+    // then plot points using pixel coords matching that area.
+    //
+    // We'll set viewBox dynamically to match the SVG's actual pixel size.
+
+    function getSvgRect() {
+      return svg.getBoundingClientRect();
+    }
+
+    // Compute target points: center of each word, expressed in SVG-local pixel coords.
+    function computeTargets() {
+      const svgRect = getSvgRect();
+      // Update viewBox so 1 unit = 1 pixel
+      svg.setAttribute('viewBox', `0 0 ${svgRect.width} ${svgRect.height}`);
+
+      return words.map(word => {
+        const r = word.getBoundingClientRect();
+        const cx = r.left + r.width / 2 - svgRect.left;
+        const cy = r.top + r.height / 2 - svgRect.top;
+        return { x: cx, y: cy, el: word };
+      });
+    }
+
+    let targets = computeTargets();
+
+    // Recompute on resize
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        targets = computeTargets();
+      }, 150);
+    });
+
+    // Wait for fonts to load then recompute (text widths change)
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        setTimeout(() => { targets = computeTargets(); }, 100);
+      });
+    }
+
+    // === RALLY PATH ===
+    // Order of words to visit: 0 Padel → 4 blauw veld → 2 schaken → 0 again
+    // We make the rally weave: tap one word, fly to another non-adjacent one,
+    // creating a "rally" feel — never linear.
+    const sequence = [0, 2, 4, 1, 3, 0, 4, 2];
+
+    const SEGMENT_DURATION = 1100; // ms per ball-flight
+    const HIT_DURATION = 350;       // ms a word stays "hit" after impact
+    const TRAIL_LENGTH = 28;        // trail samples
+
+    let segmentIdx = 0;
+    let segmentStart = performance.now();
+    let trail = [];
+    let lastHitTimes = new Map(); // wordEl → time of last hit
+    let ballPos = { x: 0, y: 0 };
+
+    // Easing — slight curve so ball decelerates near the word
+    const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+    // Curve control: bend the path so it doesn't go straight
+    function curvedPos(from, to, t, bendY) {
+      // Quadratic bezier with one control point offset perpendicular
+      const dx = to.x - from.x;
+      const dy = to.y - from.y;
+      const mid = { x: (from.x + to.x) / 2, y: (from.y + to.y) / 2 };
+      // Perpendicular direction
+      const len = Math.sqrt(dx*dx + dy*dy) || 1;
+      const px = -dy / len;
+      const py = dx / len;
+      // Control point offset (sign alternates for variation)
+      const ctrl = {
+        x: mid.x + px * bendY,
+        y: mid.y + py * bendY
+      };
+      // Quadratic bezier formula
+      const u = 1 - t;
+      return {
+        x: u*u*from.x + 2*u*t*ctrl.x + t*t*to.x,
+        y: u*u*from.y + 2*u*t*ctrl.y + t*t*to.y
+      };
+    }
+
+    function frame(now) {
+      if (targets.length === 0) {
+        requestAnimationFrame(frame);
+        return;
+      }
+
+      const elapsed = now - segmentStart;
+      let t = elapsed / SEGMENT_DURATION;
+
+      const fromTargetIdx = sequence[segmentIdx % sequence.length];
+      const toTargetIdx = sequence[(segmentIdx + 1) % sequence.length];
+
+      if (t >= 1) {
+        // Segment complete — register hit on the target word
+        const target = targets[toTargetIdx];
+        if (target && target.el) {
+          target.el.classList.add('hit');
+          lastHitTimes.set(target.el, now);
+        }
+        segmentIdx++;
+        segmentStart = now;
+        t = 0;
+      }
+
+      // Determine bend: alternates per segment for variation
+      const bend = (segmentIdx % 2 === 0 ? 1 : -1) * (80 + (segmentIdx % 3) * 30);
+
+      const from = targets[fromTargetIdx] || { x: 0, y: 0 };
+      const to = targets[toTargetIdx] || { x: 0, y: 0 };
+
+      ballPos = curvedPos(from, to, easeOutCubic(t), bend);
+
+      // Update ball position
+      ballEl.setAttribute('cx', ballPos.x);
+      ballEl.setAttribute('cy', ballPos.y);
+      ballGlowEl.setAttribute('cx', ballPos.x);
+      ballGlowEl.setAttribute('cy', ballPos.y);
+      ballCoreEl.setAttribute('cx', ballPos.x);
+      ballCoreEl.setAttribute('cy', ballPos.y);
+
+      // Update trail
+      trail.push({ x: ballPos.x, y: ballPos.y });
+      while (trail.length > TRAIL_LENGTH) trail.shift();
+
+      if (trail.length > 1) {
+        let d = `M ${trail[0].x},${trail[0].y}`;
+        for (let i = 1; i < trail.length; i++) {
+          d += ` L ${trail[i].x},${trail[i].y}`;
+        }
+        trailEl.setAttribute('d', d);
+      }
+
+      // Remove "hit" class from words after their highlight duration
+      for (const [el, hitTime] of lastHitTimes.entries()) {
+        if (now - hitTime > HIT_DURATION) {
+          el.classList.remove('hit');
+          lastHitTimes.delete(el);
+        }
+      }
+
+      requestAnimationFrame(frame);
+    }
+
+    requestAnimationFrame(frame);
   })();
   </script>
 </body>
