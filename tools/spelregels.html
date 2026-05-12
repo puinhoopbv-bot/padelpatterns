@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<!-- padellab v0.1 · spelregels · coming-soon -->
+<!-- padellab v0.4 · spelregels · mockup-design -->
 <html lang="nl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Spelregels Beslisser — interactieve padel-regels. Bal raakt achterglas dan grond — punt voor wie? Wij beslissen met je mee." />
+  <meta name="description" content="Spelregels Beslisser — bal raakt achterglas dan grond. Punt voor wie? Mockup-versie van de tool." />
   <meta name="theme-color" content="#050709" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="canonical" href="https://padelpatterns.com/tools/spelregels.html" />
@@ -15,6 +15,377 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fraunces:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/style.css" />
+
+  <style>
+    .sr-wrap { max-width: 980px; margin: 0 auto; padding: 120px 32px 80px; }
+
+    .sr-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 12px;
+      border: 1px solid rgba(212, 255, 0, 0.25);
+      background: rgba(212, 255, 0, 0.04);
+    }
+    .sr-eyebrow .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent-warm);
+      box-shadow: 0 0 8px var(--accent-warm);
+    }
+
+    .sr-hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(40px, 6vw, 84px);
+      line-height: 0.95;
+      letter-spacing: 0.01em;
+      margin: 0 0 18px;
+      color: var(--text);
+    }
+    .sr-hero-title em {
+      font-style: normal;
+      color: var(--accent);
+    }
+    .sr-hero-lede {
+      font-family: var(--font-body);
+      font-size: clamp(17px, 2vw, 20px);
+      line-height: 1.55;
+      color: var(--text-dim);
+      max-width: 620px;
+      margin: 0 0 40px;
+    }
+
+    .sr-mockup-banner {
+      background: rgba(255, 107, 53, 0.07);
+      border-left: 3px solid var(--accent-warm);
+      padding: 16px 22px;
+      margin-bottom: 56px;
+      font-family: var(--font-body);
+      font-size: 15px;
+      color: var(--text-dim);
+      line-height: 1.55;
+    }
+    .sr-mockup-banner strong {
+      color: var(--accent-warm);
+      font-weight: 500;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    /* === STEP MOCKUP SECTIONS === */
+    .sr-step {
+      margin: 80px 0;
+      padding-top: 40px;
+      border-top: 1px solid var(--border-light);
+    }
+    .sr-step-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--text-faint);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .sr-step-label .nr {
+      color: var(--accent);
+      font-weight: 500;
+    }
+    .sr-step-title {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 4vw, 44px);
+      letter-spacing: 0.01em;
+      margin: 0 0 32px;
+      color: var(--text);
+      line-height: 1.05;
+    }
+
+    /* Question card stack — choose a situation */
+    .sr-situations {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+    }
+    .sr-situation-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 24px 22px;
+      transition: all 0.2s;
+      cursor: pointer;
+      position: relative;
+    }
+    .sr-situation-card:hover {
+      border-color: var(--border-accent);
+      transform: translateY(-2px);
+    }
+    .sr-situation-card.featured {
+      border-color: var(--border-accent);
+      background: rgba(212, 255, 0, 0.04);
+    }
+    .sr-situation-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      color: var(--text-faint);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .sr-situation-card.featured .sr-situation-tag {
+      color: var(--accent);
+    }
+    .sr-situation-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      letter-spacing: 0.02em;
+      color: var(--text);
+      line-height: 1.15;
+      margin: 0 0 10px;
+    }
+    .sr-situation-desc {
+      font-family: var(--font-body);
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--text-dim);
+      margin: 0;
+    }
+    .sr-situation-arrow {
+      margin-top: 14px;
+      font-family: var(--font-display);
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+    }
+
+    /* Detail view mockup — when situation is selected */
+    .sr-detail {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 32px;
+      align-items: start;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 32px;
+    }
+
+    /* SVG court visualization placeholder */
+    .sr-court-vis {
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, #1e4d6f 0%, #2a6692 100%);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border-light);
+    }
+    .sr-court-vis svg {
+      width: 100%;
+      height: 100%;
+    }
+    .sr-court-replay-controls {
+      position: absolute;
+      bottom: 12px; left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      background: rgba(5, 7, 9, 0.85);
+      backdrop-filter: blur(8px);
+      padding: 8px 12px;
+      border: 1px solid var(--border-light);
+    }
+    .sr-replay-btn {
+      background: transparent;
+      border: none;
+      color: var(--text);
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      font-family: var(--font-display);
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.15s;
+    }
+    .sr-replay-btn:hover { color: var(--accent); }
+    .sr-replay-btn.active { color: var(--accent); }
+
+    .sr-verdict-block { min-width: 0; }
+    .sr-verdict-header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .sr-verdict-badge {
+      font-family: var(--font-display);
+      font-size: 13px;
+      letter-spacing: 0.16em;
+      padding: 4px 10px;
+      background: var(--accent);
+      color: var(--bg-night);
+      text-transform: uppercase;
+    }
+    .sr-verdict-badge.fout {
+      background: var(--accent-warm);
+      color: var(--bg-night);
+    }
+    .sr-verdict-title {
+      font-family: var(--font-display);
+      font-size: 28px;
+      letter-spacing: 0.01em;
+      color: var(--text);
+      line-height: 1.1;
+      margin: 0;
+    }
+
+    .sr-verdict-explain {
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text);
+      margin: 0 0 24px;
+    }
+    .sr-verdict-explain strong {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .sr-rule-ref {
+      background: rgba(212, 255, 0, 0.04);
+      border-left: 2px solid var(--accent);
+      padding: 14px 18px;
+      margin-bottom: 24px;
+    }
+    .sr-rule-ref-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .sr-rule-ref-text {
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--text-dim);
+      font-style: italic;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .sr-whatif {
+      margin-top: 20px;
+    }
+    .sr-whatif-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      color: var(--text-faint);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .sr-whatif-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .sr-whatif-item {
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--text-dim);
+      padding: 10px 14px;
+      border: 1px solid var(--border-light);
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .sr-whatif-item:hover {
+      border-color: var(--border-accent);
+      color: var(--text);
+    }
+    .sr-whatif-item::after {
+      content: '→';
+      color: var(--accent);
+      font-family: var(--font-display);
+      flex-shrink: 0;
+    }
+
+    /* === Roadmap section === */
+    .sr-roadmap {
+      margin-top: 80px;
+      padding-top: 48px;
+      border-top: 1px solid var(--border-light);
+    }
+    .sr-roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 24px;
+    }
+    .sr-roadmap-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 20px 18px;
+    }
+    .sr-roadmap-status {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sr-roadmap-status.done { color: var(--accent); }
+    .sr-roadmap-status.next { color: var(--accent-warm); }
+    .sr-roadmap-status.later { color: var(--text-faint); }
+    .sr-roadmap-status .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .sr-roadmap-status.done .dot { box-shadow: 0 0 8px var(--accent); }
+    .sr-roadmap-item h4 {
+      font-family: var(--font-display);
+      font-size: 18px;
+      letter-spacing: 0.02em;
+      color: var(--text);
+      margin: 0 0 4px;
+      line-height: 1.2;
+    }
+    .sr-roadmap-item p {
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    @media (max-width: 768px) {
+      .sr-wrap { padding: 100px 18px 60px; }
+      .sr-detail {
+        grid-template-columns: 1fr;
+        padding: 22px 18px;
+        gap: 24px;
+      }
+      .sr-hero-title { font-size: clamp(34px, 10vw, 56px); }
+      .sr-step { margin: 56px 0; }
+      .sr-step-title { font-size: clamp(24px, 6vw, 32px); margin-bottom: 24px; }
+    }
+  </style>
 </head>
 <body class="has-bg-effects">
 
@@ -37,55 +408,257 @@
     </nav>
   </header>
 
-  <section class="content-section">
-    <div class="hero-eyebrow" style="margin-bottom: 16px;">— Tool · In ontwikkeling</div>
-    <h1>Spelregels Beslisser</h1>
-    <p class="lede" style="font-style: italic; color: var(--text-faint); font-family: var(--font-body);">las reglas, claras</p>
+  <div class="sr-wrap">
 
-    <div class="coming-card">
-      <span class="badge">Binnenkort beschikbaar</span>
-      <h2 style="font-family: var(--font-display); font-size: 28px; margin: 0 0 14px;">Geen wettenboek — wel een beslisser.</h2>
-      <p>
-        De FIP-spelregels zijn 32 pagina's lang. Wij vertalen ze in de vragen die je écht hebt op de baan:
-        bal raakt achterglas dan grond dan zijglas — punt voor wie? Je service gaat over de baan na een
-        glasraking — geldig? Wij beantwoorden het direct, met visuele uitleg in 3D.
-      </p>
+    <!-- HERO -->
+    <div class="sr-eyebrow"><span class="dot"></span> Tool · Mockup-design</div>
+    <h1 class="sr-hero-title">
+      Bal raakt achterglas, dan grond.<br>
+      <em>Punt voor wie?</em>
+    </h1>
+    <p class="sr-hero-lede">
+      Tijdens de wedstrijd geen tijd voor het FIP-reglement. Hier kies je de situatie,
+      zie je 'm afspelen in 3D, en krijg je het antwoord — met officiële regel-verwijzing.
+    </p>
 
-      <ul class="feature-list">
-        <li>Beslisboom-flow: kies je situatie, krijg het oordeel</li>
-        <li>3D-replay van iedere edge-case op de baan</li>
-        <li>Officiële FIP-regel-referentie per beslissing</li>
-        <li>"Wat-als"-varianten op elke situatie</li>
-        <li>SEO-vriendelijk: vind hier wat je zou Googelen tijdens een wedstrijd</li>
-      </ul>
+    <div class="sr-mockup-banner">
+      <strong>Concept-mockup</strong>
+      Dit is een ontwerp-voorbeeld van hoe Spelregels Beslisser er gaat uitzien — nog
+      geen werkende beslisboom. Klik door om de denkrichting te zien, geef feedback,
+      en we bouwen de echte versie in de volgende fase.
     </div>
 
-    <h2>Waarom deze tool?</h2>
-    <p>
-      Padel kent veel situaties die in tennis niet bestaan: de glasinteractie. Daardoor ontstaan regelmatig
-      discussies tijdens club-wedstrijden waarvan niemand het juiste antwoord weet. Wij worden de plek
-      waar je dat antwoord krijgt — vóór en ná de wedstrijd.
-    </p>
+    <!-- STEP 1: SITUATION PICKER -->
+    <section class="sr-step">
+      <div class="sr-step-label">— Stap <span class="nr">01</span> · Kies een situatie</div>
+      <h2 class="sr-step-title">Welke discussie wil je beslechten?</h2>
 
-    <h2>Wanneer beschikbaar?</h2>
-    <p>
-      Spelregels Beslisser deelt de 3D-engine met Patterns 3D, dus we kunnen het vrij snel bouwen.
-      We mikken op een eerste versie kort na Racket Finder. Geen exacte datum — wel: zorgvuldig en
-      goed onderbouwd.
-    </p>
+      <div class="sr-situations">
 
-    <div style="margin-top: 48px;">
+        <div class="sr-situation-card featured">
+          <div class="sr-situation-tag">Glas-situaties · Meest gegoogled</div>
+          <h3 class="sr-situation-title">Achterglas → grond → zijglas</h3>
+          <p class="sr-situation-desc">
+            Bal raakt eerst achterglas, valt op de grond, kaatst dan tegen het zijglas
+            van de tegenstander. Geldig punt of fout?
+          </p>
+          <div class="sr-situation-arrow">Bekijk antwoord →</div>
+        </div>
+
+        <div class="sr-situation-card">
+          <div class="sr-situation-tag">Service</div>
+          <h3 class="sr-situation-title">Service raakt servicelijn</h3>
+          <p class="sr-situation-desc">
+            Bal komt na onderhandse service precies op de servicelijn neer.
+            Goed of fout?
+          </p>
+          <div class="sr-situation-arrow">Bekijk antwoord →</div>
+        </div>
+
+        <div class="sr-situation-card">
+          <div class="sr-situation-tag">Lichaam · Tussen-de-baan</div>
+          <h3 class="sr-situation-title">Bal raakt je shirt</h3>
+          <p class="sr-situation-desc">
+            Bal komt vol op je shirt voordat ie de grond raakt — punt voor jou of voor
+            de tegenstander?
+          </p>
+          <div class="sr-situation-arrow">Bekijk antwoord →</div>
+        </div>
+
+        <div class="sr-situation-card">
+          <div class="sr-situation-tag">Door de mazen</div>
+          <h3 class="sr-situation-title">Door de hekwerk-mazen</h3>
+          <p class="sr-situation-desc">
+            Je tegenstander slaat de bal door een gat tussen het glas en het hekwerk.
+            Telt dat?
+          </p>
+          <div class="sr-situation-arrow">Bekijk antwoord →</div>
+        </div>
+
+        <div class="sr-situation-card">
+          <div class="sr-situation-tag">Net-situaties</div>
+          <h3 class="sr-situation-title">Bal raakt het net en valt over</h3>
+          <p class="sr-situation-desc">
+            Bal raakt de netband, rolt over en valt aan de andere kant. Wel of
+            geen punt?
+          </p>
+          <div class="sr-situation-arrow">Bekijk antwoord →</div>
+        </div>
+
+        <div class="sr-situation-card">
+          <div class="sr-situation-tag">Spelersfouten</div>
+          <h3 class="sr-situation-title">Racket-aanraking buiten de baan</h3>
+          <p class="sr-situation-desc">
+            Je racket raakt iets buiten de baan tijdens je slag. Maakt dat uit?
+          </p>
+          <div class="sr-situation-arrow">Bekijk antwoord →</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- STEP 2: DETAIL VIEW (mock-state for the first situation) -->
+    <section class="sr-step">
+      <div class="sr-step-label">— Stap <span class="nr">02</span> · Het antwoord, met visuele uitleg</div>
+      <h2 class="sr-step-title">Wat zien & lezen gebruikers?</h2>
+
+      <div class="sr-detail">
+
+        <!-- LEFT: Court visualization with replay controls -->
+        <div class="sr-court-vis">
+          <!-- Top-down padel court SVG (static mockup, no animation in this design preview) -->
+          <svg viewBox="0 0 300 360" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="srfloor" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#1e4d6f"/>
+                <stop offset="100%" stop-color="#2a6692"/>
+              </linearGradient>
+            </defs>
+
+            <!-- Court floor -->
+            <rect x="40" y="30" width="220" height="300" fill="url(#srfloor)" stroke="rgba(212,255,0,0.15)" stroke-width="0.8"/>
+
+            <!-- Service lines -->
+            <line x1="40" y1="120" x2="260" y2="120" stroke="rgba(255,255,255,0.55)" stroke-width="1.2"/>
+            <line x1="40" y1="240" x2="260" y2="240" stroke="rgba(255,255,255,0.55)" stroke-width="1.2"/>
+            <line x1="150" y1="120" x2="150" y2="240" stroke="rgba(255,255,255,0.55)" stroke-width="1.2"/>
+
+            <!-- Net at center -->
+            <line x1="36" y1="180" x2="264" y2="180" stroke="rgba(255,255,255,0.95)" stroke-width="2"/>
+            <circle cx="36" cy="180" r="3" fill="rgba(255,255,255,0.6)"/>
+            <circle cx="264" cy="180" r="3" fill="rgba(255,255,255,0.6)"/>
+
+            <!-- Glass walls (subtle) -->
+            <rect x="40" y="30" width="220" height="300" fill="none" stroke="rgba(180,220,255,0.25)" stroke-width="1.5"/>
+
+            <!-- Players (team A bottom, team B top) -->
+            <circle cx="100" cy="290" r="6" fill="#ff3d00"/>
+            <circle cx="200" cy="290" r="6" fill="#ffaa00"/>
+            <circle cx="100" cy="70" r="6" fill="#00d4ff"/>
+            <circle cx="200" cy="70" r="6" fill="#2196f3"/>
+
+            <!-- BALL PATH: shows the contested rally
+                 Start point (A hits), curves over to B's back glass,
+                 bounces down to floor, then hits side glass -->
+            <!-- Path 1: ball flies from A to B's back wall -->
+            <path d="M 200,290 Q 220,180 240,55" fill="none" stroke="rgba(212,255,0,0.45)" stroke-width="1.5" stroke-dasharray="3 3"/>
+            <!-- Impact on back glass -->
+            <circle cx="240" cy="55" r="5" fill="none" stroke="#d4ff00" stroke-width="1.5">
+              <animate attributeName="r" from="5" to="14" dur="1.5s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" from="1" to="0" dur="1.5s" repeatCount="indefinite"/>
+            </circle>
+            <text x="245" y="48" font-family="JetBrains Mono, monospace" font-size="8" fill="#d4ff00" letter-spacing="1">①</text>
+
+            <!-- Path 2: ball drops to floor in B's court -->
+            <path d="M 240,55 Q 245,90 230,135" fill="none" stroke="rgba(212,255,0,0.45)" stroke-width="1.5" stroke-dasharray="3 3"/>
+            <circle cx="230" cy="135" r="4" fill="#d4ff00"/>
+            <text x="218" y="138" font-family="JetBrains Mono, monospace" font-size="8" fill="#d4ff00" letter-spacing="1">②</text>
+
+            <!-- Path 3: ball bounces, hits side glass -->
+            <path d="M 230,135 Q 240,140 257,150" fill="none" stroke="rgba(212,255,0,0.45)" stroke-width="1.5" stroke-dasharray="3 3"/>
+            <circle cx="257" cy="150" r="4" fill="none" stroke="#d4ff00" stroke-width="1.5"/>
+            <text x="244" y="158" font-family="JetBrains Mono, monospace" font-size="8" fill="#d4ff00" letter-spacing="1">③</text>
+
+            <!-- Court labels -->
+            <text x="150" y="22" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="7" fill="rgba(255,255,255,0.4)" letter-spacing="1.5">TEAM B (DEFENDERS)</text>
+            <text x="150" y="348" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="7" fill="rgba(255,255,255,0.4)" letter-spacing="1.5">TEAM A (AANVALLERS)</text>
+          </svg>
+
+          <div class="sr-court-replay-controls">
+            <button class="sr-replay-btn" title="Vorige stap">‹</button>
+            <button class="sr-replay-btn active" title="Afspelen">▶</button>
+            <button class="sr-replay-btn" title="Volgende stap">›</button>
+          </div>
+        </div>
+
+        <!-- RIGHT: verdict and explanation -->
+        <div class="sr-verdict-block">
+          <div class="sr-verdict-header">
+            <span class="sr-verdict-badge">Geldig</span>
+            <h3 class="sr-verdict-title">Punt voor Team A</h3>
+          </div>
+
+          <p class="sr-verdict-explain">
+            De bal raakt eerst het <strong>achterglas</strong> van Team B (legaal),
+            valt dan op de grond <strong>binnen de baan</strong> (eerste stuit) —
+            en raakt daarna nog het zijglas. Vanaf hier is het Team B's beurt om de
+            bal voor de tweede stuit te raken. Doet B dat niet: punt voor A.
+          </p>
+
+          <div class="sr-rule-ref">
+            <div class="sr-rule-ref-label">FIP Spelregels · Art. 11.2</div>
+            <p class="sr-rule-ref-text">
+              "Een bal die het glas van de tegenstander raakt na een legale stuit
+              op de speelvloer is in spel, en moet door de tegenstander voor de
+              tweede stuit worden geretourneerd."
+            </p>
+          </div>
+
+          <div class="sr-whatif">
+            <div class="sr-whatif-label">— Wat als ...</div>
+            <div class="sr-whatif-list">
+              <div class="sr-whatif-item">Bal raakt eerst zijglas dan achterglas?</div>
+              <div class="sr-whatif-item">Bal stuit twee keer voor het glas?</div>
+              <div class="sr-whatif-item">Bal raakt het hekwerk boven het glas?</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ROADMAP -->
+    <section class="sr-roadmap">
+      <div class="sr-step-label">— Bouw-roadmap</div>
+      <h2 class="sr-step-title">Wat komt er nog bij?</h2>
+
+      <div class="sr-roadmap-grid">
+        <div class="sr-roadmap-item">
+          <div class="sr-roadmap-status done"><span class="dot"></span>Ontworpen</div>
+          <h4>Mockup-design</h4>
+          <p>Visueel concept van de tool — wat je nu bekijkt.</p>
+        </div>
+        <div class="sr-roadmap-item">
+          <div class="sr-roadmap-status next"><span class="dot"></span>Volgende sprint</div>
+          <h4>30 situaties uitwerken</h4>
+          <p>De meest-gegoogled padel-regel-vragen, met FIP-referentie en visuele uitleg.</p>
+        </div>
+        <div class="sr-roadmap-item">
+          <div class="sr-roadmap-status next"><span class="dot"></span>Volgende sprint</div>
+          <h4>3D-replay engine</h4>
+          <p>Hergebruik van Patterns 3D-engine voor de situatie-visualisatie.</p>
+        </div>
+        <div class="sr-roadmap-item">
+          <div class="sr-roadmap-status later"><span class="dot"></span>Later</div>
+          <h4>Zoekfunctie</h4>
+          <p>"Bal raakt..." — type je situatie, krijg meteen de juiste regel.</p>
+        </div>
+        <div class="sr-roadmap-item">
+          <div class="sr-roadmap-status later"><span class="dot"></span>Later</div>
+          <h4>Meertalig (EN/ES)</h4>
+          <p>Padel is internationaal — de tool gaat mee.</p>
+        </div>
+        <div class="sr-roadmap-item">
+          <div class="sr-roadmap-status later"><span class="dot"></span>Later</div>
+          <h4>Quiz-modus</h4>
+          <p>"Test je regelkennis" — 10 random situaties, score aan het eind.</p>
+        </div>
+      </div>
+    </section>
+
+    <div style="margin-top: 60px;">
       <a href="/tools/patterns.html" class="cta-primary">
         Bekijk intussen Patterns 3D <span>→</span>
       </a>
     </div>
-  </section>
+
+  </div>
 
   <footer class="site-footer">
     <div class="site-footer-grid">
       <div class="site-footer-brand">
         <div class="site-logo-mark">PADEL<span style="color: var(--accent);">LAB</span></div>
-        <p>Tactische tools voor de denkende padelspeler.</p>
+        <p>Padel is schaken op een blauw veld. Hier zijn de tools.</p>
       </div>
       <div>
         <h4>Tools</h4>
@@ -108,10 +681,10 @@
     </div>
     <div class="site-footer-bottom">
       <span>© 2026 PadelLab</span>
-      <span>v0.1 · platform-skeleton</span>
+      <span>v0.4 · spelregels mockup-design</span>
     </div>
   </footer>
 
-  <div class="version-marker">v17-spelregels</div>
+  <div class="version-marker">v25-spelregels-mockup</div>
 </body>
 </html>
