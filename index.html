@@ -1682,29 +1682,6 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.05;
 container.appendChild(renderer.domElement);
 
-// === PROCEDURAL ENVIRONMENT for glass reflections ===
-// Create a vertical gradient canvas that simulates "club ambient lighting":
-// a slight glow at the top (ceiling lights) fading to dark below.
-// This is what the glass walls reflect, giving them depth.
-const envCanvas = document.createElement('canvas');
-envCanvas.width = 1; envCanvas.height = 256;
-const envCtx = envCanvas.getContext('2d');
-const envGrad = envCtx.createLinearGradient(0, 0, 0, 256);
-envGrad.addColorStop(0.00, '#3a4a5e');   // upper sky — warm club tone
-envGrad.addColorStop(0.35, '#1a2330');   // mid
-envGrad.addColorStop(0.65, '#0a0e14');   // dark mid
-envGrad.addColorStop(1.00, '#050709');   // floor
-envCtx.fillStyle = envGrad;
-envCtx.fillRect(0, 0, 1, 256);
-const envTex = new THREE.CanvasTexture(envCanvas);
-envTex.mapping = THREE.EquirectangularReflectionMapping;
-const pmremGen = new THREE.PMREMGenerator(renderer);
-pmremGen.compileEquirectangularShader();
-const envMap = pmremGen.fromEquirectangular(envTex).texture;
-scene.environment = envMap;
-pmremGen.dispose();
-envTex.dispose();
-
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
@@ -1782,14 +1759,7 @@ scene.add(surround);
 function makeLine(x1, z1, x2, z2, width = 0.06, color = 0xfafaf2) {
   const length = Math.hypot(x2 - x1, z2 - z1);
   const lineGeo = new THREE.PlaneGeometry(length, width);
-  // Use MeshStandardMaterial with subtle emission for that "pro court" look
-  const lineMat = new THREE.MeshStandardMaterial({
-    color: color,
-    emissive: color,
-    emissiveIntensity: 0.18,
-    roughness: 0.4,
-    metalness: 0.0
-  });
+  const lineMat = new THREE.MeshBasicMaterial({ color: color });
   const line = new THREE.Mesh(lineGeo, lineMat);
   line.rotation.x = -Math.PI / 2;
   line.position.set((x1 + x2) / 2, 0.008, (z1 + z2) / 2);
@@ -1798,10 +1768,10 @@ function makeLine(x1, z1, x2, z2, width = 0.06, color = 0xfafaf2) {
 }
 
 // Outer baseline + sidelines (the perimeter) — slightly thicker than inner lines
-courtGroup.add(makeLine(-COURT_W/2, -COURT_L/2, COURT_W/2, -COURT_L/2, 0.09));
-courtGroup.add(makeLine(-COURT_W/2, COURT_L/2, COURT_W/2, COURT_L/2, 0.09));
-courtGroup.add(makeLine(-COURT_W/2, -COURT_L/2, -COURT_W/2, COURT_L/2, 0.09));
-courtGroup.add(makeLine(COURT_W/2, -COURT_L/2, COURT_W/2, COURT_L/2, 0.09));
+courtGroup.add(makeLine(-COURT_W/2, -COURT_L/2, COURT_W/2, -COURT_L/2, 0.08));
+courtGroup.add(makeLine(-COURT_W/2, COURT_L/2, COURT_W/2, COURT_L/2, 0.08));
+courtGroup.add(makeLine(-COURT_W/2, -COURT_L/2, -COURT_W/2, COURT_L/2, 0.08));
+courtGroup.add(makeLine(COURT_W/2, -COURT_L/2, COURT_W/2, COURT_L/2, 0.08));
 
 // Service lines
 courtGroup.add(makeLine(-COURT_W/2, -SERVICE_LINE_DIST, COURT_W/2, -SERVICE_LINE_DIST));
@@ -1922,19 +1892,15 @@ netGroup.add(capR);
 
 // === GLASS WALLS ===
 const glassMat = new THREE.MeshPhysicalMaterial({
-  color: 0x88c2dd,
+  color: 0x6db3d4,
   metalness: 0,
-  roughness: 0.02,
-  transmission: 0.92,           // mostly see-through
-  thickness: 0.15,
-  ior: 1.48,                    // realistic glass refraction index
+  roughness: 0.05,
+  transmission: 0.85,
+  thickness: 0.1,
+  ior: 1.4,
   transparent: true,
-  opacity: 0.25,
-  side: THREE.DoubleSide,
-  clearcoat: 1.0,               // glossy reflective coat on top
-  clearcoatRoughness: 0.05,
-  reflectivity: 0.5,
-  envMapIntensity: 1.2
+  opacity: 0.18,
+  side: THREE.DoubleSide
 });
 
 // Back glass walls (full width, 3m high) at z = ±10
@@ -3376,7 +3342,7 @@ setTimeout(() => {
 }, 800);
 
 </script>
-  <div id="version-marker" style="position:fixed;bottom:4px;left:8px;z-index:99;font-family:'JetBrains Mono',monospace;font-size:9px;color:#d4ff00;opacity:0.35;letter-spacing:0.1em;pointer-events:none;">v10-court</div>
+  <div id="version-marker" style="position:fixed;bottom:4px;left:8px;z-index:99;font-family:'JetBrains Mono',monospace;font-size:9px;color:#d4ff00;opacity:0.35;letter-spacing:0.1em;pointer-events:none;">v10b-revert</div>
 
 </body>
 </html>
