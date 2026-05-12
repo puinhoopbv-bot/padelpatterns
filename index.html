@@ -1456,26 +1456,32 @@ const STRATEGIES = [
     tip: 'Server en partner bewegen als duo vanaf het moment dat de bal het racket verlaat.',
     steps: [
       {
-        text: 'B serveert vanaf rechts. Partner B1 dicht bij de servicelijn, klaar om in te stappen.',
+        text: 'Startpositie — B2 serveert van rechts, B1 al klaar bij de servicelijn. Team A wacht op return.',
         players: { A1: POS.A_RETURN_L, A2: POS.A_RETURN_R, B1: { x: -2.5, z: 4 }, B2: POS.B_SERVE_R },
-        ball: { x: 3.5, y: 0.8, z: 9 }
+        ball: { x: 3.5, y: 0.9, z: 9 }
       },
       {
-        text: 'Service breed naar het glas. A2 moet uitwijken om te returneren.',
-        players: { A1: POS.A_RETURN_L, A2: { x: 4.5, z: -9 }, B1: { x: -2.5, z: 4 }, B2: POS.B_SERVE_R },
+        text: 'Service breed naar het glas. B2 begint na de slag in te lopen, A2 stapt uit naar het glas.',
+        players: { A1: POS.A_RETURN_L, A2: { x: 4.5, z: -9 }, B1: { x: -2.5, z: 4 }, B2: { x: 3, z: 6.5 } },
         ball: { x: 4.5, y: 0.5, z: -9 },
         ballArc: 'serve'
       },
       {
-        text: 'A2 returnt onder druk. B1 stapt in en volleert laag naar de voeten.',
-        players: { A1: POS.A_RETURN_L, A2: { x: 4.5, z: -9 }, B1: { x: -1.5, z: 1.5 }, B2: { x: 2.5, z: 3 } },
-        ball: { x: -3.5, y: 0.3, z: -9 },
+        text: 'A2 returnt cross-court onder druk. B1 leest de bal en stapt naar binnen voor de volley.',
+        players: { A1: POS.A_RETURN_L, A2: { x: 4.5, z: -9 }, B1: { x: -2, z: 3 }, B2: { x: 3, z: 5 } },
+        ball: { x: -2.5, y: 0.6, z: 2 },
+        ballArc: 'drive'
+      },
+      {
+        text: 'B1 volleert laag naar de voeten van A1. Tegelijk neemt B2 het rechterveld over.',
+        players: { A1: POS.A_RETURN_L, A2: POS.A_RETURN_R, B1: { x: -2, z: 3 }, B2: POS.B_NET_R },
+        ball: { x: -3.5, y: 0.3, z: -8 },
         ballArc: 'volley'
       },
       {
-        text: 'Volley landt op de voeten van A1. Team B heeft het net en de controle.',
+        text: 'Volley landt bij de voeten van A1. Team B staat compleet aan het net en heeft de controle.',
         players: { A1: POS.A_RETURN_L, A2: POS.A_RETURN_R, B1: POS.B_NET_L, B2: POS.B_NET_R },
-        ball: { x: -3.5, y: 0.3, z: -9 }
+        ball: { x: -3.5, y: 0.3, z: -8 }
       }
     ]
   },
@@ -2366,10 +2372,16 @@ let playSpeed = 1;
 let timeline = null;            // pre-built list of segments
 let playbackStartTime = 0;      // performance.now() when play started
 
-const SEGMENT_DURATION = 2.6;   // seconds per phase at 1× speed (was 3.6 — too slow)
-// Within each segment: 0—0.40 = player approach, 0.40—1.0 = ball flight + player rest
-const PLAYER_PHASE_END = 0.40;
-const BALL_PHASE_START = 0.35;  // small overlap so it feels continuous
+const SEGMENT_DURATION = 2.8;   // seconds per phase at 1× speed
+// Within each segment:
+//   0—0.15 = anticipation (still on previous position, small pre-hit pause)
+//   0.15—0.65 = ball flight (hit + travel through the air)
+//   0.30—1.0 = player reposition to new spot (starts mid-flight, ends after)
+// Key principle: ball leaves FIRST from striker's location, players reposition AFTER.
+const BALL_PHASE_START = 0.15;
+const BALL_PHASE_END = 0.65;
+const PLAYER_MOVE_START = 0.30;
+const PLAYER_MOVE_END = 1.0;
 
 function easeInOutCubic(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
 function easeInOutSine(t)  { return -(Math.cos(Math.PI * t) - 1) / 2; }
@@ -2418,18 +2430,30 @@ function buildTimeline(strategy) {
     let ballFrom = i === 0 ? prevBall : (prevStep.ball || prevBall);
     const ballTo = step.ball || ballFrom;
 
-    // SAFEGUARD: for service shots, ensure ball starts in the server's hand.
-    // If the previous ball position is far from any player, snap it to the closest one.
-    if (step.ballArc === 'serve') {
+    // UNIVERSAL SAFEGUARD: for any active shot (not idle), ensure the ball
+    // starts at the striker's position. If the previous-segment ball position
+    // is far from any player, snap it to the closest one.
+    // This prevents the ball from appearing in mid-air when it should be in a hand.
+    const isActiveShot = step.ballArc && step.ballArc !== 'idle';
+    if (isActiveShot) {
       let closestPos = null, closestDist = Infinity;
       ['A1','A2','B1','B2'].forEach(id => {
+        // Use the player position at the START of this segment (= previous step's position)
         const p = prevStep.players[id] || step.players[id];
         const d = Math.hypot(p.x - ballFrom.x, p.z - ballFrom.z);
         if (d < closestDist) { closestDist = d; closestPos = p; }
       });
-      // If ball is more than 2m from any player, snap it to the closest
-      if (closestPos && closestDist > 2) {
-        ballFrom = { x: closestPos.x, y: 0.9, z: closestPos.z };
+      // If the ball is more than 1.5m from the nearest player, snap it.
+      // 1.5m is roughly "arm's reach" tolerance — beyond that, ball must be in someone's hand.
+      if (closestPos && closestDist > 1.5) {
+        // Use a sensible hit-height depending on shot type
+        let hitY = 0.9; // default chest-height
+        if (step.ballArc === 'bandeja' || step.ballArc === 'vibora' || step.ballArc === 'por-tres') hitY = 1.9;
+        else if (step.ballArc === 'lob' || step.ballArc === 'high-lob') hitY = 0.7;
+        else if (step.ballArc === 'chiquita' || step.ballArc === 'drive') hitY = 0.6;
+        else if (step.ballArc === 'volley') hitY = 1.0;
+        else if (step.ballArc === 'serve') hitY = 0.9;
+        ballFrom = { x: closestPos.x, y: hitY, z: closestPos.z };
       }
     }
 
@@ -2464,20 +2488,28 @@ function applyTimelineState(tlTime) {
   if (!seg) return;
   const localT = Math.max(0, Math.min(1, (tlTime - seg.startTime) / seg.duration));
 
-  // === PLAYERS — move during first 40% of segment, then rest ===
-  // This creates the natural rhythm: get to position, hit, hold.
+  // === PLAYERS — reposition AFTER the ball is hit ===
+  // Real padel rhythm:
+  //   1. Player stands ready at previous position (0—15%: anticipation)
+  //   2. Ball gets hit and flies (15—65%)
+  //   3. Player moves to next position to recover/prepare (30—100%)
+  // The slight overlap (30—65%) is natural — pros start moving the moment
+  // the ball leaves the racket, not after.
   ['A1', 'A2', 'B1', 'B2'].forEach(id => {
     const path = seg.playerPaths[id];
     const dx = path.to.x - path.from.x;
     const dz = path.to.z - path.from.z;
     const moveDist = Math.hypot(dx, dz);
 
-    // Player movement uses 0—PLAYER_PHASE_END portion of the segment
+    // Player movement happens in PLAYER_MOVE_START to PLAYER_MOVE_END
     let pT;
-    if (localT < PLAYER_PHASE_END) {
-      pT = easeInOutCubic(localT / PLAYER_PHASE_END);
-    } else {
+    if (localT < PLAYER_MOVE_START) {
+      pT = 0;
+    } else if (localT >= PLAYER_MOVE_END) {
       pT = 1;
+    } else {
+      const moveLocal = (localT - PLAYER_MOVE_START) / (PLAYER_MOVE_END - PLAYER_MOVE_START);
+      pT = easeInOutCubic(moveLocal);
     }
     const x = path.from.x + dx * pT;
     const z = path.from.z + dz * pT;
@@ -2486,23 +2518,24 @@ function applyTimelineState(tlTime) {
     player.position.x = x;
     player.position.z = z;
 
-    // Subtle running bounce when actively moving (only during movement phase)
-    const isMoving = moveDist > 0.3 && localT < PLAYER_PHASE_END * 0.95;
+    // Subtle running bounce when actively moving
+    const isMoving = moveDist > 0.3 && localT >= PLAYER_MOVE_START && localT < PLAYER_MOVE_END - 0.05;
     if (isMoving) {
-      const stepCycle = (localT / PLAYER_PHASE_END) * moveDist * 1.8;
+      const moveLocal = (localT - PLAYER_MOVE_START) / (PLAYER_MOVE_END - PLAYER_MOVE_START);
+      const stepCycle = moveLocal * moveDist * 1.6;
       player.position.y = Math.abs(Math.sin(stepCycle * Math.PI * 2)) * 0.05;
     } else {
-      // Settle smoothly to ground (no instant snap)
+      // Settle smoothly to ground
       player.position.y *= 0.82;
     }
 
-    // Rotate to face direction of movement — smooth, continuous
-    if (moveDist > 0.1 && localT < PLAYER_PHASE_END) {
+    // Rotate to face direction of movement — only while moving
+    if (moveDist > 0.1 && localT >= PLAYER_MOVE_START && localT < PLAYER_MOVE_END) {
       const targetRot = Math.atan2(dx, dz);
       let dr = targetRot - player.rotation.y;
       while (dr >  Math.PI) dr -= Math.PI * 2;
       while (dr < -Math.PI) dr += Math.PI * 2;
-      player.rotation.y += dr * 0.2;
+      player.rotation.y += dr * 0.18;
     }
   });
 
@@ -2517,12 +2550,16 @@ function applyTimelineState(tlTime) {
     bz = seg.ballFrom.z;
     by = Math.max(0.12, seg.ballFrom.y) + Math.sin(tlTime * 2.5) * 0.015;
   } else {
-    // Ball uses BALL_PHASE_START to 1.0 of segment for flight
+    // Ball flight happens between BALL_PHASE_START and BALL_PHASE_END.
+    // Before BALL_PHASE_START: ball is at striker's position (pre-hit hold).
+    // After BALL_PHASE_END: ball is at destination (post-hit, waiting for next phase).
     let ballT;
     if (localT < BALL_PHASE_START) {
       ballT = 0;
+    } else if (localT >= BALL_PHASE_END) {
+      ballT = 1;
     } else {
-      ballT = (localT - BALL_PHASE_START) / (1 - BALL_PHASE_START);
+      ballT = (localT - BALL_PHASE_START) / (BALL_PHASE_END - BALL_PHASE_START);
     }
 
     // Horizontal progress easing — how the ball travels in X/Z
@@ -3179,10 +3216,15 @@ function animate() {
   if (isPlaying && timeline) {
     const elapsedMs = now - playbackStartTime;
     const tlTime = (elapsedMs / 1000) * playSpeed;
-    if (tlTime >= timeline.totalDuration) {
-      // Hold final state and stop
+    // Add a 1-second hold after the last frame so the final state is visible
+    const HOLD_AFTER_END = 1.0;
+    if (tlTime >= timeline.totalDuration + HOLD_AFTER_END) {
+      // Fully finished — stop playback
       applyTimelineState(timeline.totalDuration - 0.001);
       stopPlayback();
+    } else if (tlTime >= timeline.totalDuration) {
+      // In the hold period — show final state
+      applyTimelineState(timeline.totalDuration - 0.001);
     } else {
       applyTimelineState(tlTime);
     }
@@ -3244,7 +3286,7 @@ setTimeout(() => {
 }, 800);
 
 </script>
-  <div id="version-marker" style="position:fixed;bottom:4px;left:8px;z-index:99;font-family:'JetBrains Mono',monospace;font-size:9px;color:#d4ff00;opacity:0.35;letter-spacing:0.1em;pointer-events:none;">v8-labels</div>
+  <div id="version-marker" style="position:fixed;bottom:4px;left:8px;z-index:99;font-family:'JetBrains Mono',monospace;font-size:9px;color:#d4ff00;opacity:0.35;letter-spacing:0.1em;pointer-events:none;">v9-rhythm</div>
 
 </body>
 </html>
