@@ -1689,15 +1689,15 @@ window.addEventListener('resize', () => {
 });
 
 /* =====================================================================
-   LIGHTING — moody, padel-club night-style
+   LIGHTING — bright, broadcast-quality court lighting
    ===================================================================== */
 
-// Lower ambient so the spotlights can actually create visible pools
-const ambient = new THREE.AmbientLight(0xb0c4de, 0.18);
+// Strong ambient — court should feel well-lit and inviting
+const ambient = new THREE.AmbientLight(0xc4d4e8, 0.65);
 scene.add(ambient);
 
-// Main key light from above (court floodlight) — slightly dimmed
-const keyLight = new THREE.DirectionalLight(0xfff8e7, 0.75);
+// Main key light — strong overhead like main court flood
+const keyLight = new THREE.DirectionalLight(0xfff8e7, 1.4);
 keyLight.position.set(8, 25, 5);
 keyLight.castShadow = true;
 keyLight.shadow.mapSize.width = 2048;
@@ -1711,36 +1711,37 @@ keyLight.shadow.camera.bottom = -20;
 keyLight.shadow.bias = -0.0005;
 scene.add(keyLight);
 
-// Fill light from opposite side — also dimmed
-const fillLight = new THREE.DirectionalLight(0x6db3d4, 0.25);
+// Fill light from opposite side — fills shadows
+const fillLight = new THREE.DirectionalLight(0xb8d4e8, 0.55);
 fillLight.position.set(-10, 15, -8);
 scene.add(fillLight);
 
-// Rim accent light
-const rimLight = new THREE.DirectionalLight(0xff6b35, 0.18);
+// Rim accent — adds warm depth
+const rimLight = new THREE.DirectionalLight(0xff8a4a, 0.25);
 rimLight.position.set(0, 5, -15);
 scene.add(rimLight);
 
-// Hemisphere — much weaker so spots dominate
-const hemi = new THREE.HemisphereLight(0x556677, 0x111111, 0.18);
+// Hemisphere — soft top-to-bottom lift
+const hemi = new THREE.HemisphereLight(0x90a8c0, 0x1a2030, 0.55);
 scene.add(hemi);
 
-// === FOUR OVERHEAD SPOTLIGHTS — these are now the DOMINANT light source ===
-// Real padel courts have bright halogen/LED floods overhead. We crank these
-// up so they cast clear, visible pools of light on the floor.
-const SPOT_HEIGHT = 12;
-const SPOT_INTENSITY = 3.5;
+// === FOUR OVERHEAD SPOTLIGHTS — extra punch on the court itself ===
+// Bright pools of light on the play area, but with strong ambient backing
+// the court overall stays bright (no dramatic shadows between pools).
+const SPOT_HEIGHT = 13;
+const SPOT_INTENSITY = 2.5;
 const spotPositions = [
   { x: -3, z: -7 },
   { x:  3, z: -7 },
   { x: -3, z:  7 },
   { x:  3, z:  7 },
 ];
+
 spotPositions.forEach(pos => {
-  const spot = new THREE.SpotLight(0xfff5e0, SPOT_INTENSITY, 28, Math.PI / 4.5, 0.5, 1.6);
+  const spot = new THREE.SpotLight(0xfff5e0, SPOT_INTENSITY, 30, Math.PI / 4, 0.7, 1.4);
   spot.position.set(pos.x, SPOT_HEIGHT, pos.z);
   spot.target.position.set(pos.x, 0, pos.z);
-  spot.castShadow = false; // keep performance high, key light already does shadows
+  spot.castShadow = false;
   scene.add(spot);
   scene.add(spot.target);
 });
@@ -1761,7 +1762,7 @@ floorCanvas.height = 1024;
 const fctx = floorCanvas.getContext('2d');
 
 // Base court blue
-fctx.fillStyle = '#1e6091';
+fctx.fillStyle = '#2a7eb8';
 fctx.fillRect(0, 0, 512, 1024);
 
 // Subtle radial gradient — slightly brighter in the center
@@ -1801,7 +1802,7 @@ floorTex.anisotropy = 8;
 
 const floorMat = new THREE.MeshStandardMaterial({
   map: floorTex,
-  color: 0x1e6091,
+  color: 0x2a7eb8,
   roughness: 0.72,
   metalness: 0.08
 });
@@ -3432,7 +3433,7 @@ setTimeout(() => {
 }, 800);
 
 </script>
-  <div id="version-marker" style="position:fixed;bottom:4px;left:8px;z-index:99;font-family:'JetBrains Mono',monospace;font-size:9px;color:#d4ff00;opacity:0.35;letter-spacing:0.1em;pointer-events:none;">v14-spots</div>
+  <div id="version-marker" style="position:fixed;bottom:4px;left:8px;z-index:99;font-family:'JetBrains Mono',monospace;font-size:9px;color:#d4ff00;opacity:0.35;letter-spacing:0.1em;pointer-events:none;">v16-bright</div>
 
 </body>
 </html>
