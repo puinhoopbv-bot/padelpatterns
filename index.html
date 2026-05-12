@@ -1692,11 +1692,12 @@ window.addEventListener('resize', () => {
    LIGHTING — moody, padel-club night-style
    ===================================================================== */
 
-const ambient = new THREE.AmbientLight(0xb0c4de, 0.35);
+// Lower ambient so the spotlights can actually create visible pools
+const ambient = new THREE.AmbientLight(0xb0c4de, 0.18);
 scene.add(ambient);
 
-// Main key light from above (court floodlight)
-const keyLight = new THREE.DirectionalLight(0xfff8e7, 1.4);
+// Main key light from above (court floodlight) — slightly dimmed
+const keyLight = new THREE.DirectionalLight(0xfff8e7, 0.75);
 keyLight.position.set(8, 25, 5);
 keyLight.castShadow = true;
 keyLight.shadow.mapSize.width = 2048;
@@ -1710,25 +1711,25 @@ keyLight.shadow.camera.bottom = -20;
 keyLight.shadow.bias = -0.0005;
 scene.add(keyLight);
 
-// Fill light from opposite side
-const fillLight = new THREE.DirectionalLight(0x6db3d4, 0.5);
+// Fill light from opposite side — also dimmed
+const fillLight = new THREE.DirectionalLight(0x6db3d4, 0.25);
 fillLight.position.set(-10, 15, -8);
 scene.add(fillLight);
 
 // Rim accent light
-const rimLight = new THREE.DirectionalLight(0xff6b35, 0.25);
+const rimLight = new THREE.DirectionalLight(0xff6b35, 0.18);
 rimLight.position.set(0, 5, -15);
 scene.add(rimLight);
 
-// Hemisphere (soft sky/ground)
-const hemi = new THREE.HemisphereLight(0x556677, 0x111111, 0.4);
+// Hemisphere — much weaker so spots dominate
+const hemi = new THREE.HemisphereLight(0x556677, 0x111111, 0.18);
 scene.add(hemi);
 
-// === FOUR OVERHEAD SPOTLIGHTS — indoor court feel ===
-// Real padel courts have 4-6 spots above the court. We add four pools of light
-// that softly illuminate the playing area, giving it that "broadcast" quality.
-const SPOT_HEIGHT = 14;
-const SPOT_INTENSITY = 0.9;
+// === FOUR OVERHEAD SPOTLIGHTS — these are now the DOMINANT light source ===
+// Real padel courts have bright halogen/LED floods overhead. We crank these
+// up so they cast clear, visible pools of light on the floor.
+const SPOT_HEIGHT = 12;
+const SPOT_INTENSITY = 3.5;
 const spotPositions = [
   { x: -3, z: -7 },
   { x:  3, z: -7 },
@@ -1736,10 +1737,10 @@ const spotPositions = [
   { x:  3, z:  7 },
 ];
 spotPositions.forEach(pos => {
-  const spot = new THREE.SpotLight(0xfff5e0, SPOT_INTENSITY, 30, Math.PI / 5, 0.6, 1.4);
+  const spot = new THREE.SpotLight(0xfff5e0, SPOT_INTENSITY, 28, Math.PI / 4.5, 0.5, 1.6);
   spot.position.set(pos.x, SPOT_HEIGHT, pos.z);
-  // Aim straight down
   spot.target.position.set(pos.x, 0, pos.z);
+  spot.castShadow = false; // keep performance high, key light already does shadows
   scene.add(spot);
   scene.add(spot.target);
 });
@@ -3431,7 +3432,7 @@ setTimeout(() => {
 }, 800);
 
 </script>
-  <div id="version-marker" style="position:fixed;bottom:4px;left:8px;z-index:99;font-family:'JetBrains Mono',monospace;font-size:9px;color:#d4ff00;opacity:0.35;letter-spacing:0.1em;pointer-events:none;">v13-arena</div>
+  <div id="version-marker" style="position:fixed;bottom:4px;left:8px;z-index:99;font-family:'JetBrains Mono',monospace;font-size:9px;color:#d4ff00;opacity:0.35;letter-spacing:0.1em;pointer-events:none;">v14-spots</div>
 
 </body>
 </html>
