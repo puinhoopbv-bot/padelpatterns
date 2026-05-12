@@ -2089,20 +2089,27 @@ function createPlayer(label, teamColor, accentColor) {
   innerRing.position.y = 0.015;
   group.add(innerRing);
 
-  // === LABEL — clean monospace, no border, premium typography ===
+  // === LABEL — high-contrast, large, team-coded ===
   const labelCanvas = document.createElement('canvas');
-  labelCanvas.width = 256;
-  labelCanvas.height = 96;
+  labelCanvas.width = 320;
+  labelCanvas.height = 140;
   const lctx = labelCanvas.getContext('2d');
 
-  // Soft pill background
-  const padX = 16, padY = 10;
-  const pillW = 100, pillH = 44;
-  const pillX = (256 - pillW) / 2;
-  const pillY = (96 - pillH) / 2;
-  const radius = pillH / 2;
+  // Larger pill
+  const pillW = 200;
+  const pillH = 86;
+  const pillX = (320 - pillW) / 2;
+  const pillY = (140 - pillH) / 2;
+  const radius = 12;
+  const accentHex = '#' + accentColor.toString(16).padStart(6, '0');
 
-  lctx.fillStyle = 'rgba(10, 14, 20, 0.92)';
+  // Drop shadow underneath for separation from court
+  lctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+  lctx.shadowBlur = 12;
+  lctx.shadowOffsetY = 4;
+
+  // Solid dark background with rounded corners
+  lctx.fillStyle = '#0a0e14';
   lctx.beginPath();
   lctx.moveTo(pillX + radius, pillY);
   lctx.lineTo(pillX + pillW - radius, pillY);
@@ -2115,25 +2122,43 @@ function createPlayer(label, teamColor, accentColor) {
   lctx.quadraticCurveTo(pillX, pillY, pillX + radius, pillY);
   lctx.fill();
 
-  // Bottom accent line (subtle team identifier)
-  const accentHex = '#' + accentColor.toString(16).padStart(6, '0');
-  lctx.fillStyle = accentHex;
-  lctx.fillRect(pillX + radius, pillY + pillH - 3, pillW - radius * 2, 2);
+  // Reset shadow before drawing other elements
+  lctx.shadowColor = 'transparent';
+  lctx.shadowBlur = 0;
+  lctx.shadowOffsetY = 0;
 
-  // Text
+  // Thick colored left bar — instant team identifier
+  lctx.fillStyle = accentHex;
+  lctx.fillRect(pillX, pillY + radius / 2, 10, pillH - radius);
+
+  // Thin top + bottom accent bands (subtle frame)
+  lctx.fillStyle = accentHex;
+  lctx.fillRect(pillX + 10, pillY, pillW - 10, 2);
+  lctx.fillRect(pillX + 10, pillY + pillH - 2, pillW - 10, 2);
+
+  // Large white text
   lctx.fillStyle = '#ffffff';
-  lctx.font = '600 28px "JetBrains Mono", monospace';
+  lctx.font = '700 56px "Bebas Neue", "JetBrains Mono", sans-serif';
   lctx.textAlign = 'center';
   lctx.textBaseline = 'middle';
-  lctx.fillText(label, 128, 46);
+  lctx.letterSpacing = '3px';
+  lctx.fillText(label, 160, 73);
 
   const labelTex = new THREE.CanvasTexture(labelCanvas);
   labelTex.minFilter = THREE.LinearFilter;
   labelTex.magFilter = THREE.LinearFilter;
-  const labelMat = new THREE.SpriteMaterial({ map: labelTex, transparent: true });
+  labelTex.anisotropy = 4;
+  const labelMat = new THREE.SpriteMaterial({
+    map: labelTex,
+    transparent: true,
+    depthTest: false,  // always on top of 3D scene
+    depthWrite: false
+  });
   const labelSprite = new THREE.Sprite(labelMat);
-  labelSprite.scale.set(0.85, 0.32, 1);
-  labelSprite.position.y = 2.25;
+  // Much bigger so it's readable from any camera angle
+  labelSprite.scale.set(1.6, 0.7, 1);
+  labelSprite.position.y = 2.5;
+  labelSprite.renderOrder = 999;
   group.add(labelSprite);
 
   // Store references for animation
@@ -2147,10 +2172,10 @@ function createPlayer(label, teamColor, accentColor) {
 }
 
 const players = {
-  A1: createPlayer('A1', 0x1a1a1f, 0xff5722),  // dark charcoal body, vivid orange accent
-  A2: createPlayer('A2', 0x1a1a1f, 0xff7d3a),
-  B1: createPlayer('B1', 0x1a1a1f, 0x00d4ff),  // dark body, cyan accent
-  B2: createPlayer('B2', 0x1a1a1f, 0x4fcfff),
+  A1: createPlayer('A1', 0x1a1a1f, 0xff3d00),  // Team A: bright vivid orange (the 1)
+  A2: createPlayer('A2', 0x1a1a1f, 0xffaa00),  // Team A: warm amber-yellow (the 2)
+  B1: createPlayer('B1', 0x1a1a1f, 0x00d4ff),  // Team B: bright cyan (the 1)
+  B2: createPlayer('B2', 0x1a1a1f, 0x2196f3),  // Team B: deeper blue (the 2)
 };
 
 Object.values(players).forEach(p => scene.add(p));
@@ -2390,8 +2415,23 @@ function buildTimeline(strategy) {
     });
 
     const prevBall = prevStep.ball || { x: 0, y: 0.5, z: 0 };
-    const ballFrom = i === 0 ? prevBall : (prevStep.ball || prevBall);
+    let ballFrom = i === 0 ? prevBall : (prevStep.ball || prevBall);
     const ballTo = step.ball || ballFrom;
+
+    // SAFEGUARD: for service shots, ensure ball starts in the server's hand.
+    // If the previous ball position is far from any player, snap it to the closest one.
+    if (step.ballArc === 'serve') {
+      let closestPos = null, closestDist = Infinity;
+      ['A1','A2','B1','B2'].forEach(id => {
+        const p = prevStep.players[id] || step.players[id];
+        const d = Math.hypot(p.x - ballFrom.x, p.z - ballFrom.z);
+        if (d < closestDist) { closestDist = d; closestPos = p; }
+      });
+      // If ball is more than 2m from any player, snap it to the closest
+      if (closestPos && closestDist > 2) {
+        ballFrom = { x: closestPos.x, y: 0.9, z: closestPos.z };
+      }
+    }
 
     segments.push({
       stepIndex: i,
@@ -2875,11 +2915,14 @@ function loadStrategy(id) {
   clearBallTrail();
   // Set initial state without animation
   const seg = timeline.segments[0];
+  const step0 = s.steps[0];
   ['A1','A2','B1','B2'].forEach(id => {
     const path = seg.playerPaths[id];
     players[id].position.set(path.from.x, 0, path.from.z);
   });
-  setBallPosition(seg.ballFrom.x, seg.ballFrom.y, seg.ballFrom.z);
+  // Use the step's own ball position directly to avoid fallback to (0,0.5,0)
+  const initialBall = step0.ball || { x: 0, y: 0.5, z: 0 };
+  setBallPosition(initialBall.x, initialBall.y || 0.5, initialBall.z);
   currentStepIndex = 0;
   setStepText(seg.text, 0, timeline.segments.length);
   updateProgress(timeline.segments.length, 0);
@@ -3201,7 +3244,7 @@ setTimeout(() => {
 }, 800);
 
 </script>
-  <div id="version-marker" style="position:fixed;bottom:4px;left:8px;z-index:99;font-family:'JetBrains Mono',monospace;font-size:9px;color:#d4ff00;opacity:0.35;letter-spacing:0.1em;pointer-events:none;">v7-shots</div>
+  <div id="version-marker" style="position:fixed;bottom:4px;left:8px;z-index:99;font-family:'JetBrains Mono',monospace;font-size:9px;color:#d4ff00;opacity:0.35;letter-spacing:0.1em;pointer-events:none;">v8-labels</div>
 
 </body>
 </html>
