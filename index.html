@@ -431,30 +431,83 @@
   }
 
   /* PLAYBACK BAR */
-  .playback {
+  /* ===== NEW PLAYBACK DESIGN — prominent play button + floating subtitle ===== */
+
+  /* Floating subtitle card — sits above the play button */
+  .subtitle-card {
     position: fixed;
-    bottom: 24px;
+    bottom: 112px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
-    background: var(--bg-panel);
-    backdrop-filter: blur(20px);
+    background: rgba(15, 19, 26, 0.78);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
     border: 1px solid var(--border-light);
-    padding: 14px 20px;
+    border-radius: 14px;
+    padding: 14px 22px;
+    width: min(560px, calc(100vw - 48px));
+    text-align: center;
+    transition: opacity 0.4s, transform 0.4s;
+  }
+
+  .subtitle-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .subtitle-phase {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  .subtitle-progress {
+    display: flex;
+    gap: 3px;
+    flex: 1;
+    max-width: 200px;
+  }
+  .subtitle-progress span {
+    flex: 1;
+    height: 2px;
+    background: var(--border);
+    cursor: pointer;
+    transition: background 0.3s;
+    border-radius: 1px;
+  }
+  .subtitle-progress span.played { background: var(--text-dim); }
+  .subtitle-progress span.current { background: var(--accent); box-shadow: 0 0 8px rgba(212,255,0,0.5); }
+
+  .subtitle-text {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.4;
+    transition: opacity 0.25s;
+  }
+
+  /* The big play button cluster at bottom-center */
+  .play-cluster {
+    position: fixed;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 11;
     display: flex;
     align-items: center;
-    gap: 18px;
-    min-width: 600px;
-    max-width: 90vw;
+    gap: 14px;
   }
 
-  @media (max-width: 768px) {
-    .playback { min-width: auto; width: calc(100% - 32px); padding: 12px 14px; gap: 12px; }
-  }
-
-  .play-btn {
-    width: 42px;
-    height: 42px;
+  .play-btn-big {
+    width: 68px;
+    height: 68px;
     border-radius: 50%;
     background: var(--accent);
     color: var(--bg-night);
@@ -464,72 +517,93 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    transition: all 0.15s;
+    transition: transform 0.15s, box-shadow 0.3s;
+    position: relative;
+    box-shadow:
+      0 0 0 1px rgba(212,255,0,0.3),
+      0 0 28px rgba(212,255,0,0.45),
+      0 8px 32px rgba(0,0,0,0.5);
   }
 
-  .play-btn:hover { transform: scale(1.05); box-shadow: 0 0 24px rgba(212, 255, 0, 0.5); }
-  .play-btn svg { width: 18px; height: 18px; }
-
-  .step-info {
-    flex-grow: 1;
-    min-width: 0;
+  .play-btn-big::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    border: 1px solid rgba(212,255,0,0.4);
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.6s;
+    pointer-events: none;
   }
 
-  .step-num {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 9px;
-    color: var(--text-faint);
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    margin-bottom: 3px;
+  .play-btn-big:hover {
+    transform: scale(1.07);
+    box-shadow:
+      0 0 0 1px rgba(212,255,0,0.5),
+      0 0 40px rgba(212,255,0,0.65),
+      0 12px 40px rgba(0,0,0,0.6);
+  }
+  .play-btn-big:hover::before {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  .play-btn-big:active { transform: scale(0.96); }
+
+  .play-btn-big svg {
+    width: 28px;
+    height: 28px;
+  }
+  .play-btn-big svg.play-icon-play {
+    margin-left: 4px; /* visual centering for the triangle */
   }
 
-  .step-text {
-    font-family: 'Fraunces', serif;
-    font-size: 14px;
-    color: var(--text);
-    line-height: 1.4;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  /* Pulse animation when idle (subtle hint to start) */
+  .play-btn-big.idle {
+    animation: pulse-glow 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse-glow {
+    0%, 100% {
+      box-shadow:
+        0 0 0 1px rgba(212,255,0,0.3),
+        0 0 28px rgba(212,255,0,0.45),
+        0 8px 32px rgba(0,0,0,0.5);
+    }
+    50% {
+      box-shadow:
+        0 0 0 1px rgba(212,255,0,0.6),
+        0 0 50px rgba(212,255,0,0.7),
+        0 8px 32px rgba(0,0,0,0.5);
+    }
   }
 
-  .step-progress {
-    display: flex;
-    gap: 3px;
-    margin-top: 8px;
-  }
-
-  .step-progress span {
-    flex: 1;
-    height: 2px;
-    background: var(--border);
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-
-  .step-progress span.played { background: var(--text-dim); }
-  .step-progress span.current { background: var(--accent); }
-
+  /* Compact speed pill — discreet, not competing for attention */
   .speed-toggle {
     display: flex;
     gap: 0;
+    background: rgba(15, 19, 26, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--border-light);
+    border-radius: 999px;
+    overflow: hidden;
     flex-shrink: 0;
   }
-
   .speed-toggle button {
     background: transparent;
     border: none;
     color: var(--text-dim);
     font-family: 'JetBrains Mono', monospace;
     font-size: 10px;
-    padding: 6px 9px;
+    padding: 8px 11px;
     cursor: pointer;
-    border-right: 1px solid var(--border-light);
+    letter-spacing: 0.05em;
+    transition: color 0.15s, background 0.15s;
   }
-
-  .speed-toggle button:last-child { border-right: none; }
-  .speed-toggle button.active { background: var(--text-dim); color: var(--bg-night); }
+  .speed-toggle button:hover:not(.active) { color: var(--text); }
+  .speed-toggle button.active {
+    background: rgba(212,255,0,0.15);
+    color: var(--accent);
+  }
 
   /* Camera presets */
   .camera-controls {
@@ -632,7 +706,8 @@
   }
 
   body.mode-sandbox .sandbox-toolbar { display: flex; }
-  body.mode-sandbox .playback { display: none; }
+  body.mode-sandbox .subtitle-card,
+  body.mode-sandbox .play-cluster { display: none; }
   body.mode-sandbox .panel-left { display: none; }
 
   .sb-btn {
@@ -871,38 +946,39 @@
       border-bottom-color: var(--accent);
     }
 
-    /* Playback bar — compact at bottom, account for home indicator */
-    .playback {
-      bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    /* New playback layout — mobile adjustments */
+    .subtitle-card {
+      bottom: 102px;
       left: 12px;
       right: 12px;
       transform: none;
-      min-width: 0;
       width: auto;
-      max-width: none;
-      padding: 10px 12px;
-      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 12px;
       z-index: 11;
     }
-    .play-btn {
-      width: 38px;
-      height: 38px;
-    }
-    .play-btn svg { width: 16px; height: 16px; }
-    .step-num { font-size: 8px; letter-spacing: 0.12em; }
-    .step-text {
-      font-size: 12px;
-      line-height: 1.3;
+    .subtitle-text {
+      font-size: 13px;
+      line-height: 1.35;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
-    .step-progress { margin-top: 6px; }
-    .speed-toggle button {
-      font-size: 9px;
-      padding: 5px 6px;
+    .subtitle-phase { font-size: 9px; letter-spacing: 0.18em; }
+    .subtitle-progress { max-width: 140px; }
+
+    .play-cluster {
+      bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+      z-index: 12;
+      gap: 10px;
     }
+    .play-btn-big {
+      width: 58px;
+      height: 58px;
+    }
+    .play-btn-big svg { width: 24px; height: 24px; }
+    .speed-toggle button { font-size: 10px; padding: 7px 9px; }
 
     /* Sandbox toolbar */
     .sandbox-toolbar {
@@ -955,8 +1031,9 @@
   @media (max-width: 380px) {
     .mode-switch button { padding: 6px 10px; font-size: 10px; }
     .brand-mark { font-size: 22px; }
-    .play-btn { width: 34px; height: 34px; }
-    .step-text { font-size: 11px; }
+    .play-btn-big { width: 52px; height: 52px; }
+    .play-btn-big svg { width: 22px; height: 22px; }
+    .subtitle-text { font-size: 12px; }
   }
 </style>
 </head>
@@ -1064,17 +1141,30 @@
   </div>
 
   <!-- PLAYBACK BAR -->
-  <div class="playback">
-    <button class="play-btn" id="play-btn" aria-label="Play">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-    </button>
-    <div class="step-info">
-      <div class="step-num" id="step-num">FASE 0/0</div>
-      <div class="step-text" id="step-text">Selecteer een strategie om te beginnen.</div>
-      <div class="step-progress" id="step-progress"></div>
+  <!-- FLOATING SUBTITLE (visible during playback, above the play button) -->
+  <div class="subtitle-card" id="subtitle-card">
+    <div class="subtitle-meta">
+      <span class="subtitle-phase" id="step-num">FASE 0/0</span>
+      <span class="subtitle-progress" id="step-progress"></span>
     </div>
-    <div class="speed-toggle">
-      <button data-speed="0.5">0.5×</button>
+    <div class="subtitle-text" id="step-text">Selecteer een strategie om te beginnen.</div>
+  </div>
+
+  <!-- BIG ROUND PLAY BUTTON — centered, prominent -->
+  <div class="play-cluster">
+    <button class="play-btn-big" id="play-btn" aria-label="Play">
+      <svg class="play-icon-play" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M8 5v14l11-7z"/>
+      </svg>
+      <svg class="play-icon-pause" viewBox="0 0 24 24" fill="currentColor" style="display:none">
+        <path d="M6 4h4v16H6zM14 4h4v16h-4z"/>
+      </svg>
+      <svg class="play-icon-replay" viewBox="0 0 24 24" fill="currentColor" style="display:none">
+        <path d="M12 5V2L7 7l5 5V8c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
+      </svg>
+    </button>
+    <div class="speed-toggle" id="speed-toggle">
+      <button data-speed="0.5">½×</button>
       <button class="active" data-speed="1">1×</button>
       <button data-speed="2">2×</button>
     </div>
@@ -2251,10 +2341,15 @@ let playSpeed = 1;
 let timeline = null;            // pre-built list of segments
 let playbackStartTime = 0;      // performance.now() when play started
 
-const SEGMENT_DURATION = 3.6;   // seconds per phase at 1× speed
+const SEGMENT_DURATION = 2.6;   // seconds per phase at 1× speed (was 3.6 — too slow)
+// Within each segment: 0—0.40 = player approach, 0.40—1.0 = ball flight + player rest
+const PLAYER_PHASE_END = 0.40;
+const BALL_PHASE_START = 0.35;  // small overlap so it feels continuous
 
 function easeInOutCubic(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
 function easeInOutSine(t)  { return -(Math.cos(Math.PI * t) - 1) / 2; }
+function easeOutExpo(t)    { return t === 1 ? 1 : 1 - Math.pow(2, -10 * t); }
+function easeInQuad(t)     { return t * t; }
 
 function getPeakHeight(arcType, from, to) {
   const dist = Math.hypot(to.x - from.x, to.z - from.z);
@@ -2273,10 +2368,6 @@ function getPeakHeight(arcType, from, to) {
 }
 
 function buildTimeline(strategy) {
-  // Each segment runs from cumulative startTime to startTime + SEGMENT_DURATION.
-  // Player paths: from previous step's positions to current step's positions.
-  // Ball: from previous step's ball position to current step's ball position
-  // (so the ball flight is continuous across the whole rally).
   const segments = [];
   let cumulative = 0;
 
@@ -2322,68 +2413,117 @@ function getSegmentAt(time) {
   return timeline.segments[timeline.segments.length - 1];
 }
 
+// Track the *previous* segment's end-state for ball so we can interpolate
+// seamlessly across segment boundaries without any stops.
 function applyTimelineState(tlTime) {
   const seg = getSegmentAt(tlTime);
   if (!seg) return;
   const localT = Math.max(0, Math.min(1, (tlTime - seg.startTime) / seg.duration));
 
-  // === PLAYERS ===
-  const eP = easeInOutCubic(localT);
+  // === PLAYERS — move during first 40% of segment, then rest ===
+  // This creates the natural rhythm: get to position, hit, hold.
   ['A1', 'A2', 'B1', 'B2'].forEach(id => {
     const path = seg.playerPaths[id];
-    const x = path.from.x + (path.to.x - path.from.x) * eP;
-    const z = path.from.z + (path.to.z - path.from.z) * eP;
-    const player = players[id];
-
     const dx = path.to.x - path.from.x;
     const dz = path.to.z - path.from.z;
     const moveDist = Math.hypot(dx, dz);
-    const isMoving = moveDist > 0.3 && localT > 0.02 && localT < 0.98;
+
+    // Player movement uses 0—PLAYER_PHASE_END portion of the segment
+    let pT;
+    if (localT < PLAYER_PHASE_END) {
+      pT = easeInOutCubic(localT / PLAYER_PHASE_END);
+    } else {
+      pT = 1;
+    }
+    const x = path.from.x + dx * pT;
+    const z = path.from.z + dz * pT;
+    const player = players[id];
 
     player.position.x = x;
     player.position.z = z;
 
+    // Subtle running bounce when actively moving (only during movement phase)
+    const isMoving = moveDist > 0.3 && localT < PLAYER_PHASE_END * 0.95;
     if (isMoving) {
-      player.position.y = Math.abs(Math.sin(tlTime * 8 * playSpeed)) * 0.04;
+      const stepCycle = (localT / PLAYER_PHASE_END) * moveDist * 1.8;
+      player.position.y = Math.abs(Math.sin(stepCycle * Math.PI * 2)) * 0.05;
     } else {
-      player.position.y *= 0.85;
+      // Settle smoothly to ground (no instant snap)
+      player.position.y *= 0.82;
     }
 
-    if (moveDist > 0.1) {
+    // Rotate to face direction of movement — smooth, continuous
+    if (moveDist > 0.1 && localT < PLAYER_PHASE_END) {
       const targetRot = Math.atan2(dx, dz);
       let dr = targetRot - player.rotation.y;
       while (dr >  Math.PI) dr -= Math.PI * 2;
       while (dr < -Math.PI) dr += Math.PI * 2;
-      player.rotation.y += dr * 0.15;
+      player.rotation.y += dr * 0.2;
     }
   });
 
-  // === BALL ===
-  const peakH = getPeakHeight(seg.ballArc, seg.ballFrom, seg.ballTo);
-  const eB = (seg.ballArc === 'serve' || seg.ballArc === 'drive' || seg.ballArc === 'volley')
-    ? easeInOutSine(localT) : localT;
-  const bx = seg.ballFrom.x + (seg.ballTo.x - seg.ballFrom.x) * eB;
-  const bz = seg.ballFrom.z + (seg.ballTo.z - seg.ballFrom.z) * eB;
-  const baseY = seg.ballFrom.y + (seg.ballTo.y - seg.ballFrom.y) * eB;
-  const by = (seg.ballArc === 'idle')
-    ? baseY
-    : baseY + 4 * peakH * eB * (1 - eB);
+  // === BALL — flies from previous segment's end to this segment's end ===
+  // Continuous: no stops between segments. The ball is always in motion
+  // (except during 'idle' segments).
+  let bx, by, bz;
+
+  if (seg.ballArc === 'idle') {
+    // Hold position with subtle bob
+    bx = seg.ballFrom.x;
+    bz = seg.ballFrom.z;
+    by = Math.max(0.12, seg.ballFrom.y) + Math.sin(tlTime * 2.5) * 0.015;
+  } else {
+    // Ball uses BALL_PHASE_START to 1.0 of segment for flight
+    let ballT;
+    if (localT < BALL_PHASE_START) {
+      ballT = 0;
+    } else {
+      ballT = (localT - BALL_PHASE_START) / (1 - BALL_PHASE_START);
+    }
+
+    // Choose easing per shot type
+    let eB;
+    if (seg.ballArc === 'serve' || seg.ballArc === 'drive') {
+      eB = easeOutExpo(ballT); // fast initial acceleration
+    } else if (seg.ballArc === 'volley') {
+      eB = ballT < 0.5 ? 2 * ballT * ballT : 1 - Math.pow(-2 * ballT + 2, 2) / 2;
+    } else {
+      eB = easeInOutSine(ballT);
+    }
+
+    const peakH = getPeakHeight(seg.ballArc, seg.ballFrom, seg.ballTo);
+    bx = seg.ballFrom.x + (seg.ballTo.x - seg.ballFrom.x) * eB;
+    bz = seg.ballFrom.z + (seg.ballTo.z - seg.ballFrom.z) * eB;
+    const baseY = seg.ballFrom.y + (seg.ballTo.y - seg.ballFrom.y) * eB;
+    by = baseY + 4 * peakH * eB * (1 - eB);
+
+    // Tiny anticipation: ball "shrinks" a fraction before flight starts
+    if (ballT > 0 && ballT < 0.05) {
+      ballGroup.scale.setScalar(0.85 + ballT * 3);
+    } else {
+      ballGroup.scale.lerp(new THREE.Vector3(1, 1, 1), 0.2);
+    }
+  }
+
   setBallPosition(bx, by, bz);
 
-  if (seg.ballArc !== 'idle') pushTrailPoint(bx, by, bz);
+  if (seg.ballArc !== 'idle' && localT > BALL_PHASE_START) {
+    pushTrailPoint(bx, by, bz);
+  }
 
   zoneOverlays.visible = currentStrategy?.id === 'three-zones';
 
+  // Cinematic camera — smooth follow with inertia, no per-frame snap
   if (activeCam === 'cinematic') {
-    const tCam = tlTime * 0.4;
+    const tCam = tlTime * 0.3;
     const camTarget = new THREE.Vector3(bx * 0.4, 1, bz * 0.4);
     const camPos = new THREE.Vector3(
       bx * 0.3 + Math.cos(tCam) * 14,
       4 + Math.sin(tCam * 0.5) * 1,
       bz * 0.3 + Math.sin(tCam) * 14
     );
-    camera.position.lerp(camPos, 0.05);
-    currentTarget.lerp(camTarget, 0.05);
+    camera.position.lerp(camPos, 0.04);
+    currentTarget.lerp(camTarget, 0.04);
     camera.lookAt(currentTarget);
   }
 
@@ -2467,6 +2607,19 @@ function seekToStep(idx) {
   applyTimelineState(seg.startTime + 0.001);
 }
 
+// Set which icon is shown inside the big play button
+function setPlayIcon(state) {
+  const btn = document.getElementById('play-btn');
+  const playIcon = btn.querySelector('.play-icon-play');
+  const pauseIcon = btn.querySelector('.play-icon-pause');
+  const replayIcon = btn.querySelector('.play-icon-replay');
+  playIcon.style.display = state === 'play' ? '' : 'none';
+  pauseIcon.style.display = state === 'pause' ? '' : 'none';
+  replayIcon.style.display = state === 'replay' ? '' : 'none';
+  // Idle pulse glow only when showing play and not yet started
+  btn.classList.toggle('idle', state === 'play' && !timeline);
+}
+
 function playStrategy() {
   if (!currentStrategy) return;
   if (isPlaying) {
@@ -2474,21 +2627,39 @@ function playStrategy() {
     return;
   }
   isPlaying = true;
-  document.querySelector('#play-btn svg').innerHTML = '<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>';
+  setPlayIcon('pause');
   if (!timeline) timeline = buildTimeline(currentStrategy);
   clearBallTrail();
   playbackStartTime = performance.now();
   currentStepIndex = -1;
 }
 
-function stopPlayback() {
+function stopPlayback(forceState) {
   isPlaying = false;
-  document.querySelector('#play-btn svg').innerHTML = '<path d="M8 5v14l11-7z"/>';
+  if (forceState) {
+    setPlayIcon(forceState);
+    return;
+  }
+  // Show replay icon if we played all the way through, otherwise play
+  const finishedAtEnd = timeline &&
+    (performance.now() - playbackStartTime) / 1000 * playSpeed >= timeline.totalDuration - 0.05;
+  setPlayIcon(finishedAtEnd ? 'replay' : 'play');
 }
 
 document.getElementById('play-btn').addEventListener('click', () => {
-  if (isPlaying) stopPlayback();
-  else playStrategy();
+  if (isPlaying) {
+    stopPlayback();
+  } else {
+    // If we finished (replay icon showing), restart from beginning
+    if (timeline) {
+      const replayIcon = document.querySelector('.play-icon-replay');
+      if (replayIcon.style.display !== 'none') {
+        // Reset timeline to start
+        playbackStartTime = performance.now();
+      }
+    }
+    playStrategy();
+  }
 });
 
 document.querySelectorAll('.speed-toggle button').forEach(btn => {
@@ -2562,7 +2733,7 @@ document.querySelectorAll('.chips').forEach(group => {
 function loadStrategy(id) {
   const s = STRATEGIES.find(s => s.id === id);
   if (!s) return;
-  stopPlayback();
+  stopPlayback('play');
   currentStrategy = s;
   timeline = buildTimeline(s);
   clearBallTrail();
@@ -2894,7 +3065,7 @@ setTimeout(() => {
 }, 800);
 
 </script>
-  <div id="version-marker" style="position:fixed;bottom:6px;right:8px;z-index:99;font-family:'JetBrains Mono',monospace;font-size:9px;color:#d4ff00;opacity:0.5;letter-spacing:0.1em;pointer-events:none;">v4-players</div>
+  <div id="version-marker" style="position:fixed;bottom:4px;left:8px;z-index:99;font-family:'JetBrains Mono',monospace;font-size:9px;color:#d4ff00;opacity:0.35;letter-spacing:0.1em;pointer-events:none;">v6-fluid</div>
 
 </body>
 </html>
