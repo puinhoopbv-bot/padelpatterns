@@ -2048,24 +2048,30 @@ addZoneOverlay(7, 10, 0xff3030);
 function createPlayer(label, teamColor, accentColor) {
   const group = new THREE.Group();
 
-  // === MAIN BODY — slim, athletic, no head ===
-  // Build a single elongated capsule-like silhouette using merged geometry feel.
-  // We use a tapered cone-cylinder combo so it looks like a streamlined player.
+  // === MAIN BODY — slim, athletic silhouette in TEAM ACCENT COLOR ===
+  // For maximum visibility on the court, we color the whole body in the
+  // accent color. Premium-tactical figures stay readable from any angle.
 
   const torsoMat = new THREE.MeshStandardMaterial({
-    color: teamColor,
-    roughness: 0.35,
-    metalness: 0.15,
-    emissive: teamColor,
-    emissiveIntensity: 0.04
+    color: accentColor,
+    roughness: 0.42,
+    metalness: 0.05,
+    emissive: accentColor,
+    emissiveIntensity: 0.12
   });
 
-  const accentMat = new THREE.MeshStandardMaterial({
+  // Dark accent material for sash + collar contrast
+  const darkAccentMat = new THREE.MeshStandardMaterial({
+    color: 0x0a0e14,
+    roughness: 0.5,
+    metalness: 0.3
+  });
+
+  // Bright marker material (for ring + arrow) — pure accent, glow
+  const brightAccentMat = new THREE.MeshBasicMaterial({
     color: accentColor,
-    roughness: 0.3,
-    metalness: 0.3,
-    emissive: accentColor,
-    emissiveIntensity: 0.25
+    transparent: true,
+    opacity: 0.9
   });
 
   // Lower body — wider at hips, narrower at base
@@ -2089,17 +2095,17 @@ function createPlayer(label, teamColor, accentColor) {
   top.castShadow = true;
   group.add(top);
 
-  // === ACCENT BAND — diagonal sash on the shoulder (team identifier) ===
-  const sashGeo = new THREE.TorusGeometry(0.31, 0.025, 8, 32, Math.PI * 1.4);
-  const sash = new THREE.Mesh(sashGeo, accentMat);
+  // === DARK SASH — diagonal across the chest (contrast detail) ===
+  const sashGeo = new THREE.TorusGeometry(0.31, 0.03, 8, 32, Math.PI * 1.4);
+  const sash = new THREE.Mesh(sashGeo, darkAccentMat);
   sash.position.y = 1.5;
   sash.rotation.x = Math.PI / 2;
   sash.rotation.y = Math.PI * 0.3;
   group.add(sash);
 
-  // === SHOULDER ACCENT RING (top, like a halo seen from above) ===
-  const collarGeo = new THREE.TorusGeometry(0.32, 0.02, 8, 24);
-  const collar = new THREE.Mesh(collarGeo, accentMat);
+  // === DARK COLLAR RING — around the shoulders ===
+  const collarGeo = new THREE.TorusGeometry(0.32, 0.022, 8, 24);
+  const collar = new THREE.Mesh(collarGeo, darkAccentMat);
   collar.position.y = 1.65;
   collar.rotation.x = Math.PI / 2;
   group.add(collar);
@@ -3342,7 +3348,7 @@ setTimeout(() => {
 }, 800);
 
 </script>
-  <div id="version-marker" style="position:fixed;bottom:4px;left:8px;z-index:99;font-family:'JetBrains Mono',monospace;font-size:9px;color:#d4ff00;opacity:0.35;letter-spacing:0.1em;pointer-events:none;">v10b-revert</div>
+  <div id="version-marker" style="position:fixed;bottom:4px;left:8px;z-index:99;font-family:'JetBrains Mono',monospace;font-size:9px;color:#d4ff00;opacity:0.35;letter-spacing:0.1em;pointer-events:none;">v11-players</div>
 
 </body>
 </html>
