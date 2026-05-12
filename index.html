@@ -2048,67 +2048,83 @@ addZoneOverlay(7, 10, 0xff3030);
 function createPlayer(label, teamColor, accentColor) {
   const group = new THREE.Group();
 
-  // === MAIN BODY — slim, athletic silhouette in TEAM ACCENT COLOR ===
-  // For maximum visibility on the court, we color the whole body in the
-  // accent color. Premium-tactical figures stay readable from any angle.
+  // Dark base material — for lower body and head (like "shorts and a cap")
+  const darkBodyMat = new THREE.MeshStandardMaterial({
+    color: 0x14171c,
+    roughness: 0.6,
+    metalness: 0.1
+  });
 
-  const torsoMat = new THREE.MeshStandardMaterial({
+  // Bright team material — for the entire upper body (like "the jersey")
+  // This is the main team identifier — visible from any angle.
+  const jerseyMat = new THREE.MeshStandardMaterial({
     color: accentColor,
     roughness: 0.42,
     metalness: 0.05,
     emissive: accentColor,
-    emissiveIntensity: 0.12
+    emissiveIntensity: 0.18
   });
 
-  // Dark accent material for sash + collar contrast
-  const darkAccentMat = new THREE.MeshStandardMaterial({
+  // Subtle dark detail material
+  const darkDetailMat = new THREE.MeshStandardMaterial({
     color: 0x0a0e14,
-    roughness: 0.5,
-    metalness: 0.3
+    roughness: 0.55,
+    metalness: 0.2
   });
 
-  // Bright marker material (for ring + arrow) — pure accent, glow
-  const brightAccentMat = new THREE.MeshBasicMaterial({
-    color: accentColor,
-    transparent: true,
-    opacity: 0.9
-  });
-
-  // Lower body — wider at hips, narrower at base
-  const lowerGeo = new THREE.CylinderGeometry(0.22, 0.18, 0.9, 16);
-  const lower = new THREE.Mesh(lowerGeo, torsoMat);
-  lower.position.y = 0.45;
+  // === LEGS / LOWER BODY — DARK ===
+  // Tapered cylinder representing both legs combined (like padel shorts).
+  const lowerGeo = new THREE.CylinderGeometry(0.22, 0.18, 0.85, 16);
+  const lower = new THREE.Mesh(lowerGeo, darkBodyMat);
+  lower.position.y = 0.425;
   lower.castShadow = true;
   group.add(lower);
 
-  // Upper body — broader shoulders, narrower waist (inverted cone for athletic look)
-  const upperGeo = new THREE.CylinderGeometry(0.32, 0.24, 0.75, 16);
-  const upper = new THREE.Mesh(upperGeo, torsoMat);
-  upper.position.y = 1.3;
-  upper.castShadow = true;
-  group.add(upper);
+  // Belt / waistline — thin dark separator
+  const beltGeo = new THREE.TorusGeometry(0.235, 0.025, 6, 24);
+  const belt = new THREE.Mesh(beltGeo, darkDetailMat);
+  belt.position.y = 0.87;
+  belt.rotation.x = Math.PI / 2;
+  group.add(belt);
 
-  // Top dome — replaces the head with a smooth cap (no face)
+  // === TORSO / JERSEY — BRIGHT TEAM COLOR ===
+  // The whole upper body is the team color so it's readable from any angle.
+  const torsoGeo = new THREE.CylinderGeometry(0.32, 0.24, 0.7, 16);
+  const torso = new THREE.Mesh(torsoGeo, jerseyMat);
+  torso.position.y = 1.27;
+  torso.castShadow = true;
+  group.add(torso);
+
+  // === SHOULDERS / DOME — DARK (like a cap/head) ===
+  // Top of the figure is dark so the bright jersey reads clearly against
+  // the court background. Acts as visual anchor.
   const topGeo = new THREE.SphereGeometry(0.32, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2);
-  const top = new THREE.Mesh(topGeo, torsoMat);
-  top.position.y = 1.67;
+  const top = new THREE.Mesh(topGeo, darkBodyMat);
+  top.position.y = 1.64;
   top.castShadow = true;
   group.add(top);
 
-  // === DARK SASH — diagonal across the chest (contrast detail) ===
-  const sashGeo = new THREE.TorusGeometry(0.31, 0.03, 8, 32, Math.PI * 1.4);
-  const sash = new THREE.Mesh(sashGeo, darkAccentMat);
-  sash.position.y = 1.5;
-  sash.rotation.x = Math.PI / 2;
-  sash.rotation.y = Math.PI * 0.3;
-  group.add(sash);
+  // === COLLAR ACCENT — narrow accent line at the shoulder seam ===
+  // A thin emissive ring where the jersey meets the dark dome.
+  const collarRingGeo = new THREE.TorusGeometry(0.31, 0.018, 8, 32);
+  const collarRingMat = new THREE.MeshBasicMaterial({
+    color: accentColor,
+    transparent: true,
+    opacity: 0.95
+  });
+  const collarRing = new THREE.Mesh(collarRingGeo, collarRingMat);
+  collarRing.position.y = 1.62;
+  collarRing.rotation.x = Math.PI / 2;
+  group.add(collarRing);
 
-  // === DARK COLLAR RING — around the shoulders ===
-  const collarGeo = new THREE.TorusGeometry(0.32, 0.022, 8, 24);
-  const collar = new THREE.Mesh(collarGeo, darkAccentMat);
-  collar.position.y = 1.65;
-  collar.rotation.x = Math.PI / 2;
-  group.add(collar);
+  // === CHEST STRIPE — darker contour across the jersey ===
+  // A horizontal dark band for visual detail (like a logo line).
+  const stripeGeo = new THREE.TorusGeometry(0.30, 0.022, 6, 32, Math.PI * 1.2);
+  const stripe = new THREE.Mesh(stripeGeo, darkDetailMat);
+  stripe.position.y = 1.35;
+  stripe.rotation.x = Math.PI / 2;
+  stripe.rotation.y = Math.PI * 0.4;
+  group.add(stripe);
 
   // === DIRECTION INDICATOR — triangle arrow at feet ===
   // Shows which way the player is facing — pure tactical signal
@@ -3348,7 +3364,7 @@ setTimeout(() => {
 }, 800);
 
 </script>
-  <div id="version-marker" style="position:fixed;bottom:4px;left:8px;z-index:99;font-family:'JetBrains Mono',monospace;font-size:9px;color:#d4ff00;opacity:0.35;letter-spacing:0.1em;pointer-events:none;">v11-players</div>
+  <div id="version-marker" style="position:fixed;bottom:4px;left:8px;z-index:99;font-family:'JetBrains Mono',monospace;font-size:9px;color:#d4ff00;opacity:0.35;letter-spacing:0.1em;pointer-events:none;">v12-jersey</div>
 
 </body>
 </html>
