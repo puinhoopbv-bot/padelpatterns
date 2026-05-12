@@ -389,12 +389,186 @@ body.has-bg-effects::before {
   margin-top: 12px;
 }
 
+/* =====================================================================
+   STATS BAND — trust signals between sections
+   ===================================================================== */
+
+.stats-band {
+  border-top: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
+  padding: 48px 32px;
+  margin: 80px 0 40px;
+  background: rgba(212, 255, 0, 0.02);
+}
+.stats-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  text-align: center;
+}
+.stat-item {
+  padding: 0 8px;
+}
+.stat-number {
+  font-family: var(--font-display);
+  font-size: 56px;
+  color: var(--accent);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-shadow: 0 0 30px rgba(212, 255, 0, 0.2);
+}
+.stat-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-top: 10px;
+}
+
 @media (max-width: 768px) {
-  .hero-typo { padding: 100px 18px 80px; min-height: 88vh; }
-  .hero-typo-title { font-size: clamp(48px, 13vw, 80px); gap: 0.10em 0.20em; }
-  .hero-typo-title .word.small { font-size: 0.5em; }
-  .hero-typo-subtitle { font-size: clamp(17px, 4vw, 22px); }
-  .hero-trail-svg { top: 90px; height: 65%; }
+  .stats-band {
+    padding: 36px 18px;
+    margin: 48px 0 24px;
+  }
+  /* 2x2 grid on mobile — much more readable than 1x4 list */
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 28px 16px;
+  }
+  .stat-number { font-size: 44px; }
+  .stat-label { font-size: 10px; letter-spacing: 0.15em; }
+}
+
+/* =====================================================================
+   MANIFESTO mobile fixes
+   ===================================================================== */
+@media (max-width: 768px) {
+  .manifesto .section-title {
+    font-size: clamp(28px, 7vw, 40px) !important;
+    margin-bottom: 32px !important;
+    line-height: 1.05;
+  }
+  .manifesto p {
+    font-size: 16px !important;
+    line-height: 1.55 !important;
+  }
+}
+
+/* =====================================================================
+   TOOLS GRID mobile improvements
+   ===================================================================== */
+@media (max-width: 768px) {
+  .tool-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .tool-tile {
+    min-height: auto;
+    padding: 24px 22px 22px;
+  }
+  .tool-tile h3 { font-size: 26px; }
+  .tool-tile p { font-size: 14px; line-height: 1.5; }
+
+  /* Tools section header more compact on mobile */
+  .tools-section .section-title {
+    font-size: clamp(32px, 7vw, 44px);
+    margin-bottom: 24px;
+  }
+}
+
+/* =====================================================================
+   SITE FOOTER mobile improvements
+   ===================================================================== */
+@media (max-width: 768px) {
+  .site-footer { padding: 40px 18px 28px; }
+  .site-footer h4 { font-size: 12px; }
+  .site-footer ul { font-size: 14px; }
+  .site-footer-bottom { font-size: 10px; gap: 8px; }
+}
+
+/* =====================================================================
+   SITE HEADER mobile improvements — make logo + tagline cleaner
+   ===================================================================== */
+@media (max-width: 768px) {
+  .site-header { padding: 14px 16px; }
+  .site-logo-tag {
+    /* Hide tagline on mobile — header gets crowded with burger */
+    display: none;
+  }
+}
+@media (max-width: 768px) {
+  .hero-typo {
+    padding: 90px 18px 60px;
+    min-height: auto;
+  }
+
+  .hero-typo-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    margin-bottom: 24px;
+    padding: 5px 10px;
+  }
+  .live-dot-mini {
+    width: 6px;
+    height: 6px;
+  }
+
+  /* Title: stack words more aggressively on portrait */
+  .hero-typo-title {
+    font-size: clamp(46px, 13vw, 76px);
+    line-height: 0.92;
+    gap: 0.06em 0.18em;
+    margin: 0 0 20px;
+  }
+  .hero-typo-title .word.small {
+    font-size: 0.42em;
+    padding-bottom: 0.18em;
+  }
+
+  .hero-typo-subtitle {
+    font-size: 17px;
+    line-height: 1.35;
+    margin: 0 0 28px;
+  }
+
+  .hero-typo-lede {
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 0 0 32px;
+  }
+
+  /* Trail SVG: better proportions for portrait — sits closer behind text */
+  .hero-trail-svg {
+    top: 78px;
+    height: 60%;
+  }
+
+  /* CTAs: stack vertically on narrow screens, full-width feel */
+  .hero-typo .hero-cta-row {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+  .hero-typo .cta-primary,
+  .hero-typo .cta-secondary {
+    width: 100%;
+    justify-content: center;
+    padding: 16px 24px;
+    font-size: 14px;
+  }
+}
+
+/* Very narrow phones (iPhone SE etc): squeeze more */
+@media (max-width: 380px) {
+  .hero-typo-title {
+    font-size: clamp(40px, 14vw, 56px);
+  }
+  .hero-typo-title .word.small {
+    font-size: 0.38em;
+  }
 }
 
 /* =====================================================================
@@ -593,7 +767,7 @@ body.has-bg-effects::before {
 .tool-tile.coming-soon .tool-tile-arrow { color: var(--text-faint); }
 
 @media (max-width: 768px) {
-  .tools-section { padding: 48px 18px; }
+  .tools-section { padding: 36px 18px; }
   .tool-tile { min-height: 240px; padding: 24px 22px 22px; }
 }
 
