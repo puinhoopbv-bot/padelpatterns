@@ -55,7 +55,7 @@
     pointer-events: none;
     z-index: 1;
     background:
-      radial-gradient(ellipse at center, transparent 30%, rgba(7, 9, 13, 0.6) 100%);
+      radial-gradient(ellipse at center, transparent 40%, rgba(7, 9, 13, 0.45) 95%);
   }
 
   .grain {
@@ -1724,6 +1724,26 @@ scene.add(rimLight);
 const hemi = new THREE.HemisphereLight(0x556677, 0x111111, 0.4);
 scene.add(hemi);
 
+// === FOUR OVERHEAD SPOTLIGHTS — indoor court feel ===
+// Real padel courts have 4-6 spots above the court. We add four pools of light
+// that softly illuminate the playing area, giving it that "broadcast" quality.
+const SPOT_HEIGHT = 14;
+const SPOT_INTENSITY = 0.9;
+const spotPositions = [
+  { x: -3, z: -7 },
+  { x:  3, z: -7 },
+  { x: -3, z:  7 },
+  { x:  3, z:  7 },
+];
+spotPositions.forEach(pos => {
+  const spot = new THREE.SpotLight(0xfff5e0, SPOT_INTENSITY, 30, Math.PI / 5, 0.6, 1.4);
+  spot.position.set(pos.x, SPOT_HEIGHT, pos.z);
+  // Aim straight down
+  spot.target.position.set(pos.x, 0, pos.z);
+  scene.add(spot);
+  scene.add(spot.target);
+});
+
 /* =====================================================================
    COURT GEOMETRY
    ===================================================================== */
@@ -1731,11 +1751,58 @@ scene.add(hemi);
 const courtGroup = new THREE.Group();
 scene.add(courtGroup);
 
-// === COURT FLOOR ===
+// === COURT FLOOR — with procedural texture ===
+// Build a subtle noise texture so the court doesn't look like a flat plastic plane.
+// Real padel courts have artificial grass / textured paint with fine grain.
+const floorCanvas = document.createElement('canvas');
+floorCanvas.width = 512;
+floorCanvas.height = 1024;
+const fctx = floorCanvas.getContext('2d');
+
+// Base court blue
+fctx.fillStyle = '#1e6091';
+fctx.fillRect(0, 0, 512, 1024);
+
+// Subtle radial gradient — slightly brighter in the center
+// (simulates uneven lighting / wear pattern)
+const radial = fctx.createRadialGradient(256, 512, 50, 256, 512, 600);
+radial.addColorStop(0, 'rgba(45, 130, 180, 0.25)');
+radial.addColorStop(1, 'rgba(0, 0, 0, 0)');
+fctx.fillStyle = radial;
+fctx.fillRect(0, 0, 512, 1024);
+
+// Fine grain noise — thousands of tiny dots
+for (let i = 0; i < 8000; i++) {
+  const x = Math.random() * 512;
+  const y = Math.random() * 1024;
+  const brightness = Math.random() * 0.18 - 0.08;
+  fctx.fillStyle = brightness > 0
+    ? `rgba(180, 220, 255, ${brightness})`
+    : `rgba(0, 20, 40, ${-brightness})`;
+  fctx.fillRect(x, y, 1.4, 1.4);
+}
+
+// A few faint horizontal scuffs — wear marks across the court
+for (let i = 0; i < 12; i++) {
+  fctx.strokeStyle = `rgba(255, 255, 255, ${0.02 + Math.random() * 0.02})`;
+  fctx.lineWidth = 0.5 + Math.random();
+  fctx.beginPath();
+  const y = Math.random() * 1024;
+  fctx.moveTo(0, y);
+  fctx.lineTo(512, y + (Math.random() - 0.5) * 20);
+  fctx.stroke();
+}
+
+const floorTex = new THREE.CanvasTexture(floorCanvas);
+floorTex.wrapS = THREE.ClampToEdgeWrapping;
+floorTex.wrapT = THREE.ClampToEdgeWrapping;
+floorTex.anisotropy = 8;
+
 const floorMat = new THREE.MeshStandardMaterial({
+  map: floorTex,
   color: 0x1e6091,
-  roughness: 0.65,
-  metalness: 0.05
+  roughness: 0.72,
+  metalness: 0.08
 });
 const floorGeo = new THREE.PlaneGeometry(COURT_W, COURT_L);
 const floor = new THREE.Mesh(floorGeo, floorMat);
@@ -3364,7 +3431,7 @@ setTimeout(() => {
 }, 800);
 
 </script>
-  <div id="version-marker" style="position:fixed;bottom:4px;left:8px;z-index:99;font-family:'JetBrains Mono',monospace;font-size:9px;color:#d4ff00;opacity:0.35;letter-spacing:0.1em;pointer-events:none;">v12b-fix</div>
+  <div id="version-marker" style="position:fixed;bottom:4px;left:8px;z-index:99;font-family:'JetBrains Mono',monospace;font-size:9px;color:#d4ff00;opacity:0.35;letter-spacing:0.1em;pointer-events:none;">v13-arena</div>
 
 </body>
 </html>
