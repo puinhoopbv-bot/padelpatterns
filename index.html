@@ -2354,15 +2354,19 @@ function easeInQuad(t)     { return t * t; }
 function getPeakHeight(arcType, from, to) {
   const dist = Math.hypot(to.x - from.x, to.z - from.z);
   switch (arcType) {
-    case 'high-lob': return Math.max(5, dist * 0.4);
-    case 'lob':      return Math.max(3, dist * 0.25);
-    case 'chiquita': return Math.max(1.2, dist * 0.05);
-    case 'drive':    return Math.max(0.3, dist * 0.04);
-    case 'volley':   return Math.max(0.3, dist * 0.05);
-    case 'serve':    return Math.max(0.8, dist * 0.08);
-    case 'bandeja':  return Math.max(2, dist * 0.15);
-    case 'vibora':   return Math.max(2.5, dist * 0.18);
-    case 'por-tres': return Math.max(4, dist * 0.3);
+    // Big arcs — high lobs that nearly touch ceiling height
+    case 'high-lob': return Math.max(5.5, dist * 0.45);
+    case 'lob':      return Math.max(3.0, dist * 0.28);
+    case 'por-tres': return Math.max(4.5, dist * 0.35);
+    // Mid-height attack shots that peak and dive
+    case 'bandeja':  return Math.max(2.2, dist * 0.16);
+    case 'vibora':   return Math.max(2.6, dist * 0.19);
+    // Chiquita — soft float over the net at net-height
+    case 'chiquita': return Math.max(1.4, dist * 0.07);
+    // Flat shots — barely lift off
+    case 'serve':    return Math.max(0.9, dist * 0.08);
+    case 'drive':    return Math.max(0.25, dist * 0.025);
+    case 'volley':   return Math.max(0.15, dist * 0.02);
     default:         return Math.max(1.5, dist * 0.1);
   }
 }
@@ -2481,21 +2485,153 @@ function applyTimelineState(tlTime) {
       ballT = (localT - BALL_PHASE_START) / (1 - BALL_PHASE_START);
     }
 
-    // Choose easing per shot type
+    // Horizontal progress easing — how the ball travels in X/Z
+    // Drives/volleys/serves: fast linear (energy from the hit), no slow-down
+    // Lobs: smooth sine
+    // Chiquita: starts fast, decelerates (it dips and dies)
     let eB;
-    if (seg.ballArc === 'serve' || seg.ballArc === 'drive') {
-      eB = easeOutExpo(ballT); // fast initial acceleration
-    } else if (seg.ballArc === 'volley') {
-      eB = ballT < 0.5 ? 2 * ballT * ballT : 1 - Math.pow(-2 * ballT + 2, 2) / 2;
+    if (seg.ballArc === 'drive' || seg.ballArc === 'volley') {
+      eB = easeOutExpo(ballT);
+    } else if (seg.ballArc === 'serve') {
+      eB = 1 - Math.pow(1 - ballT, 2.2); // smooth deceleration
+    } else if (seg.ballArc === 'chiquita') {
+      eB = 1 - Math.pow(1 - ballT, 1.8); // slight deceleration toward feet
+    } else if (seg.ballArc === 'bandeja' || seg.ballArc === 'vibora') {
+      eB = easeOutExpo(ballT); // attack shot, fast initial
     } else {
-      eB = easeInOutSine(ballT);
+      eB = easeInOutSine(ballT); // lobs, neutral
     }
 
-    const peakH = getPeakHeight(seg.ballArc, seg.ballFrom, seg.ballTo);
     bx = seg.ballFrom.x + (seg.ballTo.x - seg.ballFrom.x) * eB;
     bz = seg.ballFrom.z + (seg.ballTo.z - seg.ballFrom.z) * eB;
     const baseY = seg.ballFrom.y + (seg.ballTo.y - seg.ballFrom.y) * eB;
-    by = baseY + 4 * peakH * eB * (1 - eB);
+
+    // === SHOT-SPECIFIC HEIGHT PROFILE ===
+    // Each shot has its own "feel" — peak height + when the peak occurs +
+    // how the trajectory looks (flat, dipping, arcing, falling).
+    const peakH = getPeakHeight(seg.ballArc, seg.ballFrom, seg.ballTo);
+    let arcOffset;
+
+    switch (seg.ballArc) {
+      case 'drive':
+      case 'volley': {
+        // Nearly flat — slight ground-skimming arc. Drive/volley travel
+        // almost horizontally. Tiny bump in the middle for realism.
+        arcOffset = peakH * 4 * eB * (1 - eB);
+        break;
+      }
+      case 'serve': {
+        // Low underhand serve — peak at ~40%, gentle descent.
+        // The ball must clear the net and land in the service box.
+        const t = eB;
+        arcOffset = peakH * Math.sin(Math.PI * Math.pow(t, 0.85));
+        break;
+      }
+      case 'chiquita': {
+        // Sliced soft ball: peaks early (just over the net), then DIPS
+        // sharply toward opponent's feet. The signature "dying ball".
+        // Peak at ~30% of the flight, then steep descent.
+        const t = eB;
+        if (t < 0.30) {
+          // Quick rise to peak
+          const k = t / 0.30;
+          arcOffset = peakH * Math.sin(k * Math.PI * 0.5);
+        } else {
+          // Sharp dip — uses a steeper falloff curve
+          const k = (t - 0.30) / 0.70;
+          arcOffset = peakH * Math.pow(1 - k, 1.8);
+        }
+        break;
+      }
+      case 'bandeja': {
+        // Sliced overhead. Peak early (~30%), then descends with slice spin
+        // toward opponent's back zone. Asymmetric — rises fast, falls slow.
+        const t = eB;
+        if (t < 0.30) {
+          const k = t / 0.30;
+          arcOffset = peakH * Math.sin(k * Math.PI * 0.5);
+        } else {
+          const k = (t - 0.30) / 0.70;
+          arcOffset = peakH * Math.pow(1 - k, 1.4);
+        }
+        break;
+      }
+      case 'vibora': {
+        // Like bandeja but more aggressive — side-spin, sharper descent.
+        // Peak even earlier (~25%), then snaps down.
+        const t = eB;
+        if (t < 0.25) {
+          const k = t / 0.25;
+          arcOffset = peakH * Math.sin(k * Math.PI * 0.5);
+        } else {
+          const k = (t - 0.25) / 0.75;
+          arcOffset = peakH * Math.pow(1 - k, 2.0);
+        }
+        break;
+      }
+      case 'lob':
+      case 'high-lob': {
+        // Symmetric parabola — true upward arc. High-lob is taller.
+        // Use a slightly compressed top so the ball hangs at apex briefly.
+        const t = eB;
+        // Modified parabola: rise + slight hang + descent
+        arcOffset = peakH * Math.sin(Math.PI * t);
+        // For high-lob, add slight asymmetry (slower rise, faster fall = realistic gravity)
+        if (seg.ballArc === 'high-lob') {
+          if (t > 0.5) {
+            // Steeper descent in second half
+            const fallT = (t - 0.5) * 2;
+            arcOffset = peakH * (1 - Math.pow(fallT, 1.6));
+          }
+        }
+        break;
+      }
+      case 'por-tres': {
+        // Lob that exits through the side cage — high, fast, escapes.
+        // Tall asymmetric arc.
+        const t = eB;
+        if (t < 0.45) {
+          const k = t / 0.45;
+          arcOffset = peakH * Math.sin(k * Math.PI * 0.5);
+        } else {
+          const k = (t - 0.45) / 0.55;
+          arcOffset = peakH * Math.pow(1 - k, 1.3);
+        }
+        break;
+      }
+      default: {
+        arcOffset = peakH * 4 * eB * (1 - eB);
+      }
+    }
+
+    by = baseY + arcOffset;
+
+    // === HIT PULSE on the striker ===
+    // Around ballT=0..0.18 we flash the closest player's inner ring to
+    // visually mark "this player just hit the ball". Subtle but powerful.
+    if (ballT >= 0 && ballT < 0.18) {
+      // Find closest player to ballFrom (the hitter)
+      let closestId = null, closestDist = Infinity;
+      ['A1','A2','B1','B2'].forEach(id => {
+        const p = players[id].position;
+        const d = Math.hypot(p.x - seg.ballFrom.x, p.z - seg.ballFrom.z);
+        if (d < closestDist) { closestDist = d; closestId = id; }
+      });
+      if (closestId && closestDist < 3.5) {
+        const ring = players[closestId].userData.innerRing;
+        const pulseT = ballT / 0.18; // 0..1 across the pulse window
+        const scale = 1 + (1 - pulseT) * 0.9; // 1.9 -> 1.0
+        ring.scale.set(scale, scale, 1);
+        ring.material.opacity = 0.4 + (1 - pulseT) * 0.5; // bright -> normal
+      }
+    } else {
+      // Smoothly reset all inner rings to default
+      ['A1','A2','B1','B2'].forEach(id => {
+        const ring = players[id].userData.innerRing;
+        ring.scale.lerp(new THREE.Vector3(1, 1, 1), 0.18);
+        ring.material.opacity += (0.4 - ring.material.opacity) * 0.18;
+      });
+    }
 
     // Tiny anticipation: ball "shrinks" a fraction before flight starts
     if (ballT > 0 && ballT < 0.05) {
@@ -3065,7 +3201,7 @@ setTimeout(() => {
 }, 800);
 
 </script>
-  <div id="version-marker" style="position:fixed;bottom:4px;left:8px;z-index:99;font-family:'JetBrains Mono',monospace;font-size:9px;color:#d4ff00;opacity:0.35;letter-spacing:0.1em;pointer-events:none;">v6-fluid</div>
+  <div id="version-marker" style="position:fixed;bottom:4px;left:8px;z-index:99;font-family:'JetBrains Mono',monospace;font-size:9px;color:#d4ff00;opacity:0.35;letter-spacing:0.1em;pointer-events:none;">v7-shots</div>
 
 </body>
 </html>
