@@ -49,23 +49,135 @@
     </nav>
   </header>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-eyebrow">— Tactische tools voor padelspelers</div>
-    <h1>
-      Speel padel met kop.<br>
-      <em>Niet alleen met racket.</em>
-    </h1>
-    <p class="hero-lede">
-      Geen oefenfilmpjes, geen rankings, geen ruis. Wel: tools die je laten zien waar je staat,
-      welke slag past, en welke racket bij jou hoort. Door padelspelers, voor padelspelers.
-    </p>
-    <div class="hero-cta-row">
-      <a href="/tools/patterns.html" class="cta-primary">
-        Start met Patterns 3D <span>→</span>
-      </a>
-      <a href="#tools" class="cta-secondary">Bekijk alle tools</a>
+  <!-- HERO with live tactical rally background -->
+  <section class="hero-cinema">
+
+    <!-- LIVE PADEL COURT VISUALIZATION -->
+    <div class="hero-court-wrap">
+      <svg class="hero-court" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+
+        <!-- Subtle background gradient -->
+        <defs>
+          <radialGradient id="courtGlow" cx="50%" cy="50%" r="70%">
+            <stop offset="0%" stop-color="#2a7eb8" stop-opacity="0.18" />
+            <stop offset="60%" stop-color="#1e6091" stop-opacity="0.10" />
+            <stop offset="100%" stop-color="#050709" stop-opacity="0" />
+          </radialGradient>
+          <linearGradient id="ballTrail" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#d4ff00" stop-opacity="0" />
+            <stop offset="100%" stop-color="#d4ff00" stop-opacity="0.6" />
+          </linearGradient>
+          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+          <filter id="ballGlow" x="-100%" y="-100%" width="300%" height="300%">
+            <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+
+        <!-- Soft glow under the court -->
+        <ellipse cx="500" cy="300" rx="460" ry="220" fill="url(#courtGlow)" />
+
+        <!-- PADEL COURT (top-down view, perspective-tilted via transform) -->
+        <!-- Court is 10x20m. Drawn here at scale roughly fitting 1000x600 viewport -->
+        <g class="court-group" transform="translate(500 300) rotate(-8) scale(1, 0.55)">
+
+          <!-- Court floor — broadcast blue with subtle stroke -->
+          <rect x="-200" y="-400" width="400" height="800"
+                fill="#1e4d6f" stroke="rgba(212, 255, 0, 0.08)" stroke-width="1" />
+
+          <!-- Floor inner glow (lighter center) -->
+          <rect x="-180" y="-380" width="360" height="760"
+                fill="rgba(80, 150, 200, 0.15)" />
+
+          <!-- Service lines -->
+          <line x1="-200" y1="-260" x2="200" y2="-260" stroke="rgba(255,255,255,0.55)" stroke-width="1.5" />
+          <line x1="-200" y1="260" x2="200" y2="260" stroke="rgba(255,255,255,0.55)" stroke-width="1.5" />
+
+          <!-- Center service line (only between service lines) -->
+          <line x1="0" y1="-260" x2="0" y2="260" stroke="rgba(255,255,255,0.55)" stroke-width="1.5" />
+
+          <!-- The NET — at center, with double-line treatment for depth -->
+          <line x1="-220" y1="0" x2="220" y2="0" stroke="rgba(255,255,255,0.25)" stroke-width="6" />
+          <line x1="-220" y1="0" x2="220" y2="0" stroke="rgba(255,255,255,0.85)" stroke-width="2" />
+
+          <!-- Net posts -->
+          <circle cx="-220" cy="0" r="6" fill="#2a3340" stroke="rgba(255,255,255,0.4)" stroke-width="1" />
+          <circle cx="220" cy="0" r="6" fill="#2a3340" stroke="rgba(255,255,255,0.4)" stroke-width="1" />
+
+          <!-- Visible trail rendering (drawn dynamically by JS) -->
+          <path class="trail-render" d="" fill="none"
+                stroke="#d4ff00" stroke-width="2.5"
+                stroke-linecap="round" opacity="0.4"
+                filter="url(#glow)" />
+
+          <!-- BALL — bright lime with glow -->
+          <circle class="ball" cx="0" cy="0" r="9"
+                  fill="#d4ff00" filter="url(#ballGlow)" />
+          <circle class="ball-core" cx="0" cy="0" r="4" fill="#ffffff" />
+
+          <!-- PLAYERS — four dots in team colors, with rings -->
+          <!-- Team A (lower half) -->
+          <g class="player-a1">
+            <circle r="22" fill="rgba(255, 61, 0, 0.18)" />
+            <circle r="14" fill="rgba(255, 61, 0, 0.35)" />
+            <circle r="7" fill="#ff3d00" />
+          </g>
+          <g class="player-a2">
+            <circle r="22" fill="rgba(255, 170, 0, 0.18)" />
+            <circle r="14" fill="rgba(255, 170, 0, 0.35)" />
+            <circle r="7" fill="#ffaa00" />
+          </g>
+
+          <!-- Team B (upper half) -->
+          <g class="player-b1">
+            <circle r="22" fill="rgba(0, 212, 255, 0.18)" />
+            <circle r="14" fill="rgba(0, 212, 255, 0.35)" />
+            <circle r="7" fill="#00d4ff" />
+          </g>
+          <g class="player-b2">
+            <circle r="22" fill="rgba(33, 150, 243, 0.18)" />
+            <circle r="14" fill="rgba(33, 150, 243, 0.35)" />
+            <circle r="7" fill="#2196f3" />
+          </g>
+
+        </g>
+      </svg>
     </div>
+
+    <!-- HERO CONTENT (overlaid on the rally) -->
+    <div class="hero-cinema-content">
+      <div class="hero-eyebrow">— Tactische tools voor padelspelers</div>
+      <h1 class="hero-cinema-title">
+        Speel padel met kop.<br>
+        <em>Niet alleen met racket.</em>
+      </h1>
+      <p class="hero-cinema-lede">
+        Geen oefenfilmpjes, geen rankings, geen ruis. Wel: tools die laten zien waar je staat,
+        welke slag past, en welke racket bij jou hoort.
+      </p>
+      <div class="hero-cta-row">
+        <a href="/tools/patterns.html" class="cta-primary">
+          Start met Patterns 3D <span>→</span>
+        </a>
+        <a href="#tools" class="cta-secondary">Bekijk alle tools</a>
+      </div>
+
+      <!-- Subtle "live" indicator -->
+      <div class="hero-live-indicator">
+        <span class="live-dot"></span>
+        <span class="live-text">LIVE TACTICAL · de onzichtbare touw, in beweging</span>
+      </div>
+    </div>
+
   </section>
 
   <!-- TOOLS GRID -->
@@ -173,6 +285,213 @@
     </div>
   </footer>
 
-  <div class="version-marker">v17-hub</div>
+  <div class="version-marker">v18-hero</div>
+
+  <!-- HERO RALLY ANIMATION SCRIPT -->
+  <script>
+  (function() {
+    'use strict';
+
+    // Court coordinates inside the SVG (local to court-group, after transforms)
+    // Court is drawn from -200..200 (width) and -400..400 (length, B in top half, A in bottom)
+    // Same coordinate system as our 3D engine but mirrored to 2D
+
+    // === RALLY CHOREOGRAPHY ===
+    // Each phase: ball moves from one player to another, players reposition
+    // Total: 6 phases looping endlessly — a real tactical rally
+    const phases = [
+      // 1. Ball at A2 (lower right), serves to B (upper, cross)
+      {
+        ball:    { from: { x: 120, y: 360 }, to: { x: -80, y: -260 }, arc: 'serve' },
+        players: { a1: {x: -80, y: 360}, a2: {x: 120, y: 360}, b1: {x: -80, y: -260}, b2: {x: 80, y: -260} }
+      },
+      // 2. B1 returns with cross-court drive to A1
+      {
+        ball:    { from: { x: -80, y: -260 }, to: { x: 100, y: 340 }, arc: 'drive' },
+        players: { a1: {x: -100, y: 340}, a2: {x: 110, y: 340}, b1: {x: -100, y: -200}, b2: {x: 100, y: -200} }
+      },
+      // 3. A1 lobs over the net players — globo!
+      {
+        ball:    { from: { x: 100, y: 340 }, to: { x: -140, y: -360 }, arc: 'lob' },
+        players: { a1: {x: -80, y: 340}, a2: {x: 120, y: 340}, b1: {x: -100, y: -200}, b2: {x: 100, y: -200} }
+      },
+      // 4. B sprints back, B2 plays bandeja (controlled overhead)
+      {
+        ball:    { from: { x: -140, y: -360 }, to: { x: 140, y: 340 }, arc: 'bandeja' },
+        players: { a1: {x: -100, y: 280}, a2: {x: 100, y: 280}, b1: {x: -120, y: -340}, b2: {x: 100, y: -200} }
+      },
+      // 5. A2 chiquita short — to the feet of B2
+      {
+        ball:    { from: { x: 140, y: 340 }, to: { x: 60, y: -50 }, arc: 'chiquita' },
+        players: { a1: {x: -80, y: 280}, a2: {x: 80, y: 280}, b1: {x: -120, y: -340}, b2: {x: 70, y: -120} }
+      },
+      // 6. B2 forced to lift, A storms the net — winning volley
+      {
+        ball:    { from: { x: 60, y: -50 }, to: { x: -160, y: -340 }, arc: 'volley' },
+        players: { a1: {x: -90, y: -80}, a2: {x: 80, y: -80}, b1: {x: -180, y: -340}, b2: {x: 50, y: -150} }
+      }
+    ];
+
+    const PHASE_DURATION = 3500; // ms per phase — calm, hypnotic
+    const TRAIL_POINTS = 22;     // how many trail samples to remember
+
+    // SVG elements
+    const ballEl = document.querySelector('.hero-court .ball');
+    const ballCoreEl = document.querySelector('.hero-court .ball-core');
+    const trailEl = document.querySelector('.hero-court .trail-render');
+    const playerEls = {
+      a1: document.querySelector('.hero-court .player-a1'),
+      a2: document.querySelector('.hero-court .player-a2'),
+      b1: document.querySelector('.hero-court .player-b1'),
+      b2: document.querySelector('.hero-court .player-b2')
+    };
+
+    if (!ballEl || !playerEls.a1) return; // safety: SVG didn't render
+
+    // Easing function — smooth cinematic motion
+    const easeInOutCubic = (t) => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3) / 2;
+    const easeOutQuad = (t) => 1 - (1-t) * (1-t);
+
+    // Position helpers — set transform on a player group
+    function setPlayerPos(el, x, y, prev) {
+      // Interpolate from prev → (x,y)
+      el.setAttribute('transform', `translate(${x} ${y})`);
+    }
+
+    // Ball arc: returns scale based on shot type
+    // (gives a "rising/falling" effect by changing the ball-core inner circle size)
+    function ballScale(t, arc) {
+      switch(arc) {
+        case 'lob':      return 1 + 0.6 * Math.sin(t * Math.PI);       // big peak
+        case 'high-lob': return 1 + 0.7 * Math.sin(t * Math.PI);
+        case 'bandeja':  return 1 + 0.45 * Math.sin(t * Math.PI);
+        case 'drive':    return 1 + 0.1 * Math.sin(t * Math.PI);       // flat
+        case 'chiquita': return 1 + 0.2 * Math.sin(t * Math.PI * 0.6); // dips
+        case 'volley':   return 1.0;                                    // flat
+        case 'serve':    return 1 + 0.3 * Math.sin(t * Math.PI);
+        default: return 1;
+      }
+    }
+
+    // Curve helper — for lob shots, ball follows a curved path
+    // Returns (x,y) on quadratic bezier from `from` to `to` via control point
+    function curvedPath(from, to, t, arc) {
+      // Linear interpolation as base
+      const lx = from.x + (to.x - from.x) * t;
+      const ly = from.y + (to.y - from.y) * t;
+
+      // For lobs and arc shots, bend the y-coordinate toward center (away from court center)
+      let bend = 0;
+      if (arc === 'lob' || arc === 'high-lob') {
+        bend = -120 * Math.sin(t * Math.PI); // pulls upward (toward net)
+      } else if (arc === 'bandeja') {
+        bend = -80 * Math.sin(t * Math.PI);
+      } else if (arc === 'chiquita') {
+        bend = 40 * Math.sin(t * Math.PI); // dips toward feet
+      } else if (arc === 'serve') {
+        bend = -30 * Math.sin(t * Math.PI);
+      }
+      // For drives and volleys: nearly straight (no bend)
+      return { x: lx, y: ly + bend };
+    }
+
+    // Trail buffer
+    let trail = [];
+
+    // Previous player positions for interpolation
+    let prevPlayers = { ...phases[phases.length - 1].players };
+
+    let startTime = performance.now();
+    let currentPhase = 0;
+
+    function animate(now) {
+      const elapsed = now - startTime;
+      const t = (elapsed % PHASE_DURATION) / PHASE_DURATION;
+      const phaseIdx = Math.floor(elapsed / PHASE_DURATION) % phases.length;
+
+      // Detect phase change
+      if (phaseIdx !== currentPhase) {
+        prevPlayers = { ...phases[currentPhase].players };
+        currentPhase = phaseIdx;
+        // Don't clear trail at phase change — let it fade naturally
+      }
+
+      const phase = phases[phaseIdx];
+
+      // === BALL POSITION ===
+      // Ball flies during 0.15 → 0.75 of phase (rest is anticipation + hold)
+      const BALL_START = 0.15, BALL_END = 0.75;
+      let ballT = (t - BALL_START) / (BALL_END - BALL_START);
+      ballT = Math.max(0, Math.min(1, ballT));
+      const ballEased = easeOutQuad(ballT);
+
+      const ballPos = curvedPath(phase.ball.from, phase.ball.to, ballEased, phase.ball.arc);
+      ballEl.setAttribute('cx', ballPos.x);
+      ballEl.setAttribute('cy', ballPos.y);
+      ballCoreEl.setAttribute('cx', ballPos.x);
+      ballCoreEl.setAttribute('cy', ballPos.y);
+
+      // Ball scaling for shot type
+      const scale = ballScale(ballT, phase.ball.arc);
+      ballEl.setAttribute('r', 9 * scale);
+      ballCoreEl.setAttribute('r', 4 * scale);
+
+      // === TRAIL ===
+      // Only sample during the active ball-flight window
+      if (ballT > 0 && ballT < 1) {
+        trail.push({ x: ballPos.x, y: ballPos.y, age: 0 });
+      }
+      // Age existing points and remove old ones
+      trail = trail.filter(p => p.age < TRAIL_POINTS).map(p => ({ ...p, age: p.age + 0.8 }));
+
+      // Build trail path
+      if (trail.length > 1) {
+        let path = `M ${trail[0].x},${trail[0].y}`;
+        for (let i = 1; i < trail.length; i++) {
+          path += ` L ${trail[i].x},${trail[i].y}`;
+        }
+        trailEl.setAttribute('d', path);
+      } else {
+        trailEl.setAttribute('d', '');
+      }
+
+      // === PLAYERS ===
+      // Players reposition during 0.30 → 1.0 of phase (after ball)
+      const MOVE_START = 0.30, MOVE_END = 1.0;
+      let moveT = (t - MOVE_START) / (MOVE_END - MOVE_START);
+      moveT = Math.max(0, Math.min(1, moveT));
+      const moveEased = easeInOutCubic(moveT);
+
+      for (const key of ['a1', 'a2', 'b1', 'b2']) {
+        const from = prevPlayers[key];
+        const to = phase.players[key];
+        const x = from.x + (to.x - from.x) * moveEased;
+        const y = from.y + (to.y - from.y) * moveEased;
+        setPlayerPos(playerEls[key], x, y);
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    // Init: place ball and players at start of first phase
+    const firstPhase = phases[0];
+    ballEl.setAttribute('cx', firstPhase.ball.from.x);
+    ballEl.setAttribute('cy', firstPhase.ball.from.y);
+    ballCoreEl.setAttribute('cx', firstPhase.ball.from.x);
+    ballCoreEl.setAttribute('cy', firstPhase.ball.from.y);
+    for (const key of ['a1', 'a2', 'b1', 'b2']) {
+      const pos = firstPhase.players[key];
+      setPlayerPos(playerEls[key], pos.x, pos.y);
+    }
+
+    // Respect prefers-reduced-motion
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      // Show a static state instead
+      return;
+    }
+
+    requestAnimationFrame(animate);
+  })();
+  </script>
 </body>
 </html>

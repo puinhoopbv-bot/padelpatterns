@@ -234,6 +234,135 @@ body.has-bg-effects::before {
 }
 
 /* =====================================================================
+   HERO CINEMA — live tactical rally background
+   ===================================================================== */
+
+.hero-cinema {
+  position: relative;
+  min-height: 92vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding: 140px 32px 80px;
+}
+
+.hero-court-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.hero-court {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.85;
+}
+
+/* Subtle vignette over the court so text reads clearly */
+.hero-court-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg,
+      rgba(5, 7, 9, 0.92) 0%,
+      rgba(5, 7, 9, 0.55) 40%,
+      rgba(5, 7, 9, 0.25) 70%,
+      rgba(5, 7, 9, 0.65) 100%),
+    linear-gradient(180deg,
+      rgba(5, 7, 9, 0.5) 0%,
+      transparent 30%,
+      transparent 70%,
+      rgba(5, 7, 9, 0.7) 100%);
+  pointer-events: none;
+}
+
+.hero-cinema-content {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.hero-cinema-title {
+  font-family: var(--font-display);
+  font-size: clamp(54px, 9vw, 110px);
+  line-height: 0.92;
+  letter-spacing: 0.005em;
+  margin: 0 0 28px;
+  color: var(--text);
+  /* Subtle glow for premium effect */
+  text-shadow: 0 4px 30px rgba(5, 7, 9, 0.6);
+}
+.hero-cinema-title em {
+  font-style: normal;
+  color: var(--accent);
+  /* The lime line gets a soft glow */
+  text-shadow:
+    0 0 30px rgba(212, 255, 0, 0.25),
+    0 4px 30px rgba(5, 7, 9, 0.6);
+}
+
+.hero-cinema-lede {
+  font-family: var(--font-body);
+  font-size: clamp(18px, 2vw, 22px);
+  line-height: 1.55;
+  color: var(--text);
+  max-width: 580px;
+  margin: 0 0 36px;
+  text-shadow: 0 2px 12px rgba(5, 7, 9, 0.8);
+}
+
+/* "LIVE" indicator at bottom of hero */
+.hero-live-indicator {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--text-faint);
+  text-transform: uppercase;
+}
+.live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent);
+  animation: live-pulse 1.6s ease-in-out infinite;
+}
+.live-text {
+  white-space: nowrap;
+}
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+@media (max-width: 768px) {
+  .hero-cinema { padding: 100px 18px 80px; min-height: 85vh; }
+  .hero-cinema-title { font-size: clamp(42px, 11vw, 64px); }
+  .hero-court { opacity: 0.6; }
+  .hero-court-wrap::after {
+    background:
+      linear-gradient(180deg,
+        rgba(5, 7, 9, 0.6) 0%,
+        rgba(5, 7, 9, 0.4) 50%,
+        rgba(5, 7, 9, 0.85) 100%);
+  }
+  .hero-live-indicator { font-size: 9px; }
+}
+
+/* =====================================================================
    HERO SECTION (used on hub and tool intro pages)
    ===================================================================== */
 
