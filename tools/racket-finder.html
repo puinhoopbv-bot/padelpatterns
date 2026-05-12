@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<!-- padellab v0.3 · racket-finder · concept -->
+<!-- padellab v0.4 · racket-finder · interactive concept -->
 <html lang="nl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Racket Finder — vind het juiste padelracket op basis van niveau, speelstijl, fysiek en budget. Concept-versie." />
+  <meta name="description" content="Racket Finder — vind het juiste padelracket op basis van niveau, speelstijl, fysiek en budget. Concept met visualisatie." />
   <meta name="theme-color" content="#050709" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="canonical" href="https://padelpatterns.com/tools/racket-finder.html" />
@@ -17,65 +17,338 @@
   <link rel="stylesheet" href="/css/style.css" />
 
   <style>
-    .rf-wrap { max-width: 900px; margin: 0 auto; padding: 120px 32px 80px; min-height: 70vh; }
+    .rf-wrap { max-width: 980px; margin: 0 auto; padding: 120px 32px 80px; min-height: 70vh; }
+
+    /* === Question phase === */
     .rf-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.22em; color: var(--accent); text-transform: uppercase; margin-bottom: 20px; }
     .rf-progress { display: flex; gap: 6px; margin-bottom: 32px; }
-    .rf-progress-bar { flex: 1; height: 2px; background: var(--border-light); transition: background 0.4s ease; }
-    .rf-progress-bar.active { background: var(--accent); }
-    .rf-progress-bar.done { background: rgba(212, 255, 0, 0.4); }
-    .rf-question { font-family: var(--font-display); font-size: clamp(36px, 5vw, 64px); line-height: 1.0; letter-spacing: 0.01em; margin: 0 0 8px; color: var(--text); }
-    .rf-subq { font-family: var(--font-body); font-size: 18px; color: var(--text-dim); line-height: 1.55; max-width: 600px; margin: 0 0 40px; }
-    .rf-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 40px; }
-    .rf-option { background: var(--bg-card); border: 1px solid var(--border-light); padding: 24px 22px; cursor: pointer; transition: all 0.2s ease; text-align: left; color: var(--text); font-family: var(--font-ui); display: flex; flex-direction: column; gap: 6px; }
-    .rf-option:hover { border-color: var(--border-accent); background: rgba(28, 36, 48, 0.85); transform: translateY(-2px); }
-    .rf-option.selected { border-color: var(--accent); background: rgba(212, 255, 0, 0.06); box-shadow: 0 0 0 1px var(--accent); }
+    .rf-progress-bar { flex: 1; height: 3px; background: var(--border-light); transition: background 0.5s ease, transform 0.4s ease; transform-origin: left; }
+    .rf-progress-bar.active { background: var(--accent); box-shadow: 0 0 12px rgba(212, 255, 0, 0.5); }
+    .rf-progress-bar.done { background: rgba(212, 255, 0, 0.5); }
+
+    .rf-question-wrap {
+      animation: questionEnter 0.45s cubic-bezier(.2, .8, .2, 1) both;
+    }
+    .rf-question-wrap.exit {
+      animation: questionExit 0.3s ease both;
+    }
+    @keyframes questionEnter {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes questionExit {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(-12px); }
+    }
+
+    .rf-question { font-family: var(--font-display); font-size: clamp(36px, 5vw, 64px); line-height: 1.0; letter-spacing: 0.01em; margin: 0 0 10px; color: var(--text); }
+    .rf-subq { font-family: var(--font-body); font-size: 18px; color: var(--text-dim); line-height: 1.55; max-width: 620px; margin: 0 0 40px; }
+    .rf-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 32px; }
+
+    .rf-option {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 24px 22px;
+      cursor: pointer;
+      transition: transform 0.18s cubic-bezier(.2, .8, .2, 1), border-color 0.18s, background 0.18s, box-shadow 0.25s;
+      text-align: left;
+      color: var(--text);
+      font-family: var(--font-ui);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      position: relative;
+      overflow: hidden;
+    }
+    /* Subtle scan-line on hover */
+    .rf-option::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(110deg, transparent 30%, rgba(212, 255, 0, 0.08) 50%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .rf-option:hover {
+      border-color: var(--border-accent);
+      background: rgba(28, 36, 48, 0.85);
+      transform: translateY(-3px) scale(1.01);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+    }
+    .rf-option:hover::before { opacity: 1; }
+
+    .rf-option.selected {
+      border-color: var(--accent);
+      background: rgba(212, 255, 0, 0.08);
+      box-shadow: 0 0 0 1px var(--accent), 0 0 32px rgba(212, 255, 0, 0.25);
+      animation: optionFlash 0.4s ease;
+    }
+    @keyframes optionFlash {
+      0%   { transform: scale(1); }
+      30%  { transform: scale(1.04); box-shadow: 0 0 0 2px var(--accent), 0 0 48px rgba(212, 255, 0, 0.5); }
+      100% { transform: scale(1); }
+    }
     .rf-option-label { font-family: var(--font-display); font-size: 22px; letter-spacing: 0.02em; color: var(--text); line-height: 1.1; }
     .rf-option.selected .rf-option-label { color: var(--accent); }
     .rf-option-sub { font-family: var(--font-body); font-size: 14px; color: var(--text-dim); line-height: 1.4; }
-    .rf-actions { display: flex; gap: 14px; margin-top: 16px; align-items: center; flex-wrap: wrap; }
-    .rf-btn-back { background: transparent; border: 1px solid var(--border-medium); color: var(--text-dim); padding: 12px 22px; font-family: var(--font-display); font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.15s; }
+
+    .rf-actions { display: flex; gap: 14px; margin-top: 8px; align-items: center; flex-wrap: wrap; }
+    .rf-btn-back { background: transparent; border: 1px solid var(--border-medium); color: var(--text-dim); padding: 11px 20px; font-family: var(--font-display); font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.15s; }
     .rf-btn-back:hover { color: var(--text); border-color: var(--text-dim); }
-    .rf-btn-next { background: var(--accent); color: var(--bg-night); border: none; padding: 14px 26px; font-family: var(--font-display); font-size: 15px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; display: inline-flex; align-items: center; gap: 12px; }
-    .rf-btn-next:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(212, 255, 0, 0.3); }
-    .rf-btn-next:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none; }
     .rf-step-counter { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; color: var(--text-faint); text-transform: uppercase; margin-left: auto; }
-    .rf-scanning { text-align: center; padding: 60px 0; }
-    .rf-scanning-title { font-family: var(--font-display); font-size: clamp(32px, 4vw, 52px); line-height: 1.05; color: var(--text); margin: 0 0 16px; }
+
+    /* === Scanning phase === */
+    .rf-scanning { text-align: center; padding: 60px 0; animation: questionEnter 0.5s both; }
+    .rf-scanning-title { font-family: var(--font-display); font-size: clamp(32px, 4vw, 52px); line-height: 1.05; color: var(--text); margin: 0 0 8px; }
+    .rf-scanning-sub { font-family: var(--font-body); font-size: 16px; color: var(--text-dim); margin: 0 auto 32px; max-width: 480px; }
+
+    /* The "rackets being scanned" visualization */
+    .rf-scan-rackets {
+      max-width: 540px;
+      margin: 0 auto 32px;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+    }
+    .rf-scan-racket {
+      aspect-ratio: 1;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      opacity: 0.3;
+      transition: all 0.3s;
+    }
+    .rf-scan-racket.scanning {
+      opacity: 1;
+      border-color: var(--accent);
+      background: rgba(212, 255, 0, 0.06);
+      transform: scale(1.05);
+    }
+    .rf-scan-racket.done {
+      opacity: 0.6;
+      border-color: rgba(212, 255, 0, 0.3);
+    }
+    .rf-scan-racket svg { width: 100%; height: 100%; }
+
     .rf-scanning-status { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.18em; color: var(--accent); text-transform: uppercase; min-height: 18px; }
-    .rf-scan-line { max-width: 360px; margin: 32px auto 0; height: 2px; background: var(--border-light); position: relative; overflow: hidden; }
+    .rf-scan-line { max-width: 360px; margin: 24px auto 0; height: 2px; background: var(--border-light); position: relative; overflow: hidden; }
     .rf-scan-line::after { content: ''; position: absolute; left: -30%; top: 0; width: 30%; height: 100%; background: linear-gradient(90deg, transparent, var(--accent), transparent); animation: scan 1.4s ease-in-out infinite; }
     @keyframes scan { 0% { left: -30%; } 100% { left: 100%; } }
-    .rf-results-intro { margin-bottom: 36px; }
+
+    /* === Results phase === */
+    .rf-results-intro { margin-bottom: 36px; animation: questionEnter 0.5s both; }
     .rf-results-title { font-family: var(--font-display); font-size: clamp(36px, 5vw, 56px); line-height: 1.0; letter-spacing: 0.01em; margin: 0 0 12px; color: var(--text); }
-    .rf-results-sub { font-family: var(--font-body); font-size: 17px; color: var(--text-dim); max-width: 600px; }
-    .rf-result-card { background: var(--bg-card); border: 1px solid var(--border-light); padding: 28px 28px 24px; margin-bottom: 16px; display: grid; grid-template-columns: auto 1fr auto; gap: 24px; align-items: start; }
-    .rf-result-card.top-match { border-color: var(--border-accent); box-shadow: 0 0 0 1px rgba(212, 255, 0, 0.15); }
-    .rf-result-rank { font-family: var(--font-display); font-size: 48px; line-height: 0.9; color: var(--text-faint); letter-spacing: 0.02em; min-width: 60px; }
-    .rf-result-card.top-match .rf-result-rank { color: var(--accent); }
+    .rf-results-sub { font-family: var(--font-body); font-size: 17px; color: var(--text-dim); max-width: 620px; }
+
+    .rf-result-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 28px 32px;
+      margin-bottom: 18px;
+      display: grid;
+      grid-template-columns: 160px 1fr auto;
+      gap: 28px;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: resultEnter 0.55s cubic-bezier(.2, .8, .2, 1) both;
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+    }
+    .rf-result-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.4);
+    }
+    .rf-result-card.delay-1 { animation-delay: 0.15s; }
+    .rf-result-card.delay-2 { animation-delay: 0.30s; }
+    .rf-result-card.delay-3 { animation-delay: 0.45s; }
+    @keyframes resultEnter {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .rf-result-card.top-match {
+      border-color: var(--border-accent);
+      box-shadow: 0 0 0 1px rgba(212, 255, 0, 0.2), 0 0 60px rgba(212, 255, 0, 0.08);
+    }
+    .rf-result-card.top-match:hover {
+      box-shadow: 0 0 0 1px rgba(212, 255, 0, 0.4), 0 14px 60px rgba(212, 255, 0, 0.15);
+    }
+
+    /* Top-match crown badge */
+    .rf-top-badge {
+      position: absolute;
+      top: -10px; left: 20px;
+      background: var(--accent);
+      color: var(--bg-night);
+      font-family: var(--font-display);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      padding: 4px 10px;
+      text-transform: uppercase;
+    }
+    .rf-result-card { position: relative; }
+
+    /* Racket SVG container */
+    .rf-racket-visual {
+      width: 160px;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .rf-racket-visual svg {
+      width: 100%;
+      height: 100%;
+      animation: racketFloat 4s ease-in-out infinite;
+      filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.5));
+    }
+    .rf-result-card.top-match .rf-racket-visual svg {
+      filter: drop-shadow(0 8px 24px rgba(212, 255, 0, 0.25));
+    }
+    .rf-result-card:nth-child(odd) .rf-racket-visual svg { animation-delay: -1s; }
+    .rf-result-card:nth-child(even) .rf-racket-visual svg { animation-delay: -2s; }
+    @keyframes racketFloat {
+      0%, 100% { transform: translateY(0) rotate(-3deg); }
+      50% { transform: translateY(-8px) rotate(3deg); }
+    }
+
     .rf-result-body { min-width: 0; }
     .rf-result-brand { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; color: var(--text-faint); text-transform: uppercase; margin-bottom: 4px; }
     .rf-result-name { font-family: var(--font-display); font-size: 28px; letter-spacing: 0.01em; margin: 0 0 14px; color: var(--text); line-height: 1.05; }
     .rf-result-reasons { list-style: none; padding: 0; margin: 0 0 16px; }
-    .rf-result-reasons li { font-family: var(--font-body); font-size: 15px; color: var(--text); padding: 6px 0; display: flex; gap: 12px; align-items: flex-start; line-height: 1.45; }
-    .rf-result-reasons li::before { content: '→'; color: var(--accent); font-family: var(--font-display); font-size: 16px; flex-shrink: 0; margin-top: -1px; }
-    .rf-result-specs { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; color: var(--text-faint); text-transform: uppercase; display: flex; gap: 14px; flex-wrap: wrap; margin-top: 8px; }
+    .rf-result-reasons li {
+      font-family: var(--font-body);
+      font-size: 15px;
+      color: var(--text);
+      padding: 5px 0;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      line-height: 1.45;
+      opacity: 0;
+      animation: reasonEnter 0.4s ease both;
+    }
+    .rf-result-card.delay-1 .rf-result-reasons li:nth-child(1) { animation-delay: 0.5s; }
+    .rf-result-card.delay-1 .rf-result-reasons li:nth-child(2) { animation-delay: 0.6s; }
+    .rf-result-card.delay-1 .rf-result-reasons li:nth-child(3) { animation-delay: 0.7s; }
+    .rf-result-card.delay-2 .rf-result-reasons li:nth-child(1) { animation-delay: 0.65s; }
+    .rf-result-card.delay-2 .rf-result-reasons li:nth-child(2) { animation-delay: 0.75s; }
+    .rf-result-card.delay-2 .rf-result-reasons li:nth-child(3) { animation-delay: 0.85s; }
+    .rf-result-card.delay-3 .rf-result-reasons li:nth-child(1) { animation-delay: 0.8s; }
+    .rf-result-card.delay-3 .rf-result-reasons li:nth-child(2) { animation-delay: 0.9s; }
+    .rf-result-card.delay-3 .rf-result-reasons li:nth-child(3) { animation-delay: 1.0s; }
+    @keyframes reasonEnter {
+      from { opacity: 0; transform: translateX(-8px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    .rf-result-reasons li::before {
+      content: '→';
+      color: var(--accent);
+      font-family: var(--font-display);
+      font-size: 16px;
+      flex-shrink: 0;
+      margin-top: -1px;
+    }
+    .rf-result-specs {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      color: var(--text-faint);
+      text-transform: uppercase;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .rf-result-specs span {
+      padding: 4px 8px;
+      border: 1px solid var(--border-light);
+    }
+
     .rf-result-meta { text-align: right; min-width: 130px; }
-    .rf-result-match { font-family: var(--font-display); font-size: 36px; color: var(--accent); line-height: 1; letter-spacing: 0.02em; }
-    .rf-result-card:not(.top-match) .rf-result-match { color: var(--text-dim); }
+    .rf-result-match {
+      font-family: var(--font-display);
+      font-size: 48px;
+      color: var(--accent);
+      line-height: 1;
+      letter-spacing: 0.02em;
+    }
+    .rf-result-card:not(.top-match) .rf-result-match { color: var(--text-dim); font-size: 38px; }
     .rf-result-match-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.2em; color: var(--text-faint); text-transform: uppercase; margin-top: 4px; }
-    .rf-result-price { font-family: var(--font-display); font-size: 22px; color: var(--text); margin-top: 18px; letter-spacing: 0.02em; }
-    .rf-result-cta { margin-top: 14px; display: inline-block; padding: 8px 14px; background: rgba(212, 255, 0, 0.08); border: 1px solid rgba(212, 255, 0, 0.3); color: var(--accent); font-family: var(--font-display); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; transition: background 0.15s; }
-    .rf-result-cta:hover { background: rgba(212, 255, 0, 0.15); }
+    .rf-result-price { font-family: var(--font-display); font-size: 26px; color: var(--text); margin-top: 18px; letter-spacing: 0.02em; }
+    .rf-result-cta {
+      margin-top: 14px;
+      display: inline-block;
+      padding: 9px 16px;
+      background: rgba(212, 255, 0, 0.08);
+      border: 1px solid rgba(212, 255, 0, 0.3);
+      color: var(--accent);
+      font-family: var(--font-display);
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: all 0.18s;
+      cursor: pointer;
+    }
+    .rf-result-cta:hover {
+      background: rgba(212, 255, 0, 0.18);
+      transform: translateY(-1px);
+    }
+
     .rf-restart { margin-top: 40px; text-align: center; }
-    .rf-restart button { background: transparent; border: 1px solid var(--border-medium); color: var(--text-dim); padding: 12px 22px; font-family: var(--font-display); font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: all 0.15s; }
-    .rf-restart button:hover { color: var(--accent); border-color: var(--accent); }
-    .rf-disclaimer { margin-top: 48px; padding: 20px 24px; border-left: 2px solid var(--accent); background: rgba(212, 255, 0, 0.025); }
-    .rf-disclaimer p { font-family: var(--font-body); font-size: 14px; color: var(--text-dim); margin: 0; line-height: 1.55; font-style: italic; }
+    .rf-restart button {
+      background: transparent;
+      border: 1px solid var(--border-medium);
+      color: var(--text-dim);
+      padding: 12px 22px;
+      font-family: var(--font-display);
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .rf-restart button:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .rf-disclaimer {
+      margin-top: 48px;
+      padding: 20px 24px;
+      border-left: 2px solid var(--accent);
+      background: rgba(212, 255, 0, 0.025);
+    }
+    .rf-disclaimer p {
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--text-dim);
+      margin: 0;
+      line-height: 1.55;
+      font-style: italic;
+    }
+
     @media (max-width: 768px) {
       .rf-wrap { padding: 100px 18px 60px; }
-      .rf-result-card { grid-template-columns: 1fr; gap: 14px; }
-      .rf-result-meta { text-align: left; }
-      .rf-result-rank { font-size: 36px; }
+      .rf-result-card {
+        grid-template-columns: 1fr;
+        gap: 18px;
+        padding: 24px 22px;
+        text-align: center;
+      }
+      .rf-racket-visual {
+        width: 140px;
+        height: 170px;
+        margin: 0 auto;
+      }
+      .rf-result-meta { text-align: center; }
+      .rf-result-reasons li { text-align: left; }
+      .rf-result-specs { justify-content: center; }
     }
   </style>
 </head>
@@ -129,32 +402,137 @@
     </div>
     <div class="site-footer-bottom">
       <span>© 2026 PadelLab</span>
-      <span>v0.3 · racket-finder concept</span>
+      <span>v0.4 · racket-finder interactive</span>
     </div>
   </footer>
 
-  <div class="version-marker">v22-rf-concept</div>
+  <div class="version-marker">v23-rf-interactive</div>
 
   <script>
   (function() {
     'use strict';
 
-    // === RACKET DATABASE (mock — 12 representative models) ===
+    // ============================================================
+    // RACKET DATABASE — with visual properties (shape, brand colors)
+    // ============================================================
     const RACKETS = [
-      { brand:'Bullpadel', name:'Vertex 04', shape:'diamond', weight:375, balance:'hoog', hardness:'hard', price:299, levels:['advanced','pro'], styles:['attacker'] },
-      { brand:'Head', name:'Delta Pro 2024', shape:'druppel', weight:370, balance:'mid', hardness:'medium', price:259, levels:['intermediate','advanced','pro'], styles:['allround','attacker'] },
-      { brand:'Nox', name:'AT10 Genius', shape:'diamond', weight:370, balance:'hoog', hardness:'hard', price:289, levels:['advanced','pro'], styles:['attacker'] },
-      { brand:'Adidas', name:'Metalbone 3.3', shape:'diamond', weight:365, balance:'hoog', hardness:'hard', price:265, levels:['advanced','pro'], styles:['attacker'] },
-      { brand:'Wilson', name:'Bela Pro v2', shape:'rond', weight:360, balance:'laag', hardness:'zacht', price:235, levels:['intermediate','advanced','pro'], styles:['defender','allround'] },
-      { brand:'Babolat', name:'Technical Veron', shape:'rond', weight:365, balance:'laag', hardness:'zacht', price:225, levels:['intermediate','advanced'], styles:['defender','allround'] },
-      { brand:'Siux', name:'Electra ST3 Stupa', shape:'druppel', weight:370, balance:'mid', hardness:'medium', price:215, levels:['intermediate','advanced'], styles:['allround','attacker'] },
-      { brand:'Nox', name:'ML10 Bahia', shape:'rond', weight:365, balance:'mid', hardness:'zacht', price:175, levels:['beginner','intermediate'], styles:['defender','allround'] },
-      { brand:'Bullpadel', name:'Flow Light', shape:'rond', weight:355, balance:'laag', hardness:'zacht', price:135, levels:['beginner','intermediate'], styles:['defender','allround'] },
-      { brand:'Head', name:'Evo Sanyo', shape:'druppel', weight:360, balance:'mid', hardness:'medium', price:120, levels:['beginner','intermediate'], styles:['allround'] },
-      { brand:'Adidas', name:'Essnova Carbon CTRL', shape:'rond', weight:360, balance:'laag', hardness:'zacht', price:95, levels:['beginner','intermediate'], styles:['defender','allround'] },
-      { brand:'Wilson', name:'Blade Team v2', shape:'druppel', weight:365, balance:'mid', hardness:'medium', price:135, levels:['beginner','intermediate'], styles:['allround','attacker'] }
+      { brand:'Bullpadel', name:'Vertex 04',         color:'#e30613', accent:'#000000', shape:'diamond', weight:375, balance:'hoog', hardness:'hard',   price:299, levels:['advanced','pro'],                  styles:['attacker'] },
+      { brand:'Head',      name:'Delta Pro 2024',    color:'#3a5dd9', accent:'#ffffff', shape:'druppel', weight:370, balance:'mid',  hardness:'medium', price:259, levels:['intermediate','advanced','pro'],   styles:['allround','attacker'] },
+      { brand:'Nox',       name:'AT10 Genius',       color:'#00d4ff', accent:'#0a0e14', shape:'diamond', weight:370, balance:'hoog', hardness:'hard',   price:289, levels:['advanced','pro'],                  styles:['attacker'] },
+      { brand:'Adidas',    name:'Metalbone 3.3',     color:'#000000', accent:'#d4ff00', shape:'diamond', weight:365, balance:'hoog', hardness:'hard',   price:265, levels:['advanced','pro'],                  styles:['attacker'] },
+      { brand:'Wilson',    name:'Bela Pro v2',       color:'#cc0000', accent:'#000000', shape:'rond',    weight:360, balance:'laag', hardness:'zacht',  price:235, levels:['intermediate','advanced','pro'],   styles:['defender','allround'] },
+      { brand:'Babolat',   name:'Technical Veron',   color:'#ffd700', accent:'#000000', shape:'rond',    weight:365, balance:'laag', hardness:'zacht',  price:225, levels:['intermediate','advanced'],         styles:['defender','allround'] },
+      { brand:'Siux',      name:'Electra ST3 Stupa', color:'#ff6b35', accent:'#0a0e14', shape:'druppel', weight:370, balance:'mid',  hardness:'medium', price:215, levels:['intermediate','advanced'],         styles:['allround','attacker'] },
+      { brand:'Nox',       name:'ML10 Bahia',        color:'#ffaa00', accent:'#0a0e14', shape:'rond',    weight:365, balance:'mid',  hardness:'zacht',  price:175, levels:['beginner','intermediate'],         styles:['defender','allround'] },
+      { brand:'Bullpadel', name:'Flow Light',        color:'#1e90ff', accent:'#ffffff', shape:'rond',    weight:355, balance:'laag', hardness:'zacht',  price:135, levels:['beginner','intermediate'],         styles:['defender','allround'] },
+      { brand:'Head',      name:'Evo Sanyo',         color:'#9333ea', accent:'#ffffff', shape:'druppel', weight:360, balance:'mid',  hardness:'medium', price:120, levels:['beginner','intermediate'],         styles:['allround'] },
+      { brand:'Adidas',    name:'Essnova Carbon',    color:'#22c55e', accent:'#0a0e14', shape:'rond',    weight:360, balance:'laag', hardness:'zacht',  price:95,  levels:['beginner','intermediate'],         styles:['defender','allround'] },
+      { brand:'Wilson',    name:'Blade Team v2',     color:'#ec4899', accent:'#0a0e14', shape:'druppel', weight:365, balance:'mid',  hardness:'medium', price:135, levels:['beginner','intermediate'],         styles:['allround','attacker'] }
     ];
 
+    // ============================================================
+    // SVG RACKET RENDERER
+    // Three distinct shapes with branding colors + texture pattern
+    // ============================================================
+    function renderRacketSVG(racket, opts) {
+      opts = opts || {};
+      const showDetail = opts.detail !== false;
+      const color = racket.color;
+      const accent = racket.accent;
+      const name = racket.name;
+      const brand = racket.brand;
+
+      // Shape definitions — drawn at 200x250 viewBox
+      // Head of racket is 100x130, handle is below
+      let headPath;
+      if (racket.shape === 'rond') {
+        // Round shape — elliptical, slightly wider than tall
+        headPath = 'M 100,30 C 145,30 175,65 175,115 C 175,165 145,200 100,200 C 55,200 25,165 25,115 C 25,65 55,30 100,30 Z';
+      } else if (racket.shape === 'diamond') {
+        // Diamond shape — taller, narrower at bottom
+        headPath = 'M 100,25 C 150,30 175,80 170,125 C 165,165 135,200 100,205 C 65,200 35,165 30,125 C 25,80 50,30 100,25 Z';
+      } else { // druppel / teardrop
+        // Teardrop — narrower top, wider bottom
+        headPath = 'M 100,28 C 138,30 165,60 168,105 C 170,155 142,200 100,202 C 58,200 30,155 32,105 C 35,60 62,30 100,28 Z';
+      }
+
+      // Generate dot pattern for racket face
+      let dots = '';
+      if (showDetail) {
+        // Hexagonal dot grid
+        for (let row = 0; row < 12; row++) {
+          for (let col = 0; col < 9; col++) {
+            const offsetX = (row % 2) * 9;
+            const x = 30 + col * 18 + offsetX;
+            const y = 45 + row * 13;
+            // Only draw dots that fit within shape (approx)
+            const dx = x - 100;
+            const dy = y - 115;
+            const insideEllipse = (dx*dx)/(70*70) + (dy*dy)/(80*80) <= 1;
+            if (insideEllipse) {
+              dots += `<circle cx="${x}" cy="${y}" r="1.2" fill="${accent}" opacity="0.35"/>`;
+            }
+          }
+        }
+      }
+
+      return `
+        <svg viewBox="0 0 200 280" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="grad-${brand}-${name.replace(/\s+/g, '')}" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="${color}" stop-opacity="1"/>
+              <stop offset="100%" stop-color="${color}" stop-opacity="0.75"/>
+            </linearGradient>
+            <radialGradient id="shine-${brand}-${name.replace(/\s+/g, '')}" cx="35%" cy="30%" r="50%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+
+          <!-- Handle -->
+          <rect x="92" y="195" width="16" height="60" fill="${accent}" rx="2"/>
+          <!-- Handle grip texture -->
+          <rect x="93" y="198" width="14" height="2" fill="${color}" opacity="0.4"/>
+          <rect x="93" y="204" width="14" height="2" fill="${color}" opacity="0.4"/>
+          <rect x="93" y="210" width="14" height="2" fill="${color}" opacity="0.4"/>
+          <rect x="93" y="216" width="14" height="2" fill="${color}" opacity="0.4"/>
+          <rect x="93" y="222" width="14" height="2" fill="${color}" opacity="0.4"/>
+          <rect x="93" y="228" width="14" height="2" fill="${color}" opacity="0.4"/>
+          <rect x="93" y="234" width="14" height="2" fill="${color}" opacity="0.4"/>
+          <rect x="93" y="240" width="14" height="2" fill="${color}" opacity="0.4"/>
+
+          <!-- Handle cap -->
+          <ellipse cx="100" cy="256" rx="9" ry="3" fill="${color}" opacity="0.8"/>
+
+          <!-- Throat (connecting handle to head) -->
+          <path d="M 88,190 L 95,200 L 105,200 L 112,190 Z" fill="${accent}" opacity="0.9"/>
+
+          <!-- Racket head — main body -->
+          <path d="${headPath}" fill="url(#grad-${brand}-${name.replace(/\s+/g, '')})" stroke="${accent}" stroke-width="2"/>
+
+          <!-- Dots / strings pattern -->
+          ${dots}
+
+          <!-- Shine highlight -->
+          <path d="${headPath}" fill="url(#shine-${brand}-${name.replace(/\s+/g, '')})"/>
+
+          <!-- Brand text on racket face -->
+          <text x="100" y="120" text-anchor="middle" font-family="'Bebas Neue', sans-serif" font-size="20" fill="${accent}" letter-spacing="1.5" opacity="0.9">${brand.toUpperCase()}</text>
+
+          <!-- Model name (smaller) -->
+          <text x="100" y="142" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="${accent}" letter-spacing="1" opacity="0.6">${name.toUpperCase()}</text>
+        </svg>
+      `;
+    }
+
+    // Mini SVG for scanning phase
+    function renderMiniRacket(racket) {
+      return renderRacketSVG(racket, { detail: false });
+    }
+
+    // ============================================================
+    // STATE & STEPS
+    // ============================================================
     const state = { step: 0, level: null, style: null, physical: null, budget: null };
 
     const steps = [
@@ -202,11 +580,13 @@
       }
     ];
 
+    // ============================================================
+    // SCORING
+    // ============================================================
     function scoreRacket(racket) {
       let score = 0;
       let reasons = [];
 
-      // Level match (40 points)
       if (racket.levels.includes(state.level)) {
         score += 40;
         if (state.level === 'beginner')      reasons.push('Past bij beginnend niveau — vergevingsgezind en stuurt zichzelf');
@@ -215,7 +595,6 @@
         else                                  reasons.push('Pro-niveau racket — vraagt techniek, beloont met scherpte');
       }
 
-      // Style match (30 points)
       if (racket.styles.includes(state.style)) {
         score += 30;
         if (state.style === 'defender' && racket.shape === 'rond') {
@@ -229,7 +608,6 @@
         }
       }
 
-      // Physical match (20 points)
       if (state.physical === 'power') {
         if (racket.weight >= 365 && racket.hardness !== 'zacht') {
           score += 20;
@@ -253,7 +631,6 @@
         }
       }
 
-      // Budget match (10 points)
       let maxBudget = 9999;
       if (state.budget === '100') maxBudget = 110;
       else if (state.budget === '200') maxBudget = 210;
@@ -278,7 +655,11 @@
       return scored.slice(0, 3);
     }
 
+    // ============================================================
+    // RENDERING
+    // ============================================================
     const wrap = document.getElementById('rf-wrap');
+    let isTransitioning = false;
 
     function renderQuestion() {
       const stepDef = steps[state.step];
@@ -297,75 +678,120 @@
       }).join('');
 
       wrap.innerHTML =
-        '<div class="rf-eyebrow">— Racket Finder · Concept</div>'
+        '<div class="rf-question-wrap" id="rf-qwrap">'
+      + '<div class="rf-eyebrow">— Racket Finder · Stap ' + (state.step + 1) + ' van ' + steps.length + '</div>'
       + '<div class="rf-progress">' + progressHtml + '</div>'
       + '<h1 class="rf-question">' + stepDef.q + '</h1>'
       + '<p class="rf-subq">' + stepDef.sub + '</p>'
       + '<div class="rf-options">' + optionsHtml + '</div>'
       + '<div class="rf-actions">'
-      + (state.step > 0 ? '<button class="rf-btn-back" id="rf-back">← Terug</button>' : '')
-      + '<button class="rf-btn-next" id="rf-next"' + (currentValue ? '' : ' disabled') + '>'
-      + (state.step === steps.length - 1 ? 'Vind mijn racket' : 'Volgende') + ' →</button>'
-      + '<span class="rf-step-counter">Stap ' + (state.step + 1) + ' / ' + steps.length + '</span>'
+      + (state.step > 0 ? '<button class="rf-btn-back" id="rf-back">← Vorige</button>' : '')
+      + '<span class="rf-step-counter">Tik om te kiezen — auto-doorgaan</span>'
+      + '</div>'
       + '</div>';
 
       wrap.querySelectorAll('.rf-option').forEach(btn => {
         btn.addEventListener('click', () => {
+          if (isTransitioning) return;
           state[stepDef.key] = btn.dataset.value;
-          renderQuestion();
+
+          // Mark all unselected
+          wrap.querySelectorAll('.rf-option').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+
+          isTransitioning = true;
+
+          // Auto-advance after a short delay (so user sees their choice register)
+          setTimeout(() => {
+            const qwrap = document.getElementById('rf-qwrap');
+            if (qwrap) qwrap.classList.add('exit');
+
+            setTimeout(() => {
+              isTransitioning = false;
+              if (state.step < steps.length - 1) {
+                state.step++;
+                renderQuestion();
+              } else {
+                renderScanning();
+              }
+            }, 280);
+          }, 380);
         });
       });
-
-      const nextBtn = document.getElementById('rf-next');
-      if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
-          if (!state[stepDef.key]) return;
-          if (state.step < steps.length - 1) {
-            state.step++;
-            renderQuestion();
-          } else {
-            renderScanning();
-          }
-        });
-      }
 
       const backBtn = document.getElementById('rf-back');
       if (backBtn) {
         backBtn.addEventListener('click', () => {
-          state.step = Math.max(0, state.step - 1);
-          renderQuestion();
+          if (isTransitioning) return;
+          isTransitioning = true;
+          const qwrap = document.getElementById('rf-qwrap');
+          if (qwrap) qwrap.classList.add('exit');
+          setTimeout(() => {
+            isTransitioning = false;
+            state.step = Math.max(0, state.step - 1);
+            renderQuestion();
+          }, 280);
         });
       }
     }
 
     function renderScanning() {
+      // Build 6 mini-rackets to "scan"
+      const sampleRackets = RACKETS.slice(0, 6);
+      const scanGridHtml = sampleRackets.map((r, i) =>
+        '<div class="rf-scan-racket" data-idx="' + i + '">' + renderMiniRacket(r) + '</div>'
+      ).join('');
+
       wrap.innerHTML =
         '<div class="rf-scanning">'
-      + '<div class="rf-eyebrow" style="justify-content: center;">— Racket Finder</div>'
+      + '<div class="rf-eyebrow" style="margin: 0 auto 16px;">— Racket Finder</div>'
       + '<h1 class="rf-scanning-title">We zoeken voor je...</h1>'
+      + '<p class="rf-scanning-sub">12 rackets worden gewogen tegen je antwoorden.</p>'
+      + '<div class="rf-scan-rackets">' + scanGridHtml + '</div>'
+      + '<div class="rf-scanning-status" id="rf-status">Niveau-match berekenen...</div>'
       + '<div class="rf-scan-line"></div>'
-      + '<div class="rf-scanning-status" id="rf-status">12 rackets analyseren...</div>'
       + '</div>';
 
       const statusEl = document.getElementById('rf-status');
       const messages = [
-        '12 rackets analyseren...',
         'Niveau-match berekenen...',
-        'Speelstijl matchen...',
+        'Speelstijl analyseren...',
         'Fysiek profiel toepassen...',
         'Budget filteren...',
         'Top 3 selecteren...'
       ];
-      let idx = 0;
-      const interval = setInterval(() => {
-        idx++;
-        if (idx >= messages.length) {
-          clearInterval(interval);
-          setTimeout(renderResults, 400);
+
+      // Animate the scan racket grid: each lights up in sequence
+      const rackEls = wrap.querySelectorAll('.rf-scan-racket');
+      let currentIdx = 0;
+
+      function scanNext() {
+        if (currentIdx > 0) rackEls[currentIdx - 1].classList.remove('scanning');
+        if (currentIdx < rackEls.length) {
+          rackEls[currentIdx].classList.add('scanning');
+          // Mark previous as done
+          for (let i = 0; i < currentIdx; i++) rackEls[i].classList.add('done');
+          currentIdx++;
+        }
+      }
+
+      let scanIdx = 0;
+      const scanInterval = setInterval(scanNext, 280);
+      const statusInterval = setInterval(() => {
+        scanIdx++;
+        if (scanIdx >= messages.length) {
+          clearInterval(statusInterval);
         } else {
-          statusEl.textContent = messages[idx];
+          statusEl.textContent = messages[scanIdx];
         }
       }, 380);
+
+      // Total scan time: ~2200ms
+      setTimeout(() => {
+        clearInterval(scanInterval);
+        clearInterval(statusInterval);
+        renderResults();
+      }, 2200);
     }
 
     function renderResults() {
@@ -376,8 +802,11 @@
         const reasonsHtml = r.reasons.length > 0
           ? r.reasons.map(reason => '<li>' + reason + '</li>').join('')
           : '<li>Solide match op je criteria</li>';
-        return '<div class="rf-result-card ' + (isTop ? 'top-match' : '') + '">'
-             + '<div class="rf-result-rank">' + String(i + 1).padStart(2, '0') + '</div>'
+        const targetScore = Math.min(99, Math.max(40, r.score));
+
+        return '<div class="rf-result-card ' + (isTop ? 'top-match' : '') + ' delay-' + (i + 1) + '">'
+             + (isTop ? '<div class="rf-top-badge">★ Top match</div>' : '')
+             + '<div class="rf-racket-visual">' + renderRacketSVG(r) + '</div>'
              + '<div class="rf-result-body">'
              + '<div class="rf-result-brand">' + r.brand + '</div>'
              + '<h3 class="rf-result-name">' + r.name + '</h3>'
@@ -389,7 +818,7 @@
              + '<span>' + r.hardness + '</span>'
              + '</div></div>'
              + '<div class="rf-result-meta">'
-             + '<div class="rf-result-match">' + Math.min(99, Math.max(40, r.score)) + '%</div>'
+             + '<div class="rf-result-match" data-target="' + targetScore + '">0%</div>'
              + '<div class="rf-result-match-label">Match score</div>'
              + '<div class="rf-result-price">€' + r.price + '</div>'
              + '<a href="#" class="rf-result-cta" data-name="' + r.name + '">Bekijk →</a>'
@@ -397,14 +826,35 @@
       }).join('');
 
       wrap.innerHTML =
-        '<div class="rf-eyebrow">— Racket Finder · Resultaten</div>'
-      + '<div class="rf-results-intro">'
+        '<div class="rf-results-intro">'
+      + '<div class="rf-eyebrow">— Racket Finder · Jouw resultaten</div>'
       + '<h1 class="rf-results-title">Drie rackets voor jou.</h1>'
       + '<p class="rf-results-sub">Gebaseerd op je antwoorden. De top-match scoort het hoogst op de combinatie van niveau, speelstijl, fysiek en budget. Niet de duurste — wel de juiste.</p>'
       + '</div>'
       + cardsHtml
       + '<div class="rf-disclaimer"><p><strong style="color: var(--text); font-weight: 500;">Dit is een concept-versie.</strong> De racket-database telt nu 12 modellen — in de volledige versie worden dat er 60+. Affiliate-links naar Padelnuestro / Padel.shop / Decathlon komen straks. De score-engine zelf werkt al volledig.</p></div>'
-      + '<div class="rf-restart"><button id="rf-restart">Opnieuw zoeken</button></div>';
+      + '<div class="rf-restart"><button id="rf-restart">↻ Opnieuw zoeken</button></div>';
+
+      // Count-up animation for match scores
+      const matchEls = wrap.querySelectorAll('.rf-result-match');
+      matchEls.forEach((el, i) => {
+        const target = parseInt(el.dataset.target);
+        const delay = 600 + i * 150; // wait for card to appear first
+        setTimeout(() => {
+          const duration = 1200;
+          const startTime = performance.now();
+          function tick(now) {
+            const elapsed = now - startTime;
+            const t = Math.min(elapsed / duration, 1);
+            // Ease out cubic
+            const eased = 1 - Math.pow(1 - t, 3);
+            const value = Math.round(target * eased);
+            el.textContent = value + '%';
+            if (t < 1) requestAnimationFrame(tick);
+          }
+          requestAnimationFrame(tick);
+        }, delay);
+      });
 
       wrap.querySelectorAll('.rf-result-cta').forEach(el => {
         el.addEventListener('click', (e) => {
