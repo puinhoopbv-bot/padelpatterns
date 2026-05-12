@@ -1682,6 +1682,29 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.05;
 container.appendChild(renderer.domElement);
 
+// === PROCEDURAL ENVIRONMENT for glass reflections ===
+// Create a vertical gradient canvas that simulates "club ambient lighting":
+// a slight glow at the top (ceiling lights) fading to dark below.
+// This is what the glass walls reflect, giving them depth.
+const envCanvas = document.createElement('canvas');
+envCanvas.width = 1; envCanvas.height = 256;
+const envCtx = envCanvas.getContext('2d');
+const envGrad = envCtx.createLinearGradient(0, 0, 0, 256);
+envGrad.addColorStop(0.00, '#3a4a5e');   // upper sky — warm club tone
+envGrad.addColorStop(0.35, '#1a2330');   // mid
+envGrad.addColorStop(0.65, '#0a0e14');   // dark mid
+envGrad.addColorStop(1.00, '#050709');   // floor
+envCtx.fillStyle = envGrad;
+envCtx.fillRect(0, 0, 1, 256);
+const envTex = new THREE.CanvasTexture(envCanvas);
+envTex.mapping = THREE.EquirectangularReflectionMapping;
+const pmremGen = new THREE.PMREMGenerator(renderer);
+pmremGen.compileEquirectangularShader();
+const envMap = pmremGen.fromEquirectangular(envTex).texture;
+scene.environment = envMap;
+pmremGen.dispose();
+envTex.dispose();
+
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
@@ -1756,22 +1779,29 @@ surround.receiveShadow = true;
 scene.add(surround);
 
 // === COURT LINES ===
-function makeLine(x1, z1, x2, z2, width = 0.05, color = 0xf4f1e8) {
+function makeLine(x1, z1, x2, z2, width = 0.06, color = 0xfafaf2) {
   const length = Math.hypot(x2 - x1, z2 - z1);
   const lineGeo = new THREE.PlaneGeometry(length, width);
-  const lineMat = new THREE.MeshBasicMaterial({ color: color });
+  // Use MeshStandardMaterial with subtle emission for that "pro court" look
+  const lineMat = new THREE.MeshStandardMaterial({
+    color: color,
+    emissive: color,
+    emissiveIntensity: 0.18,
+    roughness: 0.4,
+    metalness: 0.0
+  });
   const line = new THREE.Mesh(lineGeo, lineMat);
   line.rotation.x = -Math.PI / 2;
-  line.position.set((x1 + x2) / 2, 0.005, (z1 + z2) / 2);
+  line.position.set((x1 + x2) / 2, 0.008, (z1 + z2) / 2);
   line.rotation.z = -Math.atan2(z2 - z1, x2 - x1);
   return line;
 }
 
-// Outer baseline + sidelines (the perimeter)
-courtGroup.add(makeLine(-COURT_W/2, -COURT_L/2, COURT_W/2, -COURT_L/2, 0.07));
-courtGroup.add(makeLine(-COURT_W/2, COURT_L/2, COURT_W/2, COURT_L/2, 0.07));
-courtGroup.add(makeLine(-COURT_W/2, -COURT_L/2, -COURT_W/2, COURT_L/2, 0.07));
-courtGroup.add(makeLine(COURT_W/2, -COURT_L/2, COURT_W/2, COURT_L/2, 0.07));
+// Outer baseline + sidelines (the perimeter) — slightly thicker than inner lines
+courtGroup.add(makeLine(-COURT_W/2, -COURT_L/2, COURT_W/2, -COURT_L/2, 0.09));
+courtGroup.add(makeLine(-COURT_W/2, COURT_L/2, COURT_W/2, COURT_L/2, 0.09));
+courtGroup.add(makeLine(-COURT_W/2, -COURT_L/2, -COURT_W/2, COURT_L/2, 0.09));
+courtGroup.add(makeLine(COURT_W/2, -COURT_L/2, COURT_W/2, COURT_L/2, 0.09));
 
 // Service lines
 courtGroup.add(makeLine(-COURT_W/2, -SERVICE_LINE_DIST, COURT_W/2, -SERVICE_LINE_DIST));
@@ -1780,71 +1810,131 @@ courtGroup.add(makeLine(-COURT_W/2, SERVICE_LINE_DIST, COURT_W/2, SERVICE_LINE_D
 // Center service line (between service lines, only)
 courtGroup.add(makeLine(0, -SERVICE_LINE_DIST, 0, SERVICE_LINE_DIST));
 
-// === NET ===
+// === NET (with realistic sag — catenary curve) ===
 const netGroup = new THREE.Group();
 scene.add(netGroup);
 
-// Net mesh - using a plane with a procedural texture
+// Build a procedural mesh texture for the net
 const netCanvas = document.createElement('canvas');
 netCanvas.width = 512;
-netCanvas.height = 64;
+netCanvas.height = 96;
 const ctx = netCanvas.getContext('2d');
 ctx.fillStyle = 'rgba(0,0,0,0)';
-ctx.fillRect(0, 0, 512, 64);
-ctx.strokeStyle = 'rgba(220,220,220,0.85)';
-ctx.lineWidth = 1.2;
-for (let x = 0; x < 512; x += 6) {
-  ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 64); ctx.stroke();
+ctx.fillRect(0, 0, 512, 96);
+ctx.strokeStyle = 'rgba(230, 230, 235, 0.78)';
+ctx.lineWidth = 1.4;
+// Vertical strings — slightly closer together
+for (let x = 0; x < 512; x += 7) {
+  ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 96); ctx.stroke();
 }
-for (let y = 0; y < 64; y += 6) {
+// Horizontal strings — slightly varied opacity for depth
+for (let y = 0; y < 96; y += 7) {
   ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(512, y); ctx.stroke();
 }
 const netTex = new THREE.CanvasTexture(netCanvas);
 netTex.wrapS = THREE.RepeatWrapping;
 netTex.wrapT = THREE.RepeatWrapping;
+netTex.repeat.set(10, 1.5);
 
 const netMat = new THREE.MeshBasicMaterial({
   map: netTex,
   transparent: true,
   side: THREE.DoubleSide,
-  opacity: 0.85
+  opacity: 0.78
 });
-const netGeo = new THREE.PlaneGeometry(COURT_W + 0.4, NET_H);
+
+// Build the net as a curved plane with sag in the middle.
+// Real padel nets sag ~5-7cm at center; we exaggerate slightly for visual impact.
+const NET_SAG = 0.08;          // how much the center dips below the posts
+const NET_TOP_AT_POST = NET_H + 0.05;
+const NET_SEGMENTS_W = 32;     // horizontal subdivisions for smooth curve
+const netWidth = COURT_W + 0.4;
+
+const netGeo = new THREE.PlaneGeometry(netWidth, NET_TOP_AT_POST, NET_SEGMENTS_W, 1);
+// Bend the top edge into a catenary-like curve
+const positions = netGeo.attributes.position;
+for (let i = 0; i < positions.count; i++) {
+  const x = positions.getX(i);
+  const y = positions.getY(i);
+  // Normalize x to -1..1 across the net width
+  const xN = x / (netWidth / 2);
+  // Sag amount depends on how high up we are: max at top, none at bottom
+  const heightFactor = (y + NET_TOP_AT_POST / 2) / NET_TOP_AT_POST; // 0 at bottom, 1 at top
+  // Catenary approximation: 1 - cos curve, deepest at center
+  const sag = NET_SAG * heightFactor * (1 - xN * xN);
+  positions.setY(i, y - sag);
+}
+positions.needsUpdate = true;
+netGeo.computeVertexNormals();
+
 const net = new THREE.Mesh(netGeo, netMat);
-net.position.y = NET_H / 2;
+net.position.y = NET_TOP_AT_POST / 2;
 net.position.z = 0;
 netGroup.add(net);
 
-// Net top band (white)
-const netBandGeo = new THREE.BoxGeometry(COURT_W + 0.4, 0.06, 0.04);
-const netBandMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.4 });
-const netBand = new THREE.Mesh(netBandGeo, netBandMat);
-netBand.position.set(0, NET_H, 0);
+// Net top band — a smooth white tape that follows the sag curve
+const bandPoints = [];
+for (let i = 0; i <= NET_SEGMENTS_W; i++) {
+  const t = i / NET_SEGMENTS_W;
+  const xN = t * 2 - 1; // -1..1
+  const x = xN * (netWidth / 2);
+  const sag = NET_SAG * (1 - xN * xN);
+  const y = NET_TOP_AT_POST - sag;
+  bandPoints.push(new THREE.Vector3(x, y, 0));
+}
+const bandCurve = new THREE.CatmullRomCurve3(bandPoints);
+const bandGeo = new THREE.TubeGeometry(bandCurve, 32, 0.025, 6, false);
+const bandMat = new THREE.MeshStandardMaterial({
+  color: 0xfafafa,
+  roughness: 0.4,
+  metalness: 0.05,
+  emissive: 0xffffff,
+  emissiveIntensity: 0.05
+});
+const netBand = new THREE.Mesh(bandGeo, bandMat);
 netGroup.add(netBand);
 
-// Net posts
-const postGeo = new THREE.CylinderGeometry(0.08, 0.08, NET_H + 0.1, 8);
-const postMat = new THREE.MeshStandardMaterial({ color: 0x222222, metalness: 0.7, roughness: 0.3 });
+// Net posts — slightly thicker, with a subtle white cap at the top
+const postGeo = new THREE.CylinderGeometry(0.06, 0.07, NET_TOP_AT_POST + 0.05, 12);
+const postMat = new THREE.MeshStandardMaterial({
+  color: 0x1a1a1a,
+  metalness: 0.75,
+  roughness: 0.28
+});
 const postL = new THREE.Mesh(postGeo, postMat);
-postL.position.set(-COURT_W/2 - 0.2, (NET_H + 0.1) / 2, 0);
+postL.position.set(-COURT_W/2 - 0.2, (NET_TOP_AT_POST + 0.05) / 2, 0);
 postL.castShadow = true;
 netGroup.add(postL);
 const postR = new THREE.Mesh(postGeo, postMat);
-postR.position.set(COURT_W/2 + 0.2, (NET_H + 0.1) / 2, 0);
+postR.position.set(COURT_W/2 + 0.2, (NET_TOP_AT_POST + 0.05) / 2, 0);
 postR.castShadow = true;
 netGroup.add(postR);
 
+// Post caps — small white cylinder on top for that pro-court look
+const capGeo = new THREE.CylinderGeometry(0.075, 0.075, 0.04, 12);
+const capMat = new THREE.MeshStandardMaterial({ color: 0xeeeeee, roughness: 0.35 });
+const capL = new THREE.Mesh(capGeo, capMat);
+capL.position.set(-COURT_W/2 - 0.2, NET_TOP_AT_POST + 0.07, 0);
+netGroup.add(capL);
+const capR = new THREE.Mesh(capGeo, capMat);
+capR.position.set(COURT_W/2 + 0.2, NET_TOP_AT_POST + 0.07, 0);
+netGroup.add(capR);
+
 // === GLASS WALLS ===
 const glassMat = new THREE.MeshPhysicalMaterial({
-  color: 0x6db3d4,
+  color: 0x88c2dd,
   metalness: 0,
-  roughness: 0.05,
-  transmission: 0.85,
-  thickness: 0.1,
-  ior: 1.4,
+  roughness: 0.02,
+  transmission: 0.92,           // mostly see-through
+  thickness: 0.15,
+  ior: 1.48,                    // realistic glass refraction index
   transparent: true,
-  opacity: 0.18,
-  side: THREE.DoubleSide
+  opacity: 0.25,
+  side: THREE.DoubleSide,
+  clearcoat: 1.0,               // glossy reflective coat on top
+  clearcoatRoughness: 0.05,
+  reflectivity: 0.5,
+  envMapIntensity: 1.2
 });
 
 // Back glass walls (full width, 3m high) at z = ±10
@@ -3286,7 +3376,7 @@ setTimeout(() => {
 }, 800);
 
 </script>
-  <div id="version-marker" style="position:fixed;bottom:4px;left:8px;z-index:99;font-family:'JetBrains Mono',monospace;font-size:9px;color:#d4ff00;opacity:0.35;letter-spacing:0.1em;pointer-events:none;">v9-rhythm</div>
+  <div id="version-marker" style="position:fixed;bottom:4px;left:8px;z-index:99;font-family:'JetBrains Mono',monospace;font-size:9px;color:#d4ff00;opacity:0.35;letter-spacing:0.1em;pointer-events:none;">v10-court</div>
 
 </body>
 </html>
