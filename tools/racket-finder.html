@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- padellab v0.4 · racket-finder · interactive concept -->
+<!-- padellab v0.5 · racket-finder · 30 rackets + working links -->
 <html lang="nl">
 <head>
   <meta charset="UTF-8" />
@@ -402,11 +402,11 @@
     </div>
     <div class="site-footer-bottom">
       <span>© 2026 PadelLab</span>
-      <span>v0.4 · racket-finder interactive</span>
+      <span>v0.5 · racket-finder · 30 rackets</span>
     </div>
   </footer>
 
-  <div class="version-marker">v23-rf-interactive</div>
+  <div class="version-marker">v32-rf-30rackets</div>
 
   <script>
   (function() {
@@ -415,20 +415,56 @@
     // ============================================================
     // RACKET DATABASE — with visual properties (shape, brand colors)
     // ============================================================
+    // ============================================================
+    // RACKET DATABASE — 30 modellen, gespreid over alle niveaus & prijspunten
+    // Per racket: searchUrl wordt automatisch gegenereerd
+    // Later vervangen door echte affiliate-URLs (Padelnuestro, Padel.shop, Bol, etc.)
+    // ============================================================
     const RACKETS = [
-      { brand:'Bullpadel', name:'Vertex 04',         color:'#e30613', accent:'#000000', shape:'diamond', weight:375, balance:'hoog', hardness:'hard',   price:299, levels:['advanced','pro'],                  styles:['attacker'] },
-      { brand:'Head',      name:'Delta Pro 2024',    color:'#3a5dd9', accent:'#ffffff', shape:'druppel', weight:370, balance:'mid',  hardness:'medium', price:259, levels:['intermediate','advanced','pro'],   styles:['allround','attacker'] },
-      { brand:'Nox',       name:'AT10 Genius',       color:'#00d4ff', accent:'#0a0e14', shape:'diamond', weight:370, balance:'hoog', hardness:'hard',   price:289, levels:['advanced','pro'],                  styles:['attacker'] },
-      { brand:'Adidas',    name:'Metalbone 3.3',     color:'#000000', accent:'#d4ff00', shape:'diamond', weight:365, balance:'hoog', hardness:'hard',   price:265, levels:['advanced','pro'],                  styles:['attacker'] },
-      { brand:'Wilson',    name:'Bela Pro v2',       color:'#cc0000', accent:'#000000', shape:'rond',    weight:360, balance:'laag', hardness:'zacht',  price:235, levels:['intermediate','advanced','pro'],   styles:['defender','allround'] },
-      { brand:'Babolat',   name:'Technical Veron',   color:'#ffd700', accent:'#000000', shape:'rond',    weight:365, balance:'laag', hardness:'zacht',  price:225, levels:['intermediate','advanced'],         styles:['defender','allround'] },
-      { brand:'Siux',      name:'Electra ST3 Stupa', color:'#ff6b35', accent:'#0a0e14', shape:'druppel', weight:370, balance:'mid',  hardness:'medium', price:215, levels:['intermediate','advanced'],         styles:['allround','attacker'] },
-      { brand:'Nox',       name:'ML10 Bahia',        color:'#ffaa00', accent:'#0a0e14', shape:'rond',    weight:365, balance:'mid',  hardness:'zacht',  price:175, levels:['beginner','intermediate'],         styles:['defender','allround'] },
-      { brand:'Bullpadel', name:'Flow Light',        color:'#1e90ff', accent:'#ffffff', shape:'rond',    weight:355, balance:'laag', hardness:'zacht',  price:135, levels:['beginner','intermediate'],         styles:['defender','allround'] },
-      { brand:'Head',      name:'Evo Sanyo',         color:'#9333ea', accent:'#ffffff', shape:'druppel', weight:360, balance:'mid',  hardness:'medium', price:120, levels:['beginner','intermediate'],         styles:['allround'] },
-      { brand:'Adidas',    name:'Essnova Carbon',    color:'#22c55e', accent:'#0a0e14', shape:'rond',    weight:360, balance:'laag', hardness:'zacht',  price:95,  levels:['beginner','intermediate'],         styles:['defender','allround'] },
-      { brand:'Wilson',    name:'Blade Team v2',     color:'#ec4899', accent:'#0a0e14', shape:'druppel', weight:365, balance:'mid',  hardness:'medium', price:135, levels:['beginner','intermediate'],         styles:['allround','attacker'] }
+      // === PRO / ADVANCED tier (€250-€400) ===
+      { brand:'Bullpadel', name:'Vertex 04',           color:'#e30613', accent:'#ffffff', shape:'diamond', weight:375, balance:'hoog', hardness:'hard',   price:299, levels:['advanced','pro'],                styles:['attacker'] },
+      { brand:'Bullpadel', name:'Hack 03',             color:'#1a1a1a', accent:'#e30613', shape:'diamond', weight:370, balance:'hoog', hardness:'hard',   price:289, levels:['advanced','pro'],                styles:['attacker'] },
+      { brand:'Nox',       name:'AT10 Genius',         color:'#00d4ff', accent:'#0a0e14', shape:'diamond', weight:370, balance:'hoog', hardness:'hard',   price:289, levels:['advanced','pro'],                styles:['attacker'] },
+      { brand:'Nox',       name:'AT10 Luxury',         color:'#1a1a1a', accent:'#00d4ff', shape:'druppel', weight:370, balance:'mid',  hardness:'medium', price:269, levels:['advanced','pro'],                styles:['allround','attacker'] },
+      { brand:'Adidas',    name:'Metalbone 3.3',       color:'#000000', accent:'#d4ff00', shape:'diamond', weight:365, balance:'hoog', hardness:'hard',   price:265, levels:['advanced','pro'],                styles:['attacker'] },
+      { brand:'Head',      name:'Delta Pro 2024',      color:'#3a5dd9', accent:'#ffffff', shape:'druppel', weight:370, balance:'mid',  hardness:'medium', price:259, levels:['intermediate','advanced','pro'], styles:['allround','attacker'] },
+      { brand:'Wilson',    name:'Bela Pro v2',         color:'#cc0000', accent:'#000000', shape:'rond',    weight:360, balance:'laag', hardness:'zacht',  price:235, levels:['intermediate','advanced','pro'], styles:['defender','allround'] },
+      { brand:'StarVie',   name:'Metheora Warrior',    color:'#9d4edd', accent:'#ffffff', shape:'diamond', weight:370, balance:'hoog', hardness:'hard',   price:279, levels:['advanced','pro'],                styles:['attacker'] },
+      { brand:'Black Crown', name:'Piton Air',         color:'#000000', accent:'#ff3366', shape:'druppel', weight:365, balance:'mid',  hardness:'medium', price:245, levels:['advanced'],                       styles:['allround','attacker'] },
+      { brand:'Babolat',   name:'Technical Veron',     color:'#ffd700', accent:'#000000', shape:'rond',    weight:365, balance:'laag', hardness:'zacht',  price:225, levels:['intermediate','advanced'],       styles:['defender','allround'] },
+
+      // === INTERMEDIATE tier (€140-€230) ===
+      { brand:'Siux',      name:'Electra ST3 Stupa',   color:'#ff6b35', accent:'#0a0e14', shape:'druppel', weight:370, balance:'mid',  hardness:'medium', price:215, levels:['intermediate','advanced'],       styles:['allround','attacker'] },
+      { brand:'Head',      name:'Speed Pro',           color:'#0066cc', accent:'#ffffff', shape:'druppel', weight:365, balance:'mid',  hardness:'medium', price:199, levels:['intermediate','advanced'],       styles:['allround','attacker'] },
+      { brand:'Bullpadel', name:'Vertex 04 Comfort',   color:'#c70039', accent:'#ffffff', shape:'diamond', weight:360, balance:'mid',  hardness:'medium', price:189, levels:['intermediate'],                   styles:['attacker'] },
+      { brand:'Nox',       name:'ML10 Bahia',          color:'#ffaa00', accent:'#0a0e14', shape:'rond',    weight:365, balance:'mid',  hardness:'zacht',  price:175, levels:['beginner','intermediate'],       styles:['defender','allround'] },
+      { brand:'Adidas',    name:'Adipower Light',      color:'#1a1a1a', accent:'#ffffff', shape:'druppel', weight:355, balance:'mid',  hardness:'medium', price:175, levels:['intermediate'],                   styles:['allround'] },
+      { brand:'StarVie',   name:'R9.1 DRS',            color:'#2d3e50', accent:'#ffaa00', shape:'rond',    weight:360, balance:'mid',  hardness:'zacht',  price:165, levels:['intermediate'],                   styles:['defender','allround'] },
+      { brand:'Royal Padel', name:'M27 Whip',          color:'#005baa', accent:'#ffffff', shape:'druppel', weight:365, balance:'mid',  hardness:'medium', price:159, levels:['intermediate','advanced'],       styles:['allround'] },
+      { brand:'Black Crown', name:'Genesis Air',       color:'#16a085', accent:'#ffffff', shape:'rond',    weight:360, balance:'mid',  hardness:'zacht',  price:155, levels:['intermediate'],                   styles:['defender','allround'] },
+      { brand:'Dunlop',    name:'Aero-Star Pro',       color:'#ffd700', accent:'#000000', shape:'druppel', weight:365, balance:'mid',  hardness:'medium', price:149, levels:['intermediate'],                   styles:['allround','attacker'] },
+
+      // === BEGINNER / ENTRY tier (€60-€140) ===
+      { brand:'Bullpadel', name:'Flow Light',          color:'#1e90ff', accent:'#ffffff', shape:'rond',    weight:355, balance:'laag', hardness:'zacht',  price:135, levels:['beginner','intermediate'],       styles:['defender','allround'] },
+      { brand:'Wilson',    name:'Blade Team v2',       color:'#ec4899', accent:'#0a0e14', shape:'druppel', weight:365, balance:'mid',  hardness:'medium', price:135, levels:['beginner','intermediate'],       styles:['allround','attacker'] },
+      { brand:'Head',      name:'Evo Sanyo',           color:'#9333ea', accent:'#ffffff', shape:'druppel', weight:360, balance:'mid',  hardness:'medium', price:120, levels:['beginner','intermediate'],       styles:['allround'] },
+      { brand:'Nox',       name:'X-One C.6',           color:'#16a34a', accent:'#ffffff', shape:'rond',    weight:360, balance:'laag', hardness:'zacht',  price:109, levels:['beginner','intermediate'],       styles:['defender','allround'] },
+      { brand:'Adidas',    name:'Essnova Carbon CTRL', color:'#22c55e', accent:'#0a0e14', shape:'rond',    weight:360, balance:'laag', hardness:'zacht',  price:95,  levels:['beginner','intermediate'],       styles:['defender','allround'] },
+      { brand:'Babolat',   name:'Reflex',              color:'#0099cc', accent:'#ffffff', shape:'druppel', weight:360, balance:'mid',  hardness:'medium', price:89,  levels:['beginner'],                       styles:['allround'] },
+      { brand:'Siux',      name:'SX-3 Junior+',        color:'#dc2626', accent:'#ffffff', shape:'rond',    weight:355, balance:'laag', hardness:'zacht',  price:79,  levels:['beginner'],                       styles:['defender','allround'] },
+      { brand:'Dunlop',    name:'Power Game',          color:'#fbbf24', accent:'#000000', shape:'druppel', weight:365, balance:'mid',  hardness:'medium', price:75,  levels:['beginner'],                       styles:['allround','attacker'] },
+      { brand:'Bullpadel', name:'Indiga Comfort',      color:'#7c3aed', accent:'#ffffff', shape:'rond',    weight:350, balance:'laag', hardness:'zacht',  price:65,  levels:['beginner'],                       styles:['defender'] },
+      { brand:'Head',      name:'Spark Pro',           color:'#f97316', accent:'#0a0e14', shape:'druppel', weight:355, balance:'mid',  hardness:'medium', price:65,  levels:['beginner'],                       styles:['allround'] },
+      { brand:'Nox',       name:'Equation Light',      color:'#06b6d4', accent:'#0a0e14', shape:'rond',    weight:350, balance:'laag', hardness:'zacht',  price:59,  levels:['beginner'],                       styles:['defender','allround'] }
     ];
+
+    // Generate shop search URL for each racket (Google search to ensure it works on any device)
+    // Later: replace with affiliate-URLs per shop (Padelnuestro, Padel.shop, Bol.com, etc.)
+    RACKETS.forEach(r => {
+      const query = encodeURIComponent(r.brand + ' ' + r.name + ' padel racket');
+      r.searchUrl = 'https://www.google.com/search?q=' + query + '&tbm=shop';
+    });
+
 
     // ============================================================
     // SVG RACKET RENDERER
@@ -737,7 +773,15 @@
 
     function renderScanning() {
       // Build 6 mini-rackets to "scan"
-      const sampleRackets = RACKETS.slice(0, 6);
+      // Pick 6 diverse rackets from across the price spectrum for visual variety
+      const sampleRackets = [
+        RACKETS[0],   // pro tier — colorful
+        RACKETS[10],  // intermediate
+        RACKETS[15],  // intermediate
+        RACKETS[19],  // beginner-intermediate
+        RACKETS[23],  // beginner
+        RACKETS[28]   // entry
+      ].filter(r => r); // safety in case database changes size
       const scanGridHtml = sampleRackets.map((r, i) =>
         '<div class="rf-scan-racket" data-idx="' + i + '">' + renderMiniRacket(r) + '</div>'
       ).join('');
@@ -746,7 +790,7 @@
         '<div class="rf-scanning">'
       + '<div class="rf-eyebrow" style="margin: 0 auto 16px;">— Racket Finder</div>'
       + '<h1 class="rf-scanning-title">We zoeken voor je...</h1>'
-      + '<p class="rf-scanning-sub">12 rackets worden gewogen tegen je antwoorden.</p>'
+      + '<p class="rf-scanning-sub">30 rackets worden gewogen tegen je antwoorden.</p>'
       + '<div class="rf-scan-rackets">' + scanGridHtml + '</div>'
       + '<div class="rf-scanning-status" id="rf-status">Niveau-match berekenen...</div>'
       + '<div class="rf-scan-line"></div>'
@@ -821,7 +865,7 @@
              + '<div class="rf-result-match" data-target="' + targetScore + '">0%</div>'
              + '<div class="rf-result-match-label">Match score</div>'
              + '<div class="rf-result-price">€' + r.price + '</div>'
-             + '<a href="#" class="rf-result-cta" data-name="' + r.name + '">Bekijk →</a>'
+             + '<a href="' + r.searchUrl + '" target="_blank" rel="noopener" class="rf-result-cta" data-name="' + r.name + '">Vergelijk prijzen →</a>'
              + '</div></div>';
       }).join('');
 
@@ -832,7 +876,7 @@
       + '<p class="rf-results-sub">Gebaseerd op je antwoorden. De top-match scoort het hoogst op de combinatie van niveau, speelstijl, fysiek en budget. Niet de duurste — wel de juiste.</p>'
       + '</div>'
       + cardsHtml
-      + '<div class="rf-disclaimer"><p><strong style="color: var(--text); font-weight: 500;">Dit is een concept-versie.</strong> De racket-database telt nu 12 modellen — in de volledige versie worden dat er 60+. Affiliate-links naar Padelnuestro / Padel.shop / Decathlon komen straks. De score-engine zelf werkt al volledig.</p></div>'
+      + '<div class="rf-disclaimer"><p><strong style="color: var(--text); font-weight: 500;">Werkende versie met 30 rackets.</strong> "Vergelijk prijzen" opent Google Shopping — je ziet meteen waar het racket te koop is en voor welke prijs. Geen tracking, geen verborgen voorkeur. Database breidt verder uit naar 60+ modellen in komende updates.</p></div>'
       + '<div class="rf-restart"><button id="rf-restart">↻ Opnieuw zoeken</button></div>';
 
       // Count-up animation for match scores
@@ -856,12 +900,7 @@
         }, delay);
       });
 
-      wrap.querySelectorAll('.rf-result-cta').forEach(el => {
-        el.addEventListener('click', (e) => {
-          e.preventDefault();
-          alert('Affiliate-link komt in de volledige versie. Voor nu: Google "' + el.dataset.name + '" en je vindt hem.');
-        });
-      });
+      // Note: result-cta is now a working anchor tag, no JS click-handler needed
 
       document.getElementById('rf-restart').addEventListener('click', () => {
         state.step = 0; state.level = null; state.style = null;
