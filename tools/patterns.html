@@ -1366,15 +1366,15 @@ const STRATEGIES = [
         ballArc: 'chiquita'
       },
       {
-        text: 'B2 moet bukken en omhoog spelen. Antwoord komt traag en hoog.',
+        text: 'B2 moet bukken en omhoog spelen. Antwoord komt traag en hoog — kort en speelbaar voor A.',
         players: { A1: POS.A_DEFEND_L, A2: POS.A_DEFEND_R, B1: { x: -2.5, z: 4 }, B2: { x: 2, z: 1.5 } },
-        ball: { x: 0, y: 1.5, z: -5 },
+        ball: { x: 0, y: 1.8, z: -2 },
         ballArc: 'high-lob'
       },
       {
         text: 'A2 (en A1) doorgelopen naar het net en finishen met een volley.',
         players: { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: { x: -2.5, z: 4 }, B2: { x: 2.5, z: 4 } },
-        ball: { x: 0, y: 0.5, z: 0 }
+        ball: { x: 0, y: 0.5, z: -2 }
       }
     ]
   },
@@ -1391,9 +1391,9 @@ const STRATEGIES = [
     tip: '80% kracht, 100% plaatsing. Mik op de hoek waar zij- en achterglas elkaar raken — onspeelbaar.',
     steps: [
       {
-        text: 'Team A staat aan het net. Team B speelt een lob over A2 heen.',
+        text: 'Team A staat aan het net. Team B speelt een lob — bal stijgt over A2 heen.',
         players: { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
-        ball: { x: 3, y: 1, z: 9 }
+        ball: { x: 2.5, y: 2.5, z: 5 }
       },
       {
         text: 'A2 stapt zijwaarts mee, ziet dat smash niet kan. Kiest bandeja: geslepen, kortere zwaai.',
@@ -1429,7 +1429,7 @@ const STRATEGIES = [
       {
         text: 'A staat aan het net. B speelt een lob — niet diep genoeg, A2 ziet zijn kans.',
         players: { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
-        ball: { x: 3, y: 1, z: 8.5 }
+        ball: { x: 2.5, y: 2.5, z: 4 }
       },
       {
         text: 'A2 maakt continentale grip, racket hoog en gesloten. "Stenen ketsen"-positie.',
@@ -1499,31 +1499,31 @@ const STRATEGIES = [
     steps: [
       {
         text: 'Startpositie — B2 serveert van rechts, B1 al klaar bij de servicelijn. Team A wacht op return.',
-        players: { A1: POS.A_RETURN_L, A2: POS.A_RETURN_R, B1: { x: -2.5, z: 4 }, B2: POS.B_SERVE_R },
+        players: { A1: { x: -3.5, z: -5 }, A2: POS.A_RETURN_R, B1: { x: -2.5, z: 4 }, B2: POS.B_SERVE_R },
         ball: { x: 3.5, y: 0.9, z: 9 }
       },
       {
         text: 'Service breed naar het glas. B2 begint na de slag in te lopen, A2 stapt uit naar het glas.',
-        players: { A1: POS.A_RETURN_L, A2: { x: 4.5, z: -9 }, B1: { x: -2.5, z: 4 }, B2: { x: 3, z: 6.5 } },
+        players: { A1: { x: -3.5, z: -5 }, A2: { x: 4.5, z: -9 }, B1: { x: -2.5, z: 4 }, B2: { x: 3, z: 6.5 } },
         ball: { x: 4.5, y: 0.5, z: -9 },
         ballArc: 'serve'
       },
       {
         text: 'A2 returnt cross-court onder druk. B1 leest de bal en stapt naar binnen voor de volley.',
-        players: { A1: POS.A_RETURN_L, A2: { x: 4.5, z: -9 }, B1: { x: -2, z: 3 }, B2: { x: 3, z: 5 } },
+        players: { A1: { x: -3.5, z: -5 }, A2: { x: 4.5, z: -9 }, B1: { x: -2, z: 3 }, B2: { x: 3, z: 5 } },
         ball: { x: -2.5, y: 0.6, z: 2 },
         ballArc: 'drive'
       },
       {
         text: 'B1 volleert laag naar de voeten van A1. Tegelijk neemt B2 het rechterveld over.',
-        players: { A1: POS.A_RETURN_L, A2: POS.A_RETURN_R, B1: { x: -2, z: 3 }, B2: POS.B_NET_R },
-        ball: { x: -3.5, y: 0.3, z: -8 },
+        players: { A1: { x: -3.5, z: -5 }, A2: POS.A_RETURN_R, B1: { x: -2, z: 3 }, B2: POS.B_NET_R },
+        ball: { x: -3.5, y: 0.3, z: -5 },
         ballArc: 'volley'
       },
       {
         text: 'Volley landt bij de voeten van A1. Team B staat compleet aan het net en heeft de controle.',
-        players: { A1: POS.A_RETURN_L, A2: POS.A_RETURN_R, B1: POS.B_NET_L, B2: POS.B_NET_R },
-        ball: { x: -3.5, y: 0.3, z: -8 }
+        players: { A1: { x: -3.5, z: -5 }, A2: POS.A_RETURN_R, B1: POS.B_NET_L, B2: POS.B_NET_R },
+        ball: { x: -3.5, y: 0.2, z: -5 }
       }
     ]
   },
@@ -1542,7 +1542,7 @@ const STRATEGIES = [
       {
         text: 'Team A aan het net. B speelt een korte lob — fataal in de groene zone.',
         players: { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
-        ball: { x: 0, y: 1, z: 9 }
+        ball: { x: 1, y: 2.8, z: 2 }
       },
       {
         text: 'A2 herkent de korte lob. Hij positioneert onder de bal voor een full smash.',
@@ -1610,7 +1610,7 @@ const STRATEGIES = [
       {
         text: 'Beide A-spelers aan het net, formatie strak. Bal komt door het midden.',
         players: { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
-        ball: { x: 0, y: 0.8, z: 8.5 }
+        ball: { x: 0, y: 1.2, z: 4 }
       },
       {
         text: 'A2 (rechts, forehand naar het midden) roept "MIJN!" en stapt in.',
@@ -3475,7 +3475,7 @@ setTimeout(() => {
 }, 800);
 
 </script>
-  <div id="version-marker" style="position:fixed;bottom:4px;left:8px;z-index:99;font-family:'JetBrains Mono',monospace;font-size:9px;color:#d4ff00;opacity:0.35;letter-spacing:0.1em;pointer-events:none;">v17-patterns</div>
+  <div id="version-marker" style="position:fixed;bottom:4px;left:8px;z-index:99;font-family:'JetBrains Mono',monospace;font-size:9px;color:#d4ff00;opacity:0.35;letter-spacing:0.1em;pointer-events:none;">v28-patterns-fixed</div>
 
 </body>
 </html>
