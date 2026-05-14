@@ -1335,10 +1335,21 @@ const STRATEGIES = [
         ball: { x: -3.5, y: 0.3, z: 8.5 }
       },
       {
-        text: 'Net is veroverd. B speelt een verdedigende lob terug, A staat klaar voor de bandeja.',
+        text: 'B speelt een verdedigende lob terug — kort en speelbaar voor A.',
         players: { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
-        ball: { x: 2.5, y: 1, z: -3 },
+        ball: { x: 2.5, y: 2.5, z: -3 },
         ballArc: 'lob'
+      },
+      {
+        text: 'A2 vangt de lob op heuphoogte aan het net — klaar voor de bandeja-finish.',
+        players: { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
+        ball: { x: 2.5, y: 2.3, z: -3 }
+      },
+      {
+        text: 'Bandeja diep in B2\'s hoek. Net is veroverd én de druk is op.',
+        players: { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
+        ball: { x: 3.5, y: 0.4, z: 8 },
+        ballArc: 'bandeja'
       }
     ]
   },
@@ -1692,15 +1703,21 @@ const STRATEGIES = [
         ballArc: 'high-lob'
       },
       {
-        text: 'Bal stijgt hoog over het net. B moet kiezen: overhead spelen of laten stuiteren?',
-        players: { A1: { x: -3.5, z: -9 }, A2: { x: 3.5, z: -9 }, B1: POS.B_NET_L, B2: POS.B_NET_R },
+        text: 'Bal stijgt hoog over het net. B moet terug — overhead of laten stuiteren?',
+        players: { A1: { x: -3.5, z: -9 }, A2: { x: 3.5, z: -9 }, B1: { x: -2.5, z: 6 }, B2: { x: 2.5, z: 6 } },
         ball: { x: 0, y: 0.5, z: 9 },
         ballArc: 'high-lob'
       },
       {
-        text: 'B speelt zelf een bandeja terug. A staat klaar — uitwisseling is gereset.',
-        players: { A1: POS.A_DEFEND_L, A2: POS.A_DEFEND_R, B1: POS.B_NET_L, B2: { x: 3, z: -5 } },
-        ball: { x: 3, y: 1, z: -5 }
+        text: 'B2 sprint achteruit en kiest bandeja — defensief overhead met snij-spin.',
+        players: { A1: { x: -3.5, z: -9 }, A2: { x: 3.5, z: -9 }, B1: { x: -2.5, z: 6 }, B2: { x: 1, z: 8 } },
+        ball: { x: 1, y: 2.5, z: 8 }
+      },
+      {
+        text: 'Bandeja komt diep terug bij A2 — uitwisseling is gereset, geduld won.',
+        players: { A1: POS.A_DEFEND_L, A2: POS.A_DEFEND_R, B1: POS.B_NET_L, B2: { x: 2.5, z: 5 } },
+        ball: { x: 3, y: 1, z: -8 },
+        ballArc: 'bandeja'
       }
     ]
   }
@@ -3481,7 +3498,7 @@ setTimeout(() => {
 }, 800);
 
 </script>
-  <div id="version-marker" style="position:fixed;bottom:4px;left:8px;z-index:99;font-family:'JetBrains Mono',monospace;font-size:9px;color:#d4ff00;opacity:0.35;letter-spacing:0.1em;pointer-events:none;">v30-chiquita-5steps</div>
+  <div id="version-marker" style="position:fixed;bottom:4px;left:8px;z-index:99;font-family:'JetBrains Mono',monospace;font-size:9px;color:#d4ff00;opacity:0.35;letter-spacing:0.1em;pointer-events:none;">v31-all-finishes-visible</div>
 
 </body>
 </html>
