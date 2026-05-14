@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<!-- padellab v0.5 · spelregels · werkende beslisser -->
+<!-- padellab v0.6 · spelregels · FIP-verified -->
 <html lang="nl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Spelregels Beslisser — bal raakt achterglas dan grond. Punt voor wie? Officiële FIP-padelregels uitgelegd met 3D-rally-replay." />
+  <meta name="description" content="Spelregels Beslisser — alle padel-regel-discussies beantwoord, gebaseerd op de officiële FIP Rules of Padel 2026." />
   <meta name="theme-color" content="#050709" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="canonical" href="https://padelpatterns.com/tools/spelregels.html" />
@@ -54,26 +54,69 @@
       margin: 0 0 18px;
       color: var(--text);
     }
-    .sr-hero-title em {
-      font-style: normal;
-      color: var(--accent);
-    }
+    .sr-hero-title em { font-style: normal; color: var(--accent); }
     .sr-hero-lede {
       font-family: var(--font-body);
       font-size: clamp(17px, 2vw, 20px);
       line-height: 1.55;
       color: var(--text-dim);
       max-width: 680px;
-      margin: 0 0 40px;
+      margin: 0 0 28px;
     }
 
-    /* === SEARCH/FILTER BAR === */
+    /* === BASICS BANNER === */
+    .sr-basics {
+      background: rgba(212, 255, 0, 0.04);
+      border-left: 3px solid var(--accent);
+      padding: 22px 26px;
+      margin-bottom: 48px;
+    }
+    .sr-basics-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .sr-basics-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      letter-spacing: 0.02em;
+      color: var(--text);
+      margin: 0 0 14px;
+    }
+    .sr-basics ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 10px 24px;
+    }
+    .sr-basics li {
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.5;
+      padding-left: 22px;
+      position: relative;
+    }
+    .sr-basics li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-family: var(--font-display);
+    }
+    .sr-basics li strong { color: var(--accent); font-weight: 500; }
+
+    /* === SEARCH/FILTER === */
     .sr-search-bar {
       display: flex;
       gap: 8px;
       margin-bottom: 12px;
       flex-wrap: wrap;
-      align-items: center;
     }
     .sr-search-input {
       flex: 1;
@@ -131,7 +174,6 @@
       padding: 22px 22px 20px;
       cursor: pointer;
       transition: transform 0.2s, border-color 0.2s, box-shadow 0.25s;
-      position: relative;
       text-align: left;
       font-family: inherit;
       color: inherit;
@@ -181,7 +223,6 @@
       color: var(--accent);
       text-transform: uppercase;
     }
-
     .sr-empty {
       grid-column: 1 / -1;
       text-align: center;
@@ -209,7 +250,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* SVG court visualization */
     .sr-court-vis {
       aspect-ratio: 1 / 1.15;
       background: linear-gradient(135deg, #1e4d6f 0%, #2a6692 100%);
@@ -217,11 +257,8 @@
       overflow: hidden;
       border: 1px solid var(--border-light);
     }
-    .sr-court-vis svg {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
+    .sr-court-vis svg { width: 100%; height: 100%; display: block; }
+
     .sr-court-replay-controls {
       position: absolute;
       bottom: 12px; left: 50%;
@@ -260,7 +297,6 @@
       text-align: center;
     }
 
-    /* Verdict block */
     .sr-verdict-block { min-width: 0; }
     .sr-verdict-header {
       display: flex;
@@ -280,14 +316,8 @@
       color: var(--bg-night);
       text-transform: uppercase;
     }
-    .sr-verdict-badge.fout {
-      background: var(--accent-warm);
-      color: #ffffff;
-    }
-    .sr-verdict-badge.neutraal {
-      background: var(--border-medium);
-      color: var(--text);
-    }
+    .sr-verdict-badge.fout { background: var(--accent-warm); color: #ffffff; }
+    .sr-verdict-badge.let { background: var(--border-medium); color: var(--text); }
     .sr-verdict-title {
       font-family: var(--font-display);
       font-size: 26px;
@@ -303,10 +333,8 @@
       color: var(--text);
       margin: 0 0 24px;
     }
-    .sr-verdict-explain strong {
-      color: var(--accent);
-      font-weight: 500;
-    }
+    .sr-verdict-explain strong { color: var(--accent); font-weight: 500; }
+
     .sr-rule-ref {
       background: rgba(212, 255, 0, 0.04);
       border-left: 2px solid var(--accent);
@@ -338,11 +366,7 @@
       text-transform: uppercase;
       margin-bottom: 10px;
     }
-    .sr-whatif-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
+    .sr-whatif-list { display: flex; flex-direction: column; gap: 6px; }
     .sr-whatif-item {
       font-family: var(--font-body);
       font-size: 14px;
@@ -357,7 +381,6 @@
       align-items: center;
       gap: 8px;
       text-align: left;
-      font-family: var(--font-body);
       width: 100%;
     }
     .sr-whatif-item:hover {
@@ -373,7 +396,6 @@
       font-size: 14px;
     }
 
-    /* Placeholder when no situation selected */
     .sr-placeholder {
       text-align: center;
       padding: 48px 24px;
@@ -395,83 +417,13 @@
       letter-spacing: 0.02em;
     }
 
-    /* Steps annotations on the court */
-    .sr-step-label {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 9px;
-      fill: var(--text);
-      letter-spacing: 1;
-    }
-
-    /* Roadmap section */
-    .sr-roadmap {
-      margin-top: 80px;
-      padding-top: 48px;
-      border-top: 1px solid var(--border-light);
-    }
-    .sr-roadmap-title {
-      font-family: var(--font-display);
-      font-size: clamp(28px, 4vw, 40px);
-      letter-spacing: 0.01em;
-      color: var(--text);
-      line-height: 1.05;
-      margin: 8px 0 24px;
-    }
-    .sr-roadmap-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 14px;
-    }
-    .sr-roadmap-item {
-      background: var(--bg-card);
-      border: 1px solid var(--border-light);
-      padding: 20px 18px;
-    }
-    .sr-roadmap-status {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .sr-roadmap-status.done { color: var(--accent); }
-    .sr-roadmap-status.next { color: var(--accent-warm); }
-    .sr-roadmap-status.later { color: var(--text-faint); }
-    .sr-roadmap-status .dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: currentColor;
-    }
-    .sr-roadmap-status.done .dot { box-shadow: 0 0 8px var(--accent); }
-    .sr-roadmap-item h4 {
-      font-family: var(--font-display);
-      font-size: 18px;
-      letter-spacing: 0.02em;
-      color: var(--text);
-      margin: 0 0 4px;
-      line-height: 1.2;
-    }
-    .sr-roadmap-item p {
-      font-family: var(--font-body);
-      font-size: 13px;
-      color: var(--text-dim);
-      line-height: 1.45;
-      margin: 0;
-    }
-
     /* Mobile */
     @media (max-width: 768px) {
       .sr-wrap { padding: 100px 18px 60px; }
-      .sr-detail {
-        grid-template-columns: 1fr;
-        padding: 22px 18px;
-        gap: 24px;
-      }
+      .sr-detail { grid-template-columns: 1fr; padding: 22px 18px; gap: 24px; }
       .sr-hero-title { font-size: clamp(34px, 9vw, 52px); }
-      .sr-search-bar { flex-direction: column; align-items: stretch; }
+      .sr-basics ul { grid-template-columns: 1fr; }
+      .sr-search-bar { flex-direction: column; }
       .sr-search-input { width: 100%; }
     }
   </style>
@@ -500,15 +452,30 @@
   <div class="sr-wrap">
 
     <!-- HERO -->
-    <div class="sr-eyebrow"><span class="dot"></span> Tool · Werkende versie · 8 situaties</div>
+    <div class="sr-eyebrow"><span class="dot"></span> 17 situaties · FIP Rules of Padel 2026</div>
     <h1 class="sr-hero-title">
-      Bal raakt achterglas, dan grond.<br>
-      <em>Punt voor wie?</em>
+      Punt voor wie?<br>
+      <em>Hier het antwoord.</em>
     </h1>
     <p class="sr-hero-lede">
       Tijdens de wedstrijd geen tijd voor het FIP-reglement. Kies de situatie, bekijk de rally,
-      lees het oordeel met regel-verwijzing. Acht meest-voorkomende discussies, allemaal beantwoord.
+      lees het oordeel met regel-verwijzing.
     </p>
+
+    <!-- THE BASICS — fundamental rules everyone should know first -->
+    <div class="sr-basics">
+      <div class="sr-basics-label">— De basis · Onthoud deze regels</div>
+      <h2 class="sr-basics-title">De fundamentele padel-regels</h2>
+      <ul>
+        <li><strong>Bal moet eerst grond raken</strong> in opponents-helft vóór glas of hek geraakt wordt</li>
+        <li>Direct in glas of hek = <strong>punt verloren</strong> voor de slaande speler</li>
+        <li>Bal mag <strong>maar één keer stuiten</strong> op de grond per slag</li>
+        <li>Bij <strong>service</strong>: bal mag wel glas raken na stuit, hek raken = fout</li>
+        <li>Tijdens <strong>rally</strong>: na de eerste stuit mag bal alles raken (glas + hek)</li>
+        <li><strong>Bal raakt jou</strong> of je kleding = punt voor de tegenstander</li>
+        <li><strong>Net aanraken</strong> tijdens punt = punt voor de tegenstander</li>
+      </ul>
+    </div>
 
     <!-- SEARCH & FILTERS -->
     <div class="sr-search-bar">
@@ -516,64 +483,21 @@
     </div>
     <div class="sr-filter-chips" id="sr-filters">
       <button class="sr-chip active" data-cat="alle">Alle</button>
-      <button class="sr-chip" data-cat="glas">Glas-situaties</button>
+      <button class="sr-chip" data-cat="glas">Glas & hek</button>
       <button class="sr-chip" data-cat="service">Service</button>
       <button class="sr-chip" data-cat="net">Net</button>
       <button class="sr-chip" data-cat="lichaam">Lichaam & racket</button>
-      <button class="sr-chip" data-cat="overig">Overig</button>
+      <button class="sr-chip" data-cat="overig">Buiten de baan</button>
     </div>
 
-    <!-- SITUATION GRID — populated by JS -->
     <div class="sr-situations" id="sr-situations"></div>
 
-    <!-- DETAIL VIEW (initially placeholder, replaced when a situation is clicked) -->
     <div class="sr-placeholder" id="sr-placeholder">
       <strong>Kies hierboven een situatie</strong>
       Je krijgt de rally afgespeeld, het oordeel en de officiële regel-verwijzing.
     </div>
 
-    <div class="sr-detail" id="sr-detail">
-      <!-- Filled dynamically -->
-    </div>
-
-    <!-- ROADMAP -->
-    <section class="sr-roadmap">
-      <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.2em; color: var(--text-faint); text-transform: uppercase;">— Wat komt er nog bij?</div>
-      <h2 class="sr-roadmap-title">Bouw-roadmap</h2>
-
-      <div class="sr-roadmap-grid">
-        <div class="sr-roadmap-item">
-          <div class="sr-roadmap-status done"><span class="dot"></span>Live</div>
-          <h4>8 situaties</h4>
-          <p>De meest-gegoogled padel-regel-vragen, allemaal uitgewerkt.</p>
-        </div>
-        <div class="sr-roadmap-item">
-          <div class="sr-roadmap-status done"><span class="dot"></span>Live</div>
-          <h4>Animatie + replay</h4>
-          <p>Bal beweegt door de rally, stap-voor-stap door te spoelen.</p>
-        </div>
-        <div class="sr-roadmap-item">
-          <div class="sr-roadmap-status next"><span class="dot"></span>Volgende</div>
-          <h4>30+ situaties</h4>
-          <p>Uitbreiding naar alle voorkomende regel-discussies.</p>
-        </div>
-        <div class="sr-roadmap-item">
-          <div class="sr-roadmap-status next"><span class="dot"></span>Volgende</div>
-          <h4>3D-replay engine</h4>
-          <p>Hergebruik Patterns 3D voor echt realistische visualisatie.</p>
-        </div>
-        <div class="sr-roadmap-item">
-          <div class="sr-roadmap-status later"><span class="dot"></span>Later</div>
-          <h4>Meertalig (EN/ES)</h4>
-          <p>Padel is internationaal — de tool gaat mee.</p>
-        </div>
-        <div class="sr-roadmap-item">
-          <div class="sr-roadmap-status later"><span class="dot"></span>Later</div>
-          <h4>Quiz-modus</h4>
-          <p>"Test je regelkennis" — 10 random situaties, score aan het eind.</p>
-        </div>
-      </div>
-    </section>
+    <div class="sr-detail" id="sr-detail"></div>
 
   </div>
 
@@ -604,63 +528,90 @@
     </div>
     <div class="site-footer-bottom">
       <span>© 2026 PadelLab</span>
-      <span>v0.5 · spelregels beslisser</span>
+      <span>v0.6 · FIP Rules of Padel 2026</span>
     </div>
   </footer>
 
-  <div class="version-marker">v26-spelregels-werkend</div>
+  <div class="version-marker">v27-spelregels-fip</div>
 
   <script>
   (function() {
     'use strict';
 
     // ============================================================
-    // SITUATIES — 8 echte uitgewerkte FIP-regel-situaties
-    // Elke situatie heeft:
-    //   - id, category, title, description (voor de grid)
-    //   - rally: array van punten [x, y] in baan-coördinaten (0-300 breed, 0-360 hoog)
-    //     met type: 'racket', 'glass', 'floor', 'net', 'side'
-    //   - verdict: 'geldig' | 'fout' | 'neutraal'
-    //   - verdictTitle: korte uitkomst
-    //   - explain: HTML met uitleg
-    //   - rule: FIP-regel referentie tekst
-    //   - whatif: array van situatie-IDs die als variant gelden
+    // SITUATIES — 10 echte FIP-verified regel-situaties
+    // Court coordinates: 0-300 wide, 0-360 tall
+    // Top half = Team B (defenders), bottom half = Team A (servers/aanvallers)
+    // Net at y=180
     // ============================================================
     const SITUATIES = [
+      // === GLAS-SITUATIES ===
       {
-        id: 'achterglas-grond-zijglas',
+        id: 'directe-bal-tegen-achterglas',
         category: 'glas',
-        title: 'Achterglas → grond → zijglas',
-        description: 'Bal raakt eerst achterglas, valt op de grond, kaatst dan tegen het zijglas van de tegenstander. Geldig?',
+        title: 'Bal direct tegen achterglas (zonder stuit)',
+        description: 'Aanvaller slaat hard, bal vliegt direct tegen achterglas van tegenstander — geen stuit ervoor.',
         rally: [
-          { x: 200, y: 290, label: 'A slaat', type: 'racket' },
-          { x: 240, y: 55,  label: 'Achterglas', type: 'glass' },
-          { x: 230, y: 135, label: '1e stuit op grond', type: 'floor' },
-          { x: 257, y: 150, label: 'Zijglas', type: 'glass' }
+          { x: 200, y: 290, label: 'A slaat hard', type: 'racket' },
+          { x: 240, y: 55,  label: 'Direct tegen glas', type: 'glass' }
         ],
-        verdict: 'geldig',
-        verdictTitle: 'Punt voor Team A',
-        explain: 'De bal raakt eerst het <strong>achterglas</strong> van Team B (legaal, want eerst tegen het glas dan op de grond mag), valt dan op de grond <strong>binnen de baan</strong> (eerste stuit). Vanaf hier is het Team B\'s beurt om de bal voor de tweede stuit te raken. De aansluitende glas-aanraking is geen probleem — pas een tweede stuit zou een fout zijn.',
-        rule: 'FIP Rules of Padel — Een bal die het glas raakt en daarna stuit, is in spel. De tegenstander moet de bal voor de tweede stuit slaan.',
-        whatif: ['zijglas-dan-achterglas', 'twee-keer-stuit', 'hekwerk-boven-glas']
+        verdict: 'fout',
+        verdictTitle: 'Punt voor Team B',
+        explain: 'De fundamentele padel-regel: de bal moet <strong>eerst de grond raken</strong> in de helft van de tegenstander voordat hij glas (of hek) raakt. Direct tegen glas = punt verloren. Dit is de meest gebroken regel door tennis- en squashspelers die overstappen.',
+        rule: 'FIP Rules of Padel, Regel 10 — De bal moet stuiteren in de helft van de tegenstander voordat hij een wand of hek raakt. Direct contact met de wand vóór de stuit is een fout.',
+        whatif: ['stuit-dan-achterglas', 'directe-bal-tegen-hek', 'service-direct-tegen-glas']
       },
       {
-        id: 'zijglas-dan-achterglas',
+        id: 'stuit-dan-achterglas',
         category: 'glas',
-        title: 'Zijglas → achterglas → grond',
-        description: 'Bal raakt eerst zijglas, dan achterglas, en valt daarna op de grond. Geldig of fout?',
+        title: 'Stuit → achterglas → tegenstander slaat',
+        description: 'Bal stuit eerst op grond bij tegenstander, kaatst dan tegen achterglas. Tegenstander slaat hem terug. Geldig?',
         rally: [
           { x: 200, y: 290, label: 'A slaat', type: 'racket' },
-          { x: 257, y: 100, label: 'Zijglas', type: 'glass' },
+          { x: 220, y: 120, label: '1e stuit op grond', type: 'floor' },
           { x: 240, y: 55,  label: 'Achterglas', type: 'glass' },
-          { x: 220, y: 110, label: '1e stuit op grond', type: 'floor' }
+          { x: 210, y: 90,  label: 'B slaat terug', type: 'racket' }
         ],
         verdict: 'geldig',
-        verdictTitle: 'Punt voor Team A',
-        explain: 'De bal mag eerst <strong>meerdere glaswanden raken</strong> voordat ie de grond raakt — zolang de eerste stuit op de grond binnen de baan plaatsvindt. Team B moet de bal nu voor de tweede stuit terugslaan.',
-        rule: 'FIP Rules of Padel — De bal mag meerdere glaswanden raken voor de stuit. De eerste grondtraking moet binnen de baan zijn.',
-        whatif: ['achterglas-grond-zijglas', 'twee-keer-stuit', 'bal-blijft-tussen-glas']
+        verdictTitle: 'Punt gaat door',
+        explain: 'Zo hoort padel: bal stuit <strong>eerst op de grond</strong> in B\'s helft, daarna mag hij <strong>elke wand en zelfs het hek raken</strong>. B moet de bal terugslaan vóór de <strong>tweede stuit</strong>. Dit is de basis van alle wall-play in padel.',
+        rule: 'FIP Rules of Padel, Regel 12 — Als de bal na een geldige stuit in de helft van de tegenstander een wand of hek raakt, blijft hij in spel en moet vóór de tweede stuit teruggeslagen worden.',
+        whatif: ['stuit-dan-hek', 'directe-bal-tegen-achterglas', 'twee-keer-stuit']
       },
+      {
+        id: 'stuit-dan-hek',
+        category: 'glas',
+        title: 'Stuit → hek → tegenstander slaat',
+        description: 'Bal stuit eerst op grond, kaatst dan tegen het metalen hek. Tegenstander pakt hem op. Geldig?',
+        rally: [
+          { x: 200, y: 290, label: 'A slaat', type: 'racket' },
+          { x: 130, y: 100, label: '1e stuit op grond', type: 'floor' },
+          { x: 50,  y: 80,  label: 'Tegen zijhek', type: 'fence' },
+          { x: 90,  y: 100, label: 'B slaat terug', type: 'racket' }
+        ],
+        verdict: 'geldig',
+        verdictTitle: 'Punt gaat door',
+        explain: 'Een verrassing voor veel spelers: <strong>tijdens een rally mag de bal het hek raken</strong> — mits hij eerst de grond raakte. Anders dan bij de service! Het hek is officieel <strong>onderdeel van de baan</strong>. De stuit-tegen-hek bounce is wel onvoorspelbaar, dat maakt hekspel tactisch lastig.',
+        rule: 'FIP Rules of Padel, Regel 12 — Het hek en de mesh-frame in zijn geheel worden beschouwd als deel van de baan. Na een geldige stuit kan de bal het hek raken en blijft in spel.',
+        whatif: ['stuit-dan-achterglas', 'directe-bal-tegen-hek', 'service-tegen-hek']
+      },
+      {
+        id: 'directe-bal-tegen-hek',
+        category: 'glas',
+        title: 'Bal direct tegen hek (zonder stuit)',
+        description: 'Bal vliegt na de slag direct tegen het metalen hek van de tegenstander zonder eerst te stuiteren.',
+        rally: [
+          { x: 200, y: 290, label: 'A slaat', type: 'racket' },
+          { x: 60,  y: 50,  label: 'Direct tegen hek', type: 'fence' }
+        ],
+        verdict: 'fout',
+        verdictTitle: 'Punt voor Team B',
+        explain: 'Net als bij glas: bal moet <strong>eerst grond raken</strong> in opponents helft. Direct tegen het hek vliegen = punt verloren. Geen verschil tussen "bal zou anders uit zijn gegaan" of "bal vloog gewoon naar het hek" — beide foul.',
+        rule: 'FIP Rules of Padel, Regel 10 — De bal moet eerst stuiteren in de helft van de tegenstander voordat hij een wand, hek of installatie raakt.',
+        whatif: ['directe-bal-tegen-achterglas', 'stuit-dan-hek']
+      },
+
+      // === SERVICE-SITUATIES ===
       {
         id: 'service-raakt-lijn',
         category: 'service',
@@ -668,96 +619,215 @@
         description: 'Bal komt na onderhandse service precies op de servicelijn neer. Goed of fout?',
         rally: [
           { x: 200, y: 290, label: 'Server', type: 'racket' },
-          { x: 220, y: 180, label: 'Boven net', type: 'net' },
-          { x: 120, y: 120, label: 'Op servicelijn', type: 'floor' }
+          { x: 220, y: 180, label: 'Boven net', type: 'net-cross' },
+          { x: 90,  y: 120, label: 'Op servicelijn', type: 'floor' }
         ],
         verdict: 'geldig',
         verdictTitle: 'Geldige service',
-        explain: 'De lijn telt als <strong>onderdeel van het service-vak</strong>. Een bal die de servicelijn raakt — ook precies op de lijn — is geldig. Dit geldt ook voor de zij- en middenlijn van het service-vak.',
-        rule: 'FIP Rules of Padel — Een bal die een lijn raakt, wordt beschouwd als binnen het overeenkomstige vak.',
-        whatif: ['service-na-net-binnen', 'service-tegen-glas', 'service-buiten-vak']
+        explain: 'De lijn telt als <strong>onderdeel van het service-vak</strong>. Een bal die de servicelijn raakt — ook precies op de lijn — is geldig. Geldt ook voor de zij- en middenlijn van het service-vak.',
+        rule: 'FIP Rules of Padel, Regel 4 — Een bal die een lijn raakt wordt beschouwd als binnen het overeenkomstige vak.',
+        whatif: ['service-tegen-glas', 'service-tegen-hek', 'service-raakt-net-binnen']
       },
       {
-        id: 'service-na-net-binnen',
+        id: 'service-raakt-net-binnen',
         category: 'service',
-        title: 'Service raakt net, valt in service-vak',
-        description: 'Service raakt de bovenkant van het net en valt daarna in het service-vak. Geldig of let?',
+        title: 'Service raakt net, valt in vak',
+        description: 'Service raakt netband, valt daarna in het service-vak. Geldig of let?',
         rally: [
           { x: 200, y: 290, label: 'Server', type: 'racket' },
           { x: 150, y: 180, label: 'Raakt net', type: 'net' },
-          { x: 120, y: 140, label: 'In service-vak', type: 'floor' }
+          { x: 110, y: 140, label: 'In service-vak', type: 'floor' }
         ],
-        verdict: 'neutraal',
+        verdict: 'let',
         verdictTitle: 'Let — service overspelen',
-        explain: 'Bij padel telt dit als <strong>"let"</strong>: de service moet worden overgespeeld. Anders dan in tennis krijg je geen punt of fout — je krijgt simpelweg een nieuwe poging. Dit geldt ook als de bal het net raakt en daarna in het service-vak komt.',
-        rule: 'FIP Rules of Padel — Een service die het net raakt en daarna in het correcte service-vak valt, wordt als "let" beschouwd en wordt overgespeeld.',
-        whatif: ['service-raakt-lijn', 'service-tegen-glas', 'service-buiten-vak']
+        explain: 'Bij padel telt dit als <strong>"let"</strong>: de service moet worden overgespeeld. Anders dan in tennis krijg je geen punt of fout — je krijgt simpelweg een nieuwe poging. Eerste service let = eerste service opnieuw. Tweede service let = tweede service opnieuw.',
+        rule: 'FIP Rules of Padel, Regel 9 — Een service die het net raakt en daarna in het correcte service-vak valt zonder eerst het hek te raken, wordt als "let" beschouwd en wordt overgespeeld.',
+        whatif: ['service-raakt-net-buiten', 'service-raakt-lijn', 'service-tegen-glas']
       },
       {
-        id: 'bal-tegen-shirt',
-        category: 'lichaam',
-        title: 'Bal raakt je shirt',
-        description: 'Bal komt vol op je shirt voordat ie de grond raakt — punt voor jou of de tegenstander?',
+        id: 'service-tegen-glas',
+        category: 'service',
+        title: 'Service: stuit → glas (geen hek)',
+        description: 'Service stuit in vak, kaatst tegen achterglas. Vervolgens slaat ontvanger hem terug. Geldig?',
         rally: [
-          { x: 100, y: 70,  label: 'B slaat', type: 'racket' },
-          { x: 130, y: 200, label: 'Raakt shirt', type: 'floor' }
+          { x: 200, y: 290, label: 'Server', type: 'racket' },
+          { x: 110, y: 140, label: 'Stuit in service-vak', type: 'floor' },
+          { x: 90,  y: 55,  label: 'Achterglas', type: 'glass' },
+          { x: 110, y: 90,  label: 'Ontvanger slaat', type: 'racket' }
+        ],
+        verdict: 'geldig',
+        verdictTitle: 'Geldige service',
+        explain: 'Stuit in het correcte service-vak gevolgd door <strong>glas</strong> is geldig. De ontvanger moet hem nu terugslaan vóór de tweede stuit. De service-regel verbiedt alleen contact met het <strong>hek</strong> tijdens de service.',
+        rule: 'FIP Rules of Padel, Regel 6 — Na de eerste stuit in het service-vak mag de bal het glas raken en blijft de service geldig.',
+        whatif: ['service-tegen-hek', 'service-direct-tegen-glas', 'service-raakt-lijn']
+      },
+      {
+        id: 'service-tegen-hek',
+        category: 'service',
+        title: 'Service: stuit → hek (fout!)',
+        description: 'Service stuit in vak, kaatst dan tegen het metalen hek. Geldig of fout?',
+        rally: [
+          { x: 200, y: 290, label: 'Server', type: 'racket' },
+          { x: 110, y: 140, label: 'Stuit in service-vak', type: 'floor' },
+          { x: 50,  y: 100, label: 'Tegen zijhek (FOUT)', type: 'fence' }
         ],
         verdict: 'fout',
-        verdictTitle: 'Punt voor de tegenstander',
-        explain: 'Wanneer de bal je <strong>lichaam, kleding of iets dat je draagt</strong> raakt (shirt, broek, pet, bril, ring) voordat ie de grond raakt — verlies je het punt. Niet of het opzettelijk is, maakt niet uit. Niet of je net je arm wegtrekt — maakt niet uit.',
-        rule: 'FIP Rules of Padel — Een speler verliest het punt als de bal in spel het lichaam, kleding of een persoonlijk voorwerp van die speler raakt.',
-        whatif: ['racket-buiten-baan', 'bal-blijft-tussen-glas']
+        verdictTitle: 'Service-fout',
+        explain: 'Dit is de <strong>belangrijkste uitzondering</strong> op de "alles mag na de stuit"-regel: bij een service mag de bal <strong>niet het hek raken</strong> na de eerste stuit. Wel het glas, niet het hek. Dit voorkomt te aggressieve services en houdt rally\'s tactisch.',
+        rule: 'FIP Rules of Padel, Regel 4 — Een service is een fout als de bal na de stuit in het service-vak het hek raakt vóór de tweede stuit.',
+        whatif: ['service-tegen-glas', 'stuit-dan-hek', 'service-direct-tegen-glas']
       },
+      {
+        id: 'service-direct-tegen-glas',
+        category: 'service',
+        title: 'Service direct tegen glas (geen stuit)',
+        description: 'Server slaat te diep — bal vliegt direct tegen achterglas zonder eerst in service-vak te stuiteren.',
+        rally: [
+          { x: 200, y: 290, label: 'Server', type: 'racket' },
+          { x: 220, y: 180, label: 'Over net', type: 'net-cross' },
+          { x: 100, y: 55,  label: 'Direct tegen glas (FOUT)', type: 'glass' }
+        ],
+        verdict: 'fout',
+        verdictTitle: 'Service-fout',
+        explain: 'Service moet <strong>eerst stuiteren in het correcte service-vak</strong>. Direct tegen het glas vliegen telt als out, ook al was de richting goed. De stuit moet binnen het service-vak (of op de lijn) gebeuren.',
+        rule: 'FIP Rules of Padel, Regel 4 — De bal moet stuiteren binnen of op de lijn van het service-vak voor de service geldig is.',
+        whatif: ['service-tegen-glas', 'directe-bal-tegen-achterglas', 'service-raakt-lijn']
+      },
+
+      // === NET-SITUATIES ===
       {
         id: 'bal-rolt-over-net',
         category: 'net',
-        title: 'Bal rolt over het net',
-        description: 'Bal raakt netband, rolt over en valt aan de andere kant. Wel of geen punt?',
+        title: 'Bal rolt over het net (tijdens rally)',
+        description: 'Bal raakt netband tijdens rally, rolt erover en valt aan de andere kant. Wel of geen punt?',
         rally: [
           { x: 100, y: 290, label: 'A slaat', type: 'racket' },
-          { x: 145, y: 180, label: 'Rolt over net', type: 'net' },
+          { x: 145, y: 180, label: 'Raakt netband', type: 'net' },
           { x: 155, y: 200, label: 'Valt over', type: 'floor' }
         ],
         verdict: 'geldig',
-        verdictTitle: 'Punt voor Team A',
-        explain: 'Een bal die <strong>over het net heen gaat — ook door eroverheen te rollen</strong> — telt gewoon. De netband is geen "obstakel": als de bal er overheen komt en op de andere helft binnen de lijnen landt, is hij in spel. Behalve tijdens de service (dan is het een let).',
-        rule: 'FIP Rules of Padel — Tijdens de rally is een bal die het net raakt en alsnog de andere helft bereikt binnen de lijnen, in spel.',
-        whatif: ['service-na-net-binnen', 'achterglas-grond-zijglas']
+        verdictTitle: 'Punt gaat door',
+        explain: 'Een bal die <strong>tijdens een rally</strong> de netband raakt en over gaat — telt gewoon. De netband is geen "obstakel" tijdens de rally. B moet hem terugslaan vóór de tweede stuit. <strong>Let op:</strong> bij service zou dit een "let" zijn (overspelen), niet hetzelfde als hier.',
+        rule: 'FIP Rules of Padel, Regel 12 — Tijdens een rally is een bal die het net raakt en op de andere helft binnen de lijnen landt, in spel.',
+        whatif: ['service-raakt-net-binnen', 'racket-raakt-net', 'stuit-dan-achterglas']
       },
       {
-        id: 'racket-buiten-baan',
-        category: 'lichaam',
-        title: 'Racket raakt iets buiten de baan',
-        description: 'Je racket raakt het hek, glas of iets anders buiten de baan tijdens je slag.',
+        id: 'racket-raakt-net',
+        category: 'net',
+        title: 'Racket raakt het net tijdens slag',
+        description: 'Speler reikt over net heen of racket raakt de bovenkant van het net tijdens follow-through.',
         rally: [
-          { x: 200, y: 290, label: 'Speler', type: 'racket' },
-          { x: 250, y: 320, label: 'Racket raakt hek', type: 'glass' }
-        ],
-        verdict: 'fout',
-        verdictTitle: 'Punt voor de tegenstander',
-        explain: 'Als je <strong>racket iets buiten de baan raakt</strong> (hekwerk, glaswand van buiten, dak) tijdens of vlak na je slag — verlies je het punt. Ook als je de bal nog succesvol terug speelt: het racket-contact met de omgeving telt al als fout.',
-        rule: 'FIP Rules of Padel — Een speler verliest het punt als zijn racket buiten de baan een vast element van de installatie raakt.',
-        whatif: ['bal-tegen-shirt', 'hekwerk-boven-glas']
-      },
-      {
-        id: 'hekwerk-boven-glas',
-        category: 'overig',
-        title: 'Bal raakt hekwerk boven glas',
-        description: 'Bal vliegt over het glas en raakt het metalen hekwerk daarboven. Telt dat?',
-        rally: [
-          { x: 200, y: 290, label: 'A slaat', type: 'racket' },
-          { x: 240, y: 30,  label: 'Raakt hek (boven glas)', type: 'glass' }
+          { x: 200, y: 290, label: 'A slaat door', type: 'racket' },
+          { x: 220, y: 180, label: 'Racket raakt net', type: 'net' }
         ],
         verdict: 'fout',
         verdictTitle: 'Punt voor Team B',
-        explain: 'Alleen het <strong>glas en de eerste stuit-op-de-grond</strong> tellen als geldige aanraking. Het metalen hekwerk boven het glas is <strong>geen onderdeel van het speelvlak</strong>. Bal die het raakt = uit de baan = punt voor de tegenstander.',
-        rule: 'FIP Rules of Padel — Het speelvlak omvat de muren (glas + metaal binnen de hoogte) tot maximaal 3m. Daarboven wordt de bal als uit beschouwd.',
-        whatif: ['achterglas-grond-zijglas', 'bal-blijft-tussen-glas']
+        explain: '<strong>Net-aanraking is altijd fout</strong>, ongeacht hoe of waarom. Racket, lichaam, kleding, haren — als iets van jou het net raakt terwijl de bal in spel is, verlies je het punt. Geen uitzonderingen. Veel beginners doen dit onbewust bij een follow-through over het net.',
+        rule: 'FIP Rules of Padel, Regel 13 — Een speler verliest het punt als hij of een ding dat hij draagt het net, de netpalen, of de tensiekabel raakt terwijl de bal in spel is.',
+        whatif: ['bal-tegen-shirt', 'bal-rolt-over-net', 'reach-over-net']
+      },
+
+      // === LICHAAM ===
+      {
+        id: 'bal-tegen-shirt',
+        category: 'lichaam',
+        title: 'Bal raakt je shirt / lichaam',
+        description: 'Bal komt vol op je shirt of lichaam vóór hij de grond raakt — punt voor jou of de tegenstander?',
+        rally: [
+          { x: 100, y: 70,  label: 'B slaat', type: 'racket' },
+          { x: 130, y: 200, label: 'Raakt jouw shirt', type: 'body' }
+        ],
+        verdict: 'fout',
+        verdictTitle: 'Punt voor de tegenstander',
+        explain: 'Wanneer de bal je <strong>lichaam, kleding of iets dat je draagt</strong> raakt (shirt, broek, pet, bril, ring, polsbandje) voordat ie de grond raakt — verlies je het punt. Of het opzettelijk is, maakt niet uit. Geen "ik trok mijn arm net weg"-discussie mogelijk.',
+        rule: 'FIP Rules of Padel, Regel 13 — Een speler verliest het punt als de bal in spel het lichaam, kleding of een persoonlijk voorwerp van die speler raakt.',
+        whatif: ['racket-buiten-baan', 'racket-raakt-net', 'dubbele-tik']
+      },
+      {
+        id: 'dubbele-tik',
+        category: 'lichaam',
+        title: 'Racket raakt de bal twee keer',
+        description: 'Tijdens één slag tikt het racket de bal twee keer (eerst frame, dan oppervlak).',
+        rally: [
+          { x: 200, y: 290, label: 'A slaat', type: 'racket' },
+          { x: 200, y: 285, label: 'Dubbele tik', type: 'body' }
+        ],
+        verdict: 'fout',
+        verdictTitle: 'Punt voor de tegenstander',
+        explain: '<strong>Twee contacten in één slag = punt verloren.</strong> Uitzondering: per ongeluk frame-en-oppervlak in één doorgaande beweging is meestal toegestaan, mits het echt één swing was. Bewuste dubbele tik (carry / dirigeren) altijd fout.',
+        rule: 'FIP Rules of Padel, Regel 13 — Een speler mag de bal slechts één keer raken per slag. Twee contacten = fout.',
+        whatif: ['bal-tegen-shirt', 'racket-buiten-baan']
+      },
+
+      // === BUITEN DE BAAN ===
+      {
+        id: 'racket-buiten-baan',
+        category: 'overig',
+        title: 'Racket raakt hek buiten de baan',
+        description: 'Je staat buiten de baan om een lange bal terug te slaan, maar je racket raakt het hek aan de buitenkant.',
+        rally: [
+          { x: 200, y: 290, label: 'Speler buiten baan', type: 'racket' },
+          { x: 280, y: 320, label: 'Racket raakt hek buiten', type: 'fence' }
+        ],
+        verdict: 'fout',
+        verdictTitle: 'Punt voor de tegenstander',
+        explain: 'Als je <strong>racket iets buiten de baan raakt</strong> (extern hekwerk, paaltje, lichtmast) tijdens of vlak na je slag — verlies je het punt. Ook als je de bal nog wel terug speelt. De buitenkant van de constructie hoort niet bij het speelvlak.',
+        rule: 'FIP Rules of Padel, Regel 13 — Een speler verliest het punt als zijn racket of lichaam tijdens de slag een element raakt dat niet tot het speelvlak behoort.',
+        whatif: ['bal-tegen-shirt', 'bal-buiten-baan-spelen']
+      },
+      {
+        id: 'bal-buiten-baan-spelen',
+        category: 'overig',
+        title: 'Bal achter glas vandaan halen',
+        description: 'Smash van tegenstander stuit, vliegt over je glas, je rent door de deur naar buiten om hem terug te slaan.',
+        rally: [
+          { x: 100, y: 70,  label: 'B smasht', type: 'racket' },
+          { x: 120, y: 250, label: 'Stuit op grond', type: 'floor' },
+          { x: 50,  y: 340, label: 'Over zijglas heen', type: 'glass-over' },
+          { x: 10,  y: 340, label: 'Jij slaat van buiten', type: 'racket' }
+        ],
+        verdict: 'geldig',
+        verdictTitle: 'Punt gaat door',
+        explain: 'Een van de meest <strong>spectaculaire padel-momenten</strong>: de "salida". Als de bal eerst stuit op jouw helft en daarna over het glas naar buiten gaat, mag je door de deur naar buiten lopen om hem terug te slaan — vóór de tweede stuit. Voorwaarde: de baan moet hiervoor zijn ingericht (open zijkanten, voldoende ruimte).',
+        rule: 'FIP Rules of Padel, Regel 14 — Spelers mogen buiten de baan komen om een bal terug te slaan, mits de baan-configuratie dit toestaat en de bal eerst stuit op de eigen helft.',
+        whatif: ['stuit-dan-achterglas', 'racket-buiten-baan', 'bal-hek-boven-glas']
+      },
+      {
+        id: 'bal-hek-boven-glas',
+        category: 'overig',
+        title: 'Bal raakt hek-frame boven glas',
+        description: 'Bal stuit, kaatst omhoog tegen het metalen frame bovenop het hek (boven de 3m glashoogte).',
+        rally: [
+          { x: 200, y: 290, label: 'A slaat', type: 'racket' },
+          { x: 130, y: 100, label: 'Stuit in baan', type: 'floor' },
+          { x: 60,  y: 35,  label: 'Tegen hek-frame', type: 'fence' }
+        ],
+        verdict: 'geldig',
+        verdictTitle: 'Punt gaat door',
+        explain: 'Verwarrend maar belangrijk: <strong>het complete hek-frame tot 4m hoogte hoort bij de baan</strong>. Als de bal eerst geldig stuit en daarna het frame raakt — speel je door. Dak, lichten, en alles buiten de baan-constructie = wél fout. De hoogte tot 4m is altijd onderdeel van het speelveld.',
+        rule: 'FIP Rules of Padel, Regel 12 — Het mesh-hek en frame in zijn geheel (tot 4m hoogte) wordt beschouwd als deel van het speelveld.',
+        whatif: ['stuit-dan-hek', 'bal-buiten-baan-spelen', 'twee-keer-stuit']
+      },
+      {
+        id: 'twee-keer-stuit',
+        category: 'overig',
+        title: 'Bal stuit twee keer op de grond',
+        description: 'Tegenstander komt niet op tijd bij de bal. Bal stuit twee keer. Punt af?',
+        rally: [
+          { x: 200, y: 290, label: 'A slaat', type: 'racket' },
+          { x: 110, y: 100, label: '1e stuit', type: 'floor' },
+          { x: 110, y: 130, label: '2e stuit', type: 'floor' }
+        ],
+        verdict: 'fout',
+        verdictTitle: 'Punt voor Team A',
+        explain: 'De <strong>twee-stuit-regel</strong> is de simpelste in padel: bal mag maar één keer de grond raken voordat je hem terugslaat. Tweede stuit = punt voor de tegenstander. Tussen de eerste stuit en je slag mag de bal wel glas of hek raken — maar tweede stuit op de grond = einde.',
+        rule: 'FIP Rules of Padel, Regel 13 — Een speler verliest het punt als de bal twee keer stuit voordat hij teruggeslagen wordt.',
+        whatif: ['stuit-dan-achterglas', 'stuit-dan-hek', 'bal-buiten-baan-spelen']
       }
     ];
 
     // ============================================================
-    // RENDER GRID
+    // STATE & RENDERING
     // ============================================================
     const gridEl = document.getElementById('sr-situations');
     const placeholderEl = document.getElementById('sr-placeholder');
@@ -770,11 +840,11 @@
     let activeSituationId = null;
 
     const categoryLabels = {
-      glas: 'Glas-situaties',
+      glas: 'Glas & hek',
       service: 'Service',
       net: 'Net',
       lichaam: 'Lichaam & racket',
-      overig: 'Overig'
+      overig: 'Buiten de baan'
     };
 
     function renderGrid() {
@@ -805,36 +875,24 @@
       }).join('');
 
       gridEl.querySelectorAll('.sr-situation-card').forEach(btn => {
-        btn.addEventListener('click', () => {
-          openSituation(btn.dataset.id);
-        });
+        btn.addEventListener('click', () => openSituation(btn.dataset.id));
       });
     }
 
-    // ============================================================
-    // RENDER DETAIL VIEW WITH ANIMATED COURT
-    // ============================================================
     function openSituation(id) {
       const s = SITUATIES.find(x => x.id === id);
       if (!s) return;
-
       activeSituationId = id;
       renderGrid();
       renderDetail(s);
-
-      // Scroll detail into view (smooth)
-      setTimeout(() => {
-        detailEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 60);
+      setTimeout(() => detailEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60);
     }
 
     function renderDetail(s) {
       placeholderEl.style.display = 'none';
       detailEl.classList.add('visible');
-
-      // Reset animation
       detailEl.style.animation = 'none';
-      void detailEl.offsetWidth; // trigger reflow
+      void detailEl.offsetWidth;
       detailEl.style.animation = '';
 
       const whatifHtml = s.whatif.map(id => {
@@ -844,11 +902,12 @@
       }).join('');
 
       const totalSteps = s.rally.length;
+      const verdictLabel = s.verdict === 'geldig' ? 'Geldig' : s.verdict === 'fout' ? 'Fout' : 'Let';
 
       detailEl.innerHTML =
         '<div class="sr-court-vis">'
       + '<svg viewBox="0 0 300 360" xmlns="http://www.w3.org/2000/svg" id="sr-court-svg">'
-      + buildCourtSVG(s)
+      + buildCourtSVG()
       + '</svg>'
       + '<div class="sr-court-replay-controls">'
       + '<button class="sr-replay-btn" id="sr-step-back" title="Vorige stap">‹</button>'
@@ -859,7 +918,7 @@
       + '</div>'
       + '<div class="sr-verdict-block">'
       + '<div class="sr-verdict-header">'
-      + '<span class="sr-verdict-badge ' + s.verdict + '">' + (s.verdict === 'geldig' ? 'Geldig' : s.verdict === 'fout' ? 'Fout' : 'Let') + '</span>'
+      + '<span class="sr-verdict-badge ' + s.verdict + '">' + verdictLabel + '</span>'
       + '<h3 class="sr-verdict-title">' + s.verdictTitle + '</h3>'
       + '</div>'
       + '<p class="sr-verdict-explain">' + s.explain + '</p>'
@@ -870,27 +929,18 @@
       + (whatifHtml ? '<div class="sr-whatif"><div class="sr-whatif-label">— Wat als ...</div><div class="sr-whatif-list">' + whatifHtml + '</div></div>' : '')
       + '</div>';
 
-      // Bind what-if buttons
       detailEl.querySelectorAll('.sr-whatif-item').forEach(btn => {
         btn.addEventListener('click', () => openSituation(btn.dataset.id));
       });
 
-      // Animate the rally
       startRallyAnimation(s);
-
-      // Bind replay controls
       document.getElementById('sr-step-play').addEventListener('click', () => startRallyAnimation(s));
       document.getElementById('sr-step-fwd').addEventListener('click', () => stepRally(s, +1));
       document.getElementById('sr-step-back').addEventListener('click', () => stepRally(s, -1));
     }
 
-    // ============================================================
-    // COURT SVG — top-down padel court, static elements
-    // ============================================================
-    function buildCourtSVG(s) {
+    function buildCourtSVG() {
       let svg = '';
-
-      // Defs
       svg += '<defs>'
            + '<linearGradient id="srfloor" x1="0%" y1="0%" x2="0%" y2="100%">'
            + '<stop offset="0%" stop-color="#1e4d6f"/>'
@@ -902,35 +952,37 @@
            + '</filter>'
            + '</defs>';
 
-      // Floor
+      // Floor (the play area is 40-260 wide × 30-330 tall)
       svg += '<rect x="40" y="30" width="220" height="300" fill="url(#srfloor)" stroke="rgba(212,255,0,0.15)" stroke-width="0.8"/>';
-
       // Service lines
       svg += '<line x1="40" y1="120" x2="260" y2="120" stroke="rgba(255,255,255,0.55)" stroke-width="1.2"/>';
       svg += '<line x1="40" y1="240" x2="260" y2="240" stroke="rgba(255,255,255,0.55)" stroke-width="1.2"/>';
       svg += '<line x1="150" y1="120" x2="150" y2="240" stroke="rgba(255,255,255,0.55)" stroke-width="1.2"/>';
-
       // Net
       svg += '<line x1="36" y1="180" x2="264" y2="180" stroke="rgba(255,255,255,0.95)" stroke-width="2"/>';
       svg += '<circle cx="36" cy="180" r="3" fill="rgba(255,255,255,0.6)"/>';
       svg += '<circle cx="264" cy="180" r="3" fill="rgba(255,255,255,0.6)"/>';
-
-      // Glass walls
-      svg += '<rect x="40" y="30" width="220" height="300" fill="none" stroke="rgba(180,220,255,0.25)" stroke-width="1.5"/>';
-
-      // Players (positions depend on the situation but we'll show generic)
+      // Glass walls (back) - drawn slightly thicker on the back ends
+      svg += '<rect x="40" y="30" width="220" height="6" fill="none" stroke="rgba(180,220,255,0.4)" stroke-width="1.5"/>';
+      svg += '<rect x="40" y="324" width="220" height="6" fill="none" stroke="rgba(180,220,255,0.4)" stroke-width="1.5"/>';
+      // Mesh fence (sides) - drawn as dashed line
+      svg += '<line x1="40" y1="30" x2="40" y2="330" stroke="rgba(200,200,200,0.4)" stroke-width="1.5" stroke-dasharray="4 3"/>';
+      svg += '<line x1="260" y1="30" x2="260" y2="330" stroke="rgba(200,200,200,0.4)" stroke-width="1.5" stroke-dasharray="4 3"/>';
+      // Wall labels
+      svg += '<text x="150" y="14" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="6.5" fill="rgba(180,220,255,0.55)" letter-spacing="1">— GLAS (achterwand) —</text>';
+      svg += '<text x="150" y="346" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="6.5" fill="rgba(180,220,255,0.55)" letter-spacing="1">— GLAS (achterwand) —</text>';
+      svg += '<text x="22" y="180" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="6" fill="rgba(200,200,200,0.5)" letter-spacing="0.5" transform="rotate(-90 22 180)">— HEK —</text>';
+      svg += '<text x="278" y="180" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="6" fill="rgba(200,200,200,0.5)" letter-spacing="0.5" transform="rotate(90 278 180)">— HEK —</text>';
+      // Players
       svg += '<circle cx="100" cy="290" r="6" fill="#ff3d00"/>';
       svg += '<circle cx="200" cy="290" r="6" fill="#ffaa00"/>';
       svg += '<circle cx="100" cy="70" r="6" fill="#00d4ff"/>';
       svg += '<circle cx="200" cy="70" r="6" fill="#2196f3"/>';
-
-      // Labels
-      svg += '<text x="150" y="22" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="7" fill="rgba(255,255,255,0.4)" letter-spacing="1.5">TEAM B</text>';
-      svg += '<text x="150" y="348" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="7" fill="rgba(255,255,255,0.4)" letter-spacing="1.5">TEAM A</text>';
-
-      // Container for the animated rally — populated by JS
+      // Team labels
+      svg += '<text x="150" y="60" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="7" fill="rgba(255,255,255,0.4)" letter-spacing="1.5">TEAM B</text>';
+      svg += '<text x="150" y="310" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="7" fill="rgba(255,255,255,0.4)" letter-spacing="1.5">TEAM A</text>';
+      // Rally layer
       svg += '<g id="sr-rally-layer"></g>';
-
       return svg;
     }
 
@@ -951,30 +1003,21 @@
       const counter = document.getElementById('sr-step-counter');
       if (counter) counter.textContent = '1 / ' + s.rally.length;
 
-      // Animate step by step
-      let stepIdx = 0;
-      const STEP_DURATION = 800; // ms per step
+      const STEP_DURATION = 850;
       const stepStart = performance.now();
 
       function frame(now) {
         const elapsed = now - stepStart;
-        const targetStep = Math.min(Math.floor(elapsed / STEP_DURATION) + 1, s.rally.length);
-
-        // Render up to targetStep
         renderRallyTo(s, Math.min(elapsed / STEP_DURATION + 1, s.rally.length));
-
         if (counter) counter.textContent = Math.min(Math.ceil(elapsed / STEP_DURATION + 1), s.rally.length) + ' / ' + s.rally.length;
-
         if (elapsed < STEP_DURATION * (s.rally.length - 1) + 600) {
           rallyAnimRAF = requestAnimationFrame(frame);
         } else {
-          // Done — show full rally
           renderRallyTo(s, s.rally.length);
           if (counter) counter.textContent = s.rally.length + ' / ' + s.rally.length;
           rallyCurrentStep = s.rally.length - 1;
         }
       }
-
       rallyAnimRAF = requestAnimationFrame(frame);
     }
 
@@ -986,7 +1029,6 @@
       if (counter) counter.textContent = (rallyCurrentStep + 1) + ' / ' + s.rally.length;
     }
 
-    // Render rally up to "progress" steps (can be fractional for animation)
     function renderRallyTo(s, progress) {
       const layer = document.getElementById('sr-rally-layer');
       if (!layer) return;
@@ -995,11 +1037,10 @@
       const fullStep = Math.floor(progress);
       const partial = progress - fullStep;
 
-      // Draw paths between consecutive points (completed segments)
+      // Paths between completed points
       for (let i = 0; i < fullStep && i < s.rally.length - 1; i++) {
         const a = s.rally[i];
         const b = s.rally[i + 1];
-        // Curved path between them
         const cx = (a.x + b.x) / 2 + (b.y - a.y) * 0.12;
         const cy = (a.y + b.y) / 2 - (b.x - a.x) * 0.12;
         layer.insertAdjacentHTML('beforeend',
@@ -1007,44 +1048,34 @@
           + 'fill="none" stroke="rgba(212,255,0,0.5)" stroke-width="1.5" stroke-dasharray="3 3"/>');
       }
 
-      // Draw partial path for current step (if animating)
+      // Partial path for animating segment
       if (partial > 0 && fullStep < s.rally.length - 1) {
         const a = s.rally[fullStep];
         const b = s.rally[fullStep + 1];
         const cx = (a.x + b.x) / 2 + (b.y - a.y) * 0.12;
         const cy = (a.y + b.y) / 2 - (b.x - a.x) * 0.12;
-
-        // Quadratic bezier interpolation at t=partial
         const t = partial;
         const u = 1 - t;
         const px = u*u*a.x + 2*u*t*cx + t*t*b.x;
         const py = u*u*a.y + 2*u*t*cy + t*t*b.y;
-
-        // Partial path
         layer.insertAdjacentHTML('beforeend',
           '<path d="M ' + a.x + ',' + a.y + ' Q ' + cx + ',' + cy + ' ' + px + ',' + py + '" '
           + 'fill="none" stroke="rgba(212,255,0,0.5)" stroke-width="1.5" stroke-dasharray="3 3"/>');
-
-        // Ball at current position
         layer.insertAdjacentHTML('beforeend',
           '<circle cx="' + px + '" cy="' + py + '" r="4" fill="#d4ff00" filter="url(#srballGlow)"/>');
       }
 
-      // Draw markers for completed points
+      // Markers for completed points
       for (let i = 0; i <= Math.min(fullStep, s.rally.length - 1); i++) {
         const p = s.rally[i];
         const isLast = i === Math.min(fullStep, s.rally.length - 1) && partial === 0;
-
-        // Different marker style per type
         let markerSVG = '';
+
         if (p.type === 'racket') {
-          // Racket hit — small filled circle
-          markerSVG = '<circle cx="' + p.x + '" cy="' + p.y + '" r="3" fill="#d4ff00" filter="url(#srballGlow)"/>';
+          markerSVG = '<circle cx="' + p.x + '" cy="' + p.y + '" r="3.5" fill="#d4ff00" filter="url(#srballGlow)"/>';
         } else if (p.type === 'floor') {
-          // Floor bounce — filled lime ball
           markerSVG = '<circle cx="' + p.x + '" cy="' + p.y + '" r="4" fill="#d4ff00" filter="url(#srballGlow)"/>';
-        } else if (p.type === 'glass' || p.type === 'side') {
-          // Glass hit — empty ring with pulse if last
+        } else if (p.type === 'glass') {
           if (isLast) {
             markerSVG = '<circle cx="' + p.x + '" cy="' + p.y + '" r="5" fill="none" stroke="#d4ff00" stroke-width="1.5">'
                       + '<animate attributeName="r" from="5" to="14" dur="1.5s" repeatCount="indefinite"/>'
@@ -1054,17 +1085,30 @@
           } else {
             markerSVG = '<circle cx="' + p.x + '" cy="' + p.y + '" r="4" fill="none" stroke="#d4ff00" stroke-width="1.5"/>';
           }
+        } else if (p.type === 'fence') {
+          // Diamond shape for fence
+          markerSVG = '<polygon points="' + p.x + ',' + (p.y-5) + ' ' + (p.x+5) + ',' + p.y + ' ' + p.x + ',' + (p.y+5) + ' ' + (p.x-5) + ',' + p.y + '" fill="none" stroke="#ff6b35" stroke-width="1.5"/>';
         } else if (p.type === 'net') {
-          markerSVG = '<circle cx="' + p.x + '" cy="' + p.y + '" r="3" fill="#ff6b35"/>';
+          markerSVG = '<rect x="' + (p.x-3) + '" y="' + (p.y-2) + '" width="6" height="4" fill="#ff6b35"/>';
+        } else if (p.type === 'net-cross') {
+          // Just shows the ball crossing over the net (no marker needed, just path)
+          markerSVG = '<circle cx="' + p.x + '" cy="' + p.y + '" r="2" fill="#d4ff00" opacity="0.6"/>';
+        } else if (p.type === 'body') {
+          markerSVG = '<circle cx="' + p.x + '" cy="' + p.y + '" r="5" fill="none" stroke="#ff6b35" stroke-width="2"/>'
+                    + '<circle cx="' + p.x + '" cy="' + p.y + '" r="2" fill="#ff6b35"/>';
+        } else if (p.type === 'glass-over') {
+          // Ball going OVER the glass — shown as upward arrow
+          markerSVG = '<polygon points="' + p.x + ',' + (p.y-6) + ' ' + (p.x+4) + ',' + (p.y) + ' ' + (p.x-4) + ',' + (p.y) + '" fill="#d4ff00" opacity="0.7"/>'
+                    + '<circle cx="' + p.x + '" cy="' + p.y + '" r="2" fill="#d4ff00"/>';
         }
 
-        // Step number label
-        const labelX = p.x + 8;
+        // Number + label
+        const labelX = p.x + 9;
         const labelY = p.y - 5;
         const numLabel = '①②③④⑤'[i] || (i + 1);
         markerSVG += '<text x="' + labelX + '" y="' + labelY + '" font-family="JetBrains Mono, monospace" font-size="10" fill="#d4ff00" letter-spacing="1">' + numLabel + '</text>';
         if (p.label) {
-          markerSVG += '<text x="' + labelX + '" y="' + (labelY + 11) + '" font-family="JetBrains Mono, monospace" font-size="6.5" fill="rgba(255,255,255,0.6)" letter-spacing="0.5">' + p.label + '</text>';
+          markerSVG += '<text x="' + labelX + '" y="' + (labelY + 10) + '" font-family="JetBrains Mono, monospace" font-size="6.5" fill="rgba(255,255,255,0.7)" letter-spacing="0.5">' + p.label + '</text>';
         }
 
         layer.insertAdjacentHTML('beforeend', markerSVG);
@@ -1072,7 +1116,7 @@
     }
 
     // ============================================================
-    // SEARCH & FILTER LISTENERS
+    // EVENT LISTENERS
     // ============================================================
     searchEl.addEventListener('input', (e) => {
       searchQuery = e.target.value;
@@ -1088,7 +1132,6 @@
       });
     });
 
-    // Initial render
     renderGrid();
   })();
   </script>
