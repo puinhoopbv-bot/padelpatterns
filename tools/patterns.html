@@ -1366,15 +1366,21 @@ const STRATEGIES = [
         ballArc: 'chiquita'
       },
       {
-        text: 'B2 moet bukken en omhoog spelen. Antwoord komt traag en hoog — kort en speelbaar voor A.',
-        players: { A1: POS.A_DEFEND_L, A2: POS.A_DEFEND_R, B1: { x: -2.5, z: 4 }, B2: { x: 2, z: 1.5 } },
-        ball: { x: 0, y: 1.8, z: -2 },
+        text: 'B2 moet bukken en omhoog spelen. Bal komt zwak en hoog terug — A2 stapt al naar voren.',
+        players: { A1: { x: -3, z: -5 }, A2: { x: 2.5, z: -5 }, B1: { x: -2.5, z: 4 }, B2: { x: 2, z: 1.5 } },
+        ball: { x: 1, y: 2.2, z: -2 },
         ballArc: 'high-lob'
       },
       {
-        text: 'A2 stapt door naar het net en finisht met een lage volley naar B2\'s voeten.',
+        text: 'A2 vangt de zwakke bal aan het net op heuphoogte — perfecte volley-positie.',
         players: { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: { x: -2.5, z: 4 }, B2: { x: 2.5, z: 4 } },
-        ball: { x: 2, y: 0.4, z: 5 }
+        ball: { x: 2.3, y: 1.0, z: -3 }
+      },
+      {
+        text: 'Volley vliegt laag naar B2\'s voeten — punt voor A.',
+        players: { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: { x: -2.5, z: 4 }, B2: { x: 2.5, z: 4 } },
+        ball: { x: 2.5, y: 0.4, z: 5 },
+        ballArc: 'volley'
       }
     ]
   },
@@ -3475,7 +3481,7 @@ setTimeout(() => {
 }, 800);
 
 </script>
-  <div id="version-marker" style="position:fixed;bottom:4px;left:8px;z-index:99;font-family:'JetBrains Mono',monospace;font-size:9px;color:#d4ff00;opacity:0.35;letter-spacing:0.1em;pointer-events:none;">v29-chiquita-fix</div>
+  <div id="version-marker" style="position:fixed;bottom:4px;left:8px;z-index:99;font-family:'JetBrains Mono',monospace;font-size:9px;color:#d4ff00;opacity:0.35;letter-spacing:0.1em;pointer-events:none;">v30-chiquita-5steps</div>
 
 </body>
 </html>
