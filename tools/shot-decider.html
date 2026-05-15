@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<!-- padellab v0.6 · shot-decider · 4-step tactical shot selector -->
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Shot Decider — welke slag speel je nu? Beantwoord vier vragen over positie, balhoogte en tegenstanders, en krijg de tactisch juiste slag met uitleg." />
+  <meta name="theme-color" content="#050709" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="canonical" href="https://padelpatterns.com/tools/shot-decider.html" />
+
+  <title>Shot Decider — Welke slag nu? — PadelLab</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fraunces:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+
+  <style>
+    /* =====================================================================
+       SHOT DECIDER — tool-specific styles
+       Reuses RF/Spelregels patterns: progress bar, options, verdict layout
+       ===================================================================== */
+    .sd-wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 120px 32px 80px;
+      min-height: 70vh;
+    }
+
+    .sd-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    /* --- Layout: question column + court column --- */
+    .sd-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 56px;
+      align-items: start;
+    }
+    @media (max-width: 880px) {
+      .sd-layout { grid-template-columns: 1fr; gap: 32px; }
+      .sd-court-col { order: -1; }
+    }
+
+    /* === Progress bar (same DNA as racket-finder) === */
+    .sd-progress { display: flex; gap: 6px; margin-bottom: 32px; }
+    .sd-progress-bar {
+      flex: 1; height: 3px;
+      background: var(--border-light);
+      transition: background 0.5s ease, transform 0.4s ease;
+      transform-origin: left;
+    }
+    .sd-progress-bar.active {
+      background: var(--accent);
+      box-shadow: 0 0 12px rgba(212, 255, 0, 0.5);
+    }
+    .sd-progress-bar.done { background: rgba(212, 255, 0, 0.5); }
+
+    .sd-step-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--text-faint);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .sd-question-wrap { animation: sdQEnter 0.45s cubic-bezier(.2,.8,.2,1) both; }
+    .sd-question-wrap.exit { animation: sdQExit 0.3s ease both; }
+    @keyframes sdQEnter {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes sdQExit {
+      from { opacity: 1; transform: translateY(0); }
+      to   { opacity: 0; transform: translateY(-12px); }
+    }
+
+    .sd-question {
+      font-family: var(--font-display);
+      font-size: clamp(32px, 4.5vw, 56px);
+      line-height: 1.0;
+      letter-spacing: 0.01em;
+      margin: 0 0 10px;
+      color: var(--text);
+    }
+    .sd-subq {
+      font-family: var(--font-body);
+      font-size: 17px;
+      color: var(--text-dim);
+      line-height: 1.55;
+      max-width: 540px;
+      margin: 0 0 32px;
+    }
+
+    .sd-options {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+
+    .sd-option {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 20px 22px;
+      cursor: pointer;
+      transition:
+        transform 0.18s cubic-bezier(.2,.8,.2,1),
+        border-color 0.18s,
+        background 0.18s,
+        box-shadow 0.25s;
+      text-align: left;
+      color: var(--text);
+      font-family: var(--font-ui);
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+    .sd-option::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(110deg, transparent 30%, rgba(212, 255, 0, 0.08) 50%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .sd-option:hover {
+      border-color: var(--border-accent);
+      background: rgba(28, 36, 48, 0.85);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+    }
+    .sd-option:hover::before { opacity: 1; }
+    .sd-option.selected {
+      border-color: var(--accent);
+      background: rgba(212, 255, 0, 0.08);
+      box-shadow: 0 0 0 1px var(--accent), 0 0 32px rgba(212, 255, 0, 0.25);
+      animation: sdFlash 0.4s ease;
+    }
+    @keyframes sdFlash {
+      0%   { transform: scale(1); }
+      30%  { transform: scale(1.02); box-shadow: 0 0 0 2px var(--accent), 0 0 48px rgba(212, 255, 0, 0.5); }
+      100% { transform: scale(1); }
+    }
+
+    .sd-option-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      padding: 4px 8px;
+      border: 1px solid var(--border-accent);
+      flex-shrink: 0;
+    }
+    .sd-option-body { flex: 1; min-width: 0; }
+    .sd-option-title {
+      font-family: var(--font-ui);
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text);
+      margin: 0 0 3px;
+    }
+    .sd-option-hint {
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.4;
+      margin: 0;
+    }
+
+    /* Color-coded option indicators (for zones) */
+    .sd-option .zone-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-left: 4px;
+      box-shadow: 0 0 8px currentColor;
+    }
+    .zone-dot.zone-green { background: var(--accent); color: var(--accent); }
+    .zone-dot.zone-orange { background: var(--accent-warm); color: var(--accent-warm); }
+    .zone-dot.zone-red { background: #ff3355; color: #ff3355; }
+
+    /* === Court visualisation (right column) === */
+    .sd-court-col {
+      position: sticky;
+      top: 100px;
+    }
+    .sd-court-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 22px 22px 24px;
+    }
+    .sd-court-card-title {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sd-court-card-title .live-pulse {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+      animation: pulse-live 1.4s ease-in-out infinite;
+    }
+    .sd-court-svg {
+      width: 100%;
+      max-width: 380px;
+      margin: 0 auto;
+      display: block;
+    }
+    .sd-court-readout {
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border-light);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      line-height: 1.8;
+    }
+    .sd-court-readout .rkey { color: var(--text-faint); }
+    .sd-court-readout .rval { color: var(--text); }
+    .sd-court-readout .rval.empty { color: var(--text-faint); font-style: italic; }
+    .sd-court-readout .rval.accent { color: var(--accent); }
+
+    /* SVG element states */
+    .court-player-self { fill: var(--accent); }
+    .court-player-self-ring { fill: none; stroke: var(--accent); stroke-width: 2; opacity: 0.4; }
+    .court-player-opp { fill: var(--accent-warm); }
+    .court-ball {
+      fill: var(--text);
+      transition: cx 0.5s cubic-bezier(.4,.8,.3,1), cy 0.5s cubic-bezier(.4,.8,.3,1);
+    }
+    .court-zone {
+      transition: opacity 0.4s ease;
+    }
+    .court-trajectory {
+      stroke: var(--accent);
+      stroke-width: 1.5;
+      stroke-dasharray: 3 3;
+      fill: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .court-trajectory.show { opacity: 0.6; }
+
+    /* Back/restart buttons */
+    .sd-controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .sd-btn-back {
+      background: transparent;
+      border: 1px solid var(--border-medium);
+      color: var(--text-dim);
+      padding: 11px 18px;
+      font-family: var(--font-ui);
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      transition: border-color 0.15s, color 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sd-btn-back:hover { border-color: var(--accent); color: var(--accent); }
+    .sd-btn-back:disabled { opacity: 0.3; cursor: not-allowed; }
+    .sd-btn-back:disabled:hover { border-color: var(--border-medium); color: var(--text-dim); }
+
+    /* =================================================================
+       VERDICT (the answer screen)
+       ================================================================= */
+    .sd-verdict-wrap { animation: sdVEnter 0.6s cubic-bezier(.2,.8,.2,1) both; }
+    @keyframes sdVEnter {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .sd-verdict-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sd-verdict-eyebrow .live-pulse {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+    }
+
+    .sd-shot-name {
+      font-family: var(--font-display);
+      font-size: clamp(56px, 9vw, 112px);
+      line-height: 0.9;
+      letter-spacing: 0.005em;
+      margin: 0 0 4px;
+      color: var(--accent);
+      text-shadow: 0 0 40px rgba(212, 255, 0, 0.25);
+    }
+    .sd-shot-spanish {
+      font-family: var(--font-body);
+      font-style: italic;
+      font-size: 18px;
+      color: var(--text-faint);
+      margin: 0 0 28px;
+      letter-spacing: 0.02em;
+    }
+
+    .sd-shot-lede {
+      font-family: var(--font-body);
+      font-size: 19px;
+      line-height: 1.6;
+      color: var(--text);
+      max-width: 580px;
+      margin: 0 0 32px;
+    }
+    .sd-shot-lede strong {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .sd-detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin: 32px 0;
+    }
+    .sd-detail-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 20px;
+    }
+    .sd-detail-card h4 {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin: 0 0 10px;
+    }
+    .sd-detail-card p {
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.55;
+      color: var(--text);
+      margin: 0;
+    }
+    .sd-detail-card.warn {
+      border-color: rgba(255, 107, 53, 0.35);
+      background: rgba(255, 107, 53, 0.06);
+    }
+    .sd-detail-card.warn h4 { color: var(--accent-warm); }
+
+    .sd-alt-row {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      padding: 24px 26px;
+      margin: 24px 0;
+    }
+    .sd-alt-row h4 {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin: 0 0 14px;
+    }
+    .sd-alt-shot {
+      font-family: var(--font-display);
+      font-size: 26px;
+      color: var(--text);
+      margin: 0 0 6px;
+      letter-spacing: 0.02em;
+    }
+    .sd-alt-why {
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.55;
+      color: var(--text-dim);
+      margin: 0;
+    }
+
+    .sd-link-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+    .sd-link-pattern {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(212, 255, 0, 0.08);
+      border: 1px solid var(--border-accent);
+      color: var(--accent);
+      padding: 12px 20px;
+      font-family: var(--font-display);
+      font-size: 14px;
+      letter-spacing: 0.08em;
+      transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+    }
+    .sd-link-pattern:hover {
+      background: rgba(212, 255, 0, 0.15);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(212, 255, 0, 0.2);
+    }
+    .sd-link-restart {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: transparent;
+      border: 1px solid var(--border-medium);
+      color: var(--text);
+      padding: 12px 20px;
+      font-family: var(--font-display);
+      font-size: 14px;
+      letter-spacing: 0.08em;
+      transition: border-color 0.15s, color 0.15s;
+      cursor: pointer;
+    }
+    .sd-link-restart:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Recap of choices on verdict screen */
+    .sd-recap {
+      margin-top: 40px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .sd-recap-chip {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      padding: 6px 12px;
+      border: 1px solid var(--border-light);
+      background: rgba(20, 26, 34, 0.5);
+    }
+    .sd-recap-chip .rkey { color: var(--text-faint); margin-right: 6px; }
+
+    /* === Intro screen (before quiz starts) === */
+    .sd-intro {
+      max-width: 720px;
+      margin: 0 auto;
+      text-align: left;
+      padding: 20px 0;
+    }
+    .sd-intro h1 {
+      font-family: var(--font-display);
+      font-size: clamp(48px, 8vw, 96px);
+      line-height: 0.92;
+      letter-spacing: 0.005em;
+      margin: 0 0 24px;
+      color: var(--text);
+    }
+    .sd-intro h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+    .sd-intro-lede {
+      font-family: var(--font-body);
+      font-size: clamp(18px, 2vw, 21px);
+      line-height: 1.6;
+      color: var(--text-dim);
+      max-width: 620px;
+      margin: 0 0 28px;
+    }
+    .sd-intro-meta {
+      display: flex;
+      gap: 28px;
+      margin: 24px 0 36px;
+      flex-wrap: wrap;
+    }
+    .sd-intro-meta-item {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      color: var(--text-dim);
+    }
+    .sd-intro-meta-item strong {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 32px;
+      color: var(--accent);
+      letter-spacing: 0.01em;
+      margin-bottom: 2px;
+      font-weight: 400;
+    }
+
+    @media (max-width: 768px) {
+      .sd-wrap { padding: 100px 18px 60px; }
+      .sd-question { font-size: 32px; }
+      .sd-option { padding: 16px 18px; gap: 14px; }
+      .sd-option-title { font-size: 15px; }
+      .sd-option-hint { font-size: 12px; }
+      .sd-court-col { position: static; }
+      .sd-court-card { padding: 18px; }
+      .sd-shot-name { font-size: 56px; }
+      .sd-shot-lede { font-size: 17px; }
+    }
+  </style>
+</head>
+
+<body class="has-bg-effects">
+
+  <header class="site-header">
+    <a href="/" class="site-logo">
+      <div>
+        <div class="site-logo-mark">PADEL<span>LAB</span></div>
+        <div class="site-logo-tag">Tactische tools</div>
+      </div>
+    </a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" />
+    <label for="nav-toggle" class="nav-burger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </label>
+    <nav class="site-nav">
+      <a href="/tools/patterns.html" class="nav-link">Patterns 3D</a>
+      <a href="/tools/shot-decider.html" class="nav-link active">Shot Decider</a>
+      <a href="/tools/racket-finder.html" class="nav-link">Racket Finder</a>
+      <a href="/tools/spelregels.html" class="nav-link">Spelregels</a>
+      <a href="/over.html" class="nav-link">Over</a>
+    </nav>
+  </header>
+
+  <div class="sd-wrap" id="sd-wrap"></div>
+
+  <footer class="site-footer">
+    <div class="site-footer-grid">
+      <div class="site-footer-brand">
+        <div class="site-logo-mark">PADEL<span style="color: var(--accent);">LAB</span></div>
+        <p>Padel is schaken op een blauw veld. Hier zijn de tools.</p>
+      </div>
+      <div>
+        <h4>Tools</h4>
+        <ul>
+          <li><a href="/tools/patterns.html">Patterns 3D</a></li>
+          <li><a href="/tools/shot-decider.html">Shot Decider</a></li>
+          <li><a href="/tools/racket-finder.html">Racket Finder</a></li>
+          <li><a href="/tools/spelregels.html">Spelregels Beslisser</a></li>
+          <li><a href="/tools/niveau.html">Niveau Indicator</a></li>
+          <li><a href="/tools/match-log.html">Match Log</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Site</h4>
+        <ul>
+          <li><a href="/over.html">Over PadelLab</a></li>
+          <li><a href="mailto:hello@padelpatterns.com">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="site-footer-bottom">
+      <span>© 2026 PadelLab</span>
+      <span>v0.6 · shot-decider</span>
+    </div>
+  </footer>
+
+  <div class="version-marker">v33-shot-decider</div>
+
+  <script>
+  (function() {
+    'use strict';
+
+    // =================================================================
+    // DATA — Questions
+    // =================================================================
+    const QUESTIONS = [
+      {
+        key: 'position',
+        label: 'Stap 1 / 4',
+        title: 'Waar sta jij?',
+        subtitle: 'De positie waar jij de bal gaat raken. Dit bepaalt 70% van wat tactisch logisch is.',
+        options: [
+          { id: 'net',  title: 'Aan het net',
+            hint: 'Volley-zone — jij dicteert. Punt-makende positie.' },
+          { id: 'mid',  title: 'Mid-court',
+            hint: 'Tussen servicelijn en net. Overgangszone — kwetsbaar maar agressief.' },
+          { id: 'back', title: 'Achter de servicelijn',
+            hint: 'Verdedigende basislijn-positie. Jij krijgt de bal, niet anders om.' },
+          { id: 'wall', title: 'Net achter de bal — na glas-kaats',
+            hint: 'De bal heeft net het achterglas geraakt en komt op je af. Klassieke padel-situatie.' }
+        ]
+      },
+      {
+        key: 'height',
+        label: 'Stap 2 / 4',
+        title: 'Hoe hoog komt de bal?',
+        subtitle: 'De zone bepaalt of je kan aanvallen of moet verdedigen. Universele padel-logica: hoog = aanval, laag = bouwen.',
+        options: [
+          { id: 'green',  title: 'Groen — boven schouder',
+            hint: 'Hoge bal. Je kan agressief, naar beneden slaan.',
+            dot: 'zone-green' },
+          { id: 'orange', title: 'Oranje — heup tot borst',
+            hint: 'Middelhoog. Gecontroleerd spel, niet forceren.',
+            dot: 'zone-orange' },
+          { id: 'red',    title: 'Rood — onder de knie',
+            hint: 'Lage bal. Verdediging-modus, opnieuw opbouwen.',
+            dot: 'zone-red' }
+        ]
+      },
+      {
+        key: 'opponents',
+        label: 'Stap 3 / 4',
+        title: 'Waar staan de tegenstanders?',
+        subtitle: 'Hun positie bepaalt de gaten op het veld. Jij slaat altijd naar de gaten — niet naar de spelers.',
+        options: [
+          { id: 'both-net',   title: 'Beiden aan het net',
+            hint: 'Het meest agressieve scenario voor hen. Voeten en lobs worden goud.' },
+          { id: 'both-back',  title: 'Beiden achterin',
+            hint: 'Defensieve formatie. Het net is leeg — claim het.' },
+          { id: 'split',      title: 'Verspreid — één voor, één achter',
+            hint: 'Onbalans. Sla op de speler achterin of in het gat tussen ze.' }
+        ]
+      },
+      {
+        key: 'pressure',
+        label: 'Stap 4 / 4',
+        title: 'Hoeveel tijd heb je?',
+        subtitle: 'Tijd verandert de keuze. Onder druk: vereenvoudig. Vrije keuze: kies de slimste optie, niet de spectaculairste.',
+        options: [
+          { id: 'free',  title: 'Vrije keuze',
+            hint: 'Je bent voorbereid. Je hebt de beste opties om je heen.' },
+          { id: 'pressed', title: 'Onder druk',
+            hint: 'De bal komt snel, je positie is niet ideaal. Eerst overleven, dán denken.' }
+        ]
+      }
+    ];
+
+    // =================================================================
+    // DATA — Shots (the vocabulary the engine picks from)
+    // =================================================================
+    const SHOTS = {
+      smash: {
+        name: 'Smash',
+        spanish: 'remate',
+        lede: 'De punt-afmaker. Bovenhands, hard, naar beneden — vaak via de zijwand om de bal uit de baan te krijgen.',
+        execution: 'Schouder naar de bal. Sla door de bal heen op zijn hoogste punt. Mik op zijwand-naar-glas-uit als ze diep staan, op de voeten als ze aan het net staan.',
+        risk: 'De smash gaat te vaak verloren omdat spelers hem oversold spelen. Hard slaan zonder doel is dom slaan.',
+        pattern: 'por-tres'
+      },
+      bandeja: {
+        name: 'Bandeja',
+        spanish: 'het dienblad',
+        lede: 'De koningin van padel. Een 70% smash met slice — controle boven kracht. Houdt jouw team aan het net.',
+        execution: 'Korte uithaal, racket vlak als een dienblad, slice door de bal. Diep en laag de baan in, richting voeten of zijwand.',
+        risk: 'Niet de bal afmaken — die taak heeft de bandeja niet. De bandeja bouwt het volgende punt.',
+        pattern: 'bandeja'
+      },
+      vibora: {
+        name: 'Víbora',
+        spanish: 'de adder',
+        lede: 'Bandeja\'s agressieve broer. Side-spin, scherpe hoek, gaat via zijwand de baan uit. Hogere risico, hogere reward.',
+        execution: 'Zijwaartse swing, racket op zijn kant, snijdt de bal door. Mik de bal voor de zijwand-glas-T van de tegenstander.',
+        risk: 'Vereist hoge bal én tijd. Niet als de bal je voorbij is — dan bandeja.',
+        pattern: 'vibora'
+      },
+      bajada: {
+        name: 'Bajada',
+        spanish: 'de daalslag',
+        lede: 'De aanvalsslag na een bal-uit-glas. Bal hoog gestuiterd uit de achterwand — sla hem op zijn weg naar beneden, vanaf bovenaan.',
+        execution: 'Wacht tot de bal uit het glas op heuphoogte tot schouderhoogte zit, sla er bovenop met flat-of-topspin. Diep, naar voeten of tussen tegenstanders door.',
+        risk: 'Vereist een hoge, langzame stuit uit het glas. Bij een lage stuit terug: defend, niet aanvallen.',
+        pattern: 'bajada'
+      },
+      'flat-volley': {
+        name: 'Volley',
+        spanish: 'volea',
+        lede: 'Korte, gecontroleerde slag op heuphoogte vanaf het net. Je houdt de druk hoog door simpelweg niet uit positie te komen.',
+        execution: 'Korte uithaal — bijna geen swing. Racket-blok met lichte forward push. Mik op voeten of tussen de tegenstanders.',
+        risk: 'De volley wint geen punten, maar verliest ze ook niet. Geduld is je wapen — wacht op de fout.',
+        pattern: 'invisible-rope'
+      },
+      'low-volley': {
+        name: 'Lage volley',
+        spanish: 'volea baja',
+        lede: 'Lage bal vanaf het net — geen aanval, wel positiebehoud. Knieën buigen, racket open, bal gewoon over het net duwen.',
+        execution: 'Buig door je benen, racket-face open, korte push diep en zacht. Niet hard — je verliest dan de net-positie.',
+        risk: 'De grootste fout: hem oppakken in plaats van blokken. Bij twijfel: laat het pad over en lob.',
+        pattern: 'invisible-rope'
+      },
+      globo: {
+        name: 'Globo',
+        spanish: 'de lob',
+        lede: 'De reset-knop van padel. Diepe, hoge lob over hun hoofd — jullie pakken het net, zij gaan terug.',
+        execution: 'Open racket-face, lift de bal met je benen, hoog en diep — minstens schouderhoogte voor de tegenstander, idealiter tot de achterwand.',
+        risk: 'Te kort = kado in de groene zone. Bij twijfel: hoger en dieper dan je denkt.',
+        pattern: 'globo-take-net'
+      },
+      chiquita: {
+        name: 'Chiquita',
+        spanish: 'de kleine',
+        lede: 'Kort, zacht, in de voeten van de net-spelers. De anti-power-shot — je dwingt ze om laag op te pakken vanuit een onmogelijke positie.',
+        execution: 'Korte halve volley of slag. Bal vlak boven het net, korte parabool, diep voor hun voeten. Geen kracht — alles is touch.',
+        risk: 'Te hoog = bandeja-kado voor de tegenstander. Te kort = net. Vereist gevoel.',
+        pattern: 'chiquita'
+      },
+      'defensive-return': {
+        name: 'Diepe verdediging',
+        spanish: 'la defensa',
+        lede: 'Geen slag-naam, een principe. Diep, midden, geen risico. Geef geen punt weg — laat hen de fout maken.',
+        execution: 'Stevige tweehands-backhand of geslicede forehand. Bal moet over de servicelijn passeren. Hoogte boven snelheid, diepte boven hoeken.',
+        risk: 'Wachten op de globo-mogelijkheid. Probeer niet vanuit deze positie een winner te slaan — dat is hoe je punten verliest.',
+        pattern: 'three-zones'
+      },
+      'return-and-up': {
+        name: 'Return & op naar het net',
+        spanish: 'subir tras el resto',
+        lede: 'Service retour gecontroleerd langs het tweetal — dan rennen jullie naar het net. Standaard padel-DNA: het ontvangende paar claimt het net.',
+        execution: 'Diepe, gecontroleerde return — vaak een lob bij snelle service, of een platte slag in het midden. Direct erna: lopen, niet stappen.',
+        risk: 'Niet aarzelen. Ofwel je gaat erop af, ofwel je blijft. Halverwege gevangen is de slechtste positie van het veld.',
+        pattern: 'serve-and-volley'
+      },
+      'contralob': {
+        name: 'Contralob',
+        spanish: 'el contralob',
+        lede: 'De lob tegen een lob. Tegenstanders hebben jullie achteruit gestuurd — sla terug over hun hoofd voor het net dat ze net pakten.',
+        execution: 'Hoog, diep, naar de andere kant dan waar zij heen lopen. Tijd vraagt geduld: laat de glas-stuit komen, sla niet te vroeg.',
+        risk: 'Te kort = smash-kado. Onder druk een contralob proberen is risky — dan eerder een diepe defensieve return.',
+        pattern: 'contralob'
+      },
+      'middle-attack': {
+        name: 'Aanval door het midden',
+        spanish: 'al medio',
+        lede: 'De middelste lijn tussen twee spelers is altijd een gat — twijfel over wie hem pakt. Sla daar gewoon door.',
+        execution: 'Krachtige, platte slag of half-volley door het centrum, iets op de speler-met-de-zwakste-zijde toe. Hoogte: net over het net.',
+        risk: 'Werkt vooral als beide tegenstanders aan het net staan. Bij verspreid: kies de gat-speler, niet het midden.',
+        pattern: 'middle-ball'
+      }
+    };
+
+    // =================================================================
+    // DECISION ENGINE
+    // =================================================================
+    // Maps { position, height, opponents, pressure } → primary + alternative
+    //
+    // The logic is built on real padel coaching principles:
+    //   • Position at net + opponents at net + green ball  → smash / middle-ball
+    //   • Position at net + opp at net + orange            → bandeja or low volley to feet
+    //   • Position at net + low ball                       → low volley defensive
+    //   • Mid-court + any                                  → recover the net (lob or rush) — never stay there
+    //   • Back-court + low                                 → defensive lift / globo
+    //   • Back-court + green from wall                     → bajada
+    //   • Wall position = explicitly after-glass shot
+    // =================================================================
+
+    function decide({ position, height, opponents, pressure }) {
+      // --- Position: NET (you are commanding the net) ---
+      if (position === 'net') {
+        if (height === 'green') {
+          // High ball at net = smash territory
+          if (opponents === 'both-net') {
+            return { primary: 'smash', primaryWhy:
+              'Tegenstanders aan het net + jij ook aan het net + hoge bal = enige goede zone om de bal heen te krijgen is op de voeten of via zijwand-uit. Smash op de voeten, niet hard maar geplaatst.',
+              alt: 'middle-attack', altWhy: 'Bij snelle reactie van het tegenpaar: sla het midden — twee rackets, één bal, gegarandeerde aarzeling.' };
+          }
+          if (opponents === 'both-back') {
+            return { primary: 'smash', primaryWhy:
+              'Hoge bal vanaf het net tegen achterin staande tegenstanders: smash via zijwand de baan uit. Klassieke "por tres" — de bal mag het glas raken en de baan verlaten.',
+              alt: 'vibora', altWhy: 'Als je niet 100% boven de bal kunt komen: víbora met side-spin doet vergelijkbaar werk met minder risico.' };
+          }
+          // split
+          return { primary: 'smash', primaryWhy:
+            'Eén voor, één achter = sla op de achterste speler. Hard genoeg om hem niet te laten reageren, geplaatst genoeg om de voorste speler niet te raken.',
+            alt: 'middle-attack', altWhy: 'Of kies het gat: tussen de twee in, scherp op de voeten van de voorste.' };
+        }
+        if (height === 'orange') {
+          if (opponents === 'both-net') {
+            return { primary: 'flat-volley', primaryWhy:
+              'Beide paren aan het net, middelhoge bal — dit is een geduldsoefening. Korte volley, op de voeten of midden, wacht op hun fout.',
+              alt: 'middle-attack', altWhy: 'Als één speler een meter te dicht op de ander staat: explosief het midden in — de definitie van "middle ball".' };
+          }
+          if (opponents === 'both-back') {
+            return { primary: 'flat-volley', primaryWhy:
+              'Diepe, gecontroleerde volley naar voeten of zijwand — niet hard. Tegenstanders staan achterin: druk handhaven is het hele plan.',
+              alt: 'globo', altWhy: 'Of een korte chiquita-volley: zacht en kort, dwing ze om naar voren te rennen vanuit verdediging.' };
+          }
+          return { primary: 'flat-volley', primaryWhy:
+            'Eén tegenstander voor, één achter — sla naar de achterste in de hoek. Of nog beter: zacht door het midden om communicatie te breken.',
+            alt: 'middle-attack', altWhy: 'Middle-attack op de speler-achter: zijn partner is fysiek niet in staat hem te helpen.' };
+        }
+        // red zone at net
+        return { primary: 'low-volley', primaryWhy:
+          'Lage bal bij het net = niet aanvallen. Lage volley: knieën buigen, racket open, zacht en diep terug. Behoud net-positie ten koste van alles.',
+          alt: 'globo', altWhy: 'Als je echt niets kan: leg een verdedigende lob (vanaf het net!) — geeft jullie tijd om te herstellen.' };
+      }
+
+      // --- Position: MID-COURT (the no-man's-land — never stay here) ---
+      if (position === 'mid') {
+        if (height === 'green') {
+          return { primary: 'bandeja', primaryWhy:
+            'Mid-court + hoge bal = bandeja terwijl je doorloopt naar het net. De bandeja is gemaakt voor exact deze situatie: aanvallen zonder positie op te geven.',
+            alt: 'vibora', altWhy: 'Als de bal hoog genoeg staat en je voeten goed: víbora met side-spin — agressiever maar lastiger te timen.' };
+        }
+        if (height === 'orange') {
+          return { primary: 'globo', primaryWhy:
+            'Mid-court is dé positie waar je niet wil blijven. Middelhoge bal = lob over hun hoofd, dan loop je naar het net waar je hoort.',
+            alt: 'flat-volley', altWhy: 'Of de korte half-volley diep: speel de bal terug en sprint mee — eerst de slag, dán de positie.' };
+        }
+        // red — worst spot on the court
+        if (pressure === 'pressed') {
+          return { primary: 'globo', primaryWhy:
+            'Lage bal in mid-court onder druk = de slechtste situatie. Eén ding telt: tijd kopen. Hoge lob, diep, vergeet de hoek. Overleven dan herpakken.',
+            alt: 'defensive-return', altWhy: 'Als de lob niet lukt: diepe middenbal, en jullie gaan beiden achterin. Reset het punt.' };
+        }
+        return { primary: 'globo', primaryWhy:
+          'Lage bal in mid-court = gevaarlijke zone. Speel een lob terug de baan uit, gebruik de tijd om naar het net te komen. Geen risico met flat shots vanaf hier.',
+          alt: 'chiquita', altWhy: 'Als beide tegenstanders aan het net staan: een korte chiquita — laag voor hun voeten — kan ze breken.' };
+      }
+
+      // --- Position: BACK (defensive back-court) ---
+      if (position === 'back') {
+        if (height === 'green') {
+          // High ball at back-court = you have time, but choice depends on opponents
+          if (opponents === 'both-net') {
+            if (pressure === 'pressed') {
+              return { primary: 'globo', primaryWhy:
+                'Tegenstanders aan het net + hoge bal achterin onder druk = lob over hun hoofd. Geen risico met platte slagen — die zijn een smash-kado.',
+                alt: 'defensive-return', altWhy: 'Als de lob niet veilig kan: een diepe slice midden — voorkomt direct verlies, accepteert dat zij druk houden.' };
+            }
+            return { primary: 'contralob', primaryWhy:
+              'Hoge bal achterin tegen tegenstanders aan het net + jij hebt tijd = perfecte contralob-situatie. Sla over hun hoofd naar de andere kant dan waar zij naartoe lopen — winnaars-bal.',
+              alt: 'globo', altWhy: 'Veiliger variant: een rechte hoge globo — minder spectaculair, even effectief om hen achteruit te krijgen.' };
+          }
+          if (opponents === 'both-back') {
+            // Both back-court: no one to lob over, build the point
+            return { primary: 'defensive-return', primaryWhy:
+              'Hoge bal achterin tegen tegenstanders óók achterin = niemand drukt. Geen reden om te lobben — niemand staat aan het net. Speel een diepe rally-bal en kijk wie als eerste fouten maakt.',
+              alt: 'bandeja', altWhy: 'Als je de bal écht hoog en op tijd raakt: een bandeja-stijl slice diep — zet jullie team in marscamodus naar het net.' };
+          }
+          // split: one opp at net — lob over their net player
+          return { primary: 'globo', primaryWhy:
+            'Eén tegenstander aan het net, één achterin + hoge bal voor jou = lob over de net-speler heen, diep in hun helft. Forceer een collision-moment tussen hen.',
+            alt: 'contralob', altWhy: 'Met tijd: een diepe contralob naar de open hoek — de net-speler kan onmogelijk recoveren.' };
+        }
+        if (height === 'orange') {
+          if (opponents === 'both-net') {
+            if (pressure === 'pressed') {
+              return { primary: 'globo', primaryWhy:
+                'Tegenstanders aan het net + middelhoogte achterin onder druk = lob is de enige veilige optie. Hoog en diep, vergeet de hoek.',
+                alt: 'defensive-return', altWhy: 'Als de lob te risky is: diep middenin met topspin — niet ideaal, maar je geeft geen punt weg.' };
+            }
+            return { primary: 'globo', primaryWhy:
+              'Tegenstanders aan het net + jullie achterin = jullie verliezen het punt als jullie blijven. Lob over hun hoofd, diep en hoog.',
+              alt: 'chiquita', altWhy: 'Variant: een chiquita kort voor hun voeten — geeft één twijfelmoment waarin jullie kunnen lopen.' };
+          }
+          if (opponents === 'both-back') {
+            return { primary: 'defensive-return', primaryWhy:
+              'Middenhoogte achterin tegen tegenstanders óók achterin: niemand drukt. Diepe rally-bal middenin, bouw het punt, wacht op de hoge.',
+              alt: 'globo', altWhy: 'Zet ze direct vast met een diepe lob — neem hen het initiatief af voordat zij het net krijgen.' };
+          }
+          // split
+          return { primary: 'globo', primaryWhy:
+            'Verspreide tegenstanders + middelhoogte achterin = lob over de net-speler. Sla hem naar de kant waar de achter-speler níét staat.',
+            alt: 'defensive-return', altWhy: 'Veiliger: speel diep door het midden — laat hun communicatie zelf de fout maken.' };
+        }
+        // red
+        if (pressure === 'pressed') {
+          return { primary: 'globo', primaryWhy:
+            'Lage bal, achterin, onder druk. De enige correct slag in padel-101: hoge defensieve lob. Hoogte = tijd. Tijd = hoop. Vergeet snelheid.',
+            alt: 'defensive-return', altWhy: 'Als je nog net niet kan liften: een diepe slice midden in het veld — maar de lob is bijna altijd beter.' };
+        }
+        if (opponents === 'both-back') {
+          return { primary: 'defensive-return', primaryWhy:
+            'Lage bal achterin, geen druk, tegenstanders ook achterin = bouwbal. Diep, middenin, geen ambitie. Wacht tot zij iets stoms doen.',
+            alt: 'chiquita', altWhy: 'Korte chiquita als variant — kort voor het net, dwingt ze om naar voren te komen vanuit verdediging.' };
+        }
+        return { primary: 'defensive-return', primaryWhy:
+          'Lage bal achterin zonder directe druk = bouwbal. Diep, middenin, geen ambitie. Maak geen fout. Wacht tot zij iets stoms doen.',
+          alt: 'globo', altWhy: 'Of zet ze direct vast met een lob — als ze al aan het net staan, dat is het ergste wat je hen kan aandoen.' };
+      }
+
+      // --- Position: WALL (after a ball has bounced off the back glass) ---
+      if (position === 'wall') {
+        if (height === 'green') {
+          return { primary: 'bajada', primaryWhy:
+            'Bal hoog gestuiterd uit het glas terug = exact wat de bajada vraagt. Hoge contact-punt, sla naar beneden, op de voeten of door het midden. Achterglas dat hoog stuitert is het beste cadeau in padel.',
+            alt: 'globo', altWhy: 'Als je niet boven de bal kunt komen: lob de uitkomst. Nooit vanuit een hoog stuit-punt half-aanvallen — alles of niets.' };
+        }
+        if (height === 'orange') {
+          if (opponents === 'both-net') {
+            return { primary: 'globo', primaryWhy:
+              'Middelhoge stuit uit glas + paar aan het net: lob is de meest betrouwbare reset. Probeer geen bajada op heuphoogte — te risky, te lage hoek.',
+              alt: 'defensive-return', altWhy: 'Of een diepe gecontroleerde slag richting hun voeten — niet ideaal, maar veiliger dan een geforceerde aanval.' };
+          }
+          return { primary: 'defensive-return', primaryWhy:
+            'Bal stuit middelhoog uit glas, niemand drukt jullie aan het net: geen reden voor risico. Diepe rally-bal middenin, behoud positie.',
+            alt: 'globo', altWhy: 'Of lob als je de extra meter onder de bal kunt komen — neutraliseert hun net-formatie als die zich vormt.' };
+        }
+        // red — low after wall
+        if (pressure === 'pressed') {
+          return { primary: 'globo', primaryWhy:
+            'Lage stuit uit glas onder druk = de moeilijkste bal in padel. Buig diep door je benen, schep de bal omhoog. Hoogte vóór alles — diep helpt, maar omhoog is wat telt.',
+            alt: 'defensive-return', altWhy: 'Als de lob niet lukt: korte slice over het net, niet hard. Geef hen de bal terug, niet jezelf in de problemen.' };
+        }
+        return { primary: 'globo', primaryWhy:
+          'Lage bal uit glas zonder directe druk: lob is je vriend. Geeft jullie tijd om naar het net te komen. Achterwand-glas-spel hoort bij langzaam padel.',
+          alt: 'defensive-return', altWhy: 'Of een geslicede diepe middenbal — minder ambitieus, ook minder fout-gevoelig.' };
+      }
+    }
+
+    // Override: a few special cases catch all states
+    function overrideForSpecialCases(choices) {
+      // Service return (back-court, free choice, opponents at net = serving team) — only when at back-court & free pressure
+      // Skipped because it's well covered by defensive-return + globo logic
+      return null;
+    }
+
+    // =================================================================
+    // STATE & RENDER
+    // =================================================================
+    const state = {
+      screen: 'intro',    // 'intro' | 'question' | 'verdict'
+      stepIdx: 0,
+      choices: {}
+    };
+
+    const wrap = document.getElementById('sd-wrap');
+
+    function el(tag, attrs, children) {
+      const e = document.createElement(tag);
+      if (attrs) {
+        for (const k in attrs) {
+          if (k === 'class')      e.className = attrs[k];
+          else if (k === 'html')  e.innerHTML = attrs[k];
+          else if (k === 'on')    for (const ev in attrs[k]) e.addEventListener(ev, attrs[k][ev]);
+          else                    e.setAttribute(k, attrs[k]);
+        }
+      }
+      if (children) {
+        (Array.isArray(children) ? children : [children]).forEach(c => {
+          if (c == null) return;
+          e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+        });
+      }
+      return e;
+    }
+
+    // ---- Court SVG (right column) ----
+    // Court is 240x340 viewBox. Top half = opponents, bottom half = your side.
+    // The middle white horizontal line is the net.
+    function renderCourtSVG(choices, isVerdict) {
+      const ns = 'http://www.w3.org/2000/svg';
+      const svg = document.createElementNS(ns, 'svg');
+      svg.setAttribute('viewBox', '0 0 240 340');
+      svg.setAttribute('class', 'sd-court-svg');
+
+      // --- 1. Court base (glass-floor blue) ---
+      const baseGrad = `
+        <defs>
+          <linearGradient id="court-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#0c1620"/>
+            <stop offset="100%" stop-color="#070d15"/>
+          </linearGradient>
+          <linearGradient id="zone-green-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="rgba(212,255,0,0.0)"/>
+            <stop offset="100%" stop-color="rgba(212,255,0,0.18)"/>
+          </linearGradient>
+          <marker id="shot-arrow" viewBox="0 0 10 10" refX="7" refY="5"
+                  markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 L 2.5 5 z" fill="#d4ff00" />
+          </marker>
+        </defs>`;
+      svg.innerHTML = baseGrad;
+
+      // Outer court (glass walls)
+      const outer = document.createElementNS(ns, 'rect');
+      outer.setAttribute('x', '20'); outer.setAttribute('y', '20');
+      outer.setAttribute('width', '200'); outer.setAttribute('height', '300');
+      outer.setAttribute('fill', 'url(#court-grad)');
+      outer.setAttribute('stroke', 'rgba(0, 212, 255, 0.25)');
+      outer.setAttribute('stroke-width', '1.5');
+      svg.appendChild(outer);
+
+      // Service lines (horizontal, dividing each half into front and back)
+      const serviceTop = document.createElementNS(ns, 'line');
+      serviceTop.setAttribute('x1', '20'); serviceTop.setAttribute('y1', '90');
+      serviceTop.setAttribute('x2', '220'); serviceTop.setAttribute('y2', '90');
+      serviceTop.setAttribute('stroke', 'rgba(255,255,255,0.15)');
+      serviceTop.setAttribute('stroke-width', '1');
+      svg.appendChild(serviceTop);
+
+      const serviceBot = document.createElementNS(ns, 'line');
+      serviceBot.setAttribute('x1', '20'); serviceBot.setAttribute('y1', '250');
+      serviceBot.setAttribute('x2', '220'); serviceBot.setAttribute('y2', '250');
+      serviceBot.setAttribute('stroke', 'rgba(255,255,255,0.15)');
+      serviceBot.setAttribute('stroke-width', '1');
+      svg.appendChild(serviceBot);
+
+      // Center T-line on each side
+      const centerTop = document.createElementNS(ns, 'line');
+      centerTop.setAttribute('x1', '120'); centerTop.setAttribute('y1', '90');
+      centerTop.setAttribute('x2', '120'); centerTop.setAttribute('y2', '170');
+      centerTop.setAttribute('stroke', 'rgba(255,255,255,0.15)');
+      centerTop.setAttribute('stroke-width', '1');
+      svg.appendChild(centerTop);
+
+      const centerBot = document.createElementNS(ns, 'line');
+      centerBot.setAttribute('x1', '120'); centerBot.setAttribute('y1', '170');
+      centerBot.setAttribute('x2', '120'); centerBot.setAttribute('y2', '250');
+      centerBot.setAttribute('stroke', 'rgba(255,255,255,0.15)');
+      centerBot.setAttribute('stroke-width', '1');
+      svg.appendChild(centerBot);
+
+      // The net
+      const net = document.createElementNS(ns, 'line');
+      net.setAttribute('x1', '20'); net.setAttribute('y1', '170');
+      net.setAttribute('x2', '220'); net.setAttribute('y2', '170');
+      net.setAttribute('stroke', 'rgba(255,255,255,0.55)');
+      net.setAttribute('stroke-width', '2');
+      svg.appendChild(net);
+
+      // --- 2. Player positions (you = bottom half) ---
+      // Your partner — always at front (net), since standard padel
+      const partner = document.createElementNS(ns, 'circle');
+      partner.setAttribute('cx', '85');
+      partner.setAttribute('cy', '195');
+      partner.setAttribute('r', '7');
+      partner.setAttribute('class', 'court-player-self');
+      partner.setAttribute('opacity', '0.5');
+      svg.appendChild(partner);
+
+      // YOU — position changes by choices.position
+      let yourCx = 155, yourCy = 285; // default back-court
+      if (choices.position === 'net')  { yourCx = 155; yourCy = 195; }
+      if (choices.position === 'mid')  { yourCx = 155; yourCy = 230; }
+      if (choices.position === 'back') { yourCx = 155; yourCy = 290; }
+      if (choices.position === 'wall') { yourCx = 195; yourCy = 270; }
+
+      // Pulse ring around you
+      const youRing = document.createElementNS(ns, 'circle');
+      youRing.setAttribute('cx', yourCx); youRing.setAttribute('cy', yourCy);
+      youRing.setAttribute('r', '14');
+      youRing.setAttribute('class', 'court-player-self-ring');
+      svg.appendChild(youRing);
+
+      const you = document.createElementNS(ns, 'circle');
+      you.setAttribute('cx', yourCx); you.setAttribute('cy', yourCy);
+      you.setAttribute('r', '8');
+      you.setAttribute('class', 'court-player-self');
+      svg.appendChild(you);
+
+      // YOU label
+      const youLabel = document.createElementNS(ns, 'text');
+      youLabel.setAttribute('x', yourCx);
+      youLabel.setAttribute('y', yourCy + 25);
+      youLabel.setAttribute('text-anchor', 'middle');
+      youLabel.setAttribute('font-family', 'JetBrains Mono, monospace');
+      youLabel.setAttribute('font-size', '9');
+      youLabel.setAttribute('fill', 'var(--accent)');
+      youLabel.setAttribute('letter-spacing', '0.1em');
+      youLabel.textContent = 'JIJ';
+      svg.appendChild(youLabel);
+
+      // --- 3. Opponents ---
+      if (choices.opponents === 'both-net') {
+        addOpp(svg, ns, 85,  145);
+        addOpp(svg, ns, 155, 145);
+      } else if (choices.opponents === 'both-back') {
+        addOpp(svg, ns, 85,  55);
+        addOpp(svg, ns, 155, 55);
+      } else if (choices.opponents === 'split') {
+        addOpp(svg, ns, 85,  145);  // forward
+        addOpp(svg, ns, 155, 55);   // back
+      }
+
+      // --- 4. Incoming ball (based on height & position) ---
+      // The ball sits in front of you (toward the opponent's side) at a height
+      // that suggests where you're going to make contact: high = far from your
+      // feet (green zone), low = near your feet (red zone).
+      if (choices.height) {
+        // Direction the ball comes from (toward the opponents' half = "up" in SVG)
+        // For 'wall' position, the ball comes from your side (back glass), not
+        // straight from the opponents — reflect that by approaching from behind you.
+        const fromBehind = (choices.position === 'wall');
+        // x-offset: slight forehand-side bias (right of player for right-handers)
+        const xOff = fromBehind ? 14 : -10;
+        let bCx = yourCx + xOff;
+        // Height in SVG: ball sits ABOVE the player marker (toward the net) by an
+        // amount that scales with zone. Green = high & well in front; red = low & at feet.
+        let bCy, bColor;
+        if (choices.height === 'green')  { bCy = yourCy - 68; bColor = 'var(--accent)'; }
+        else if (choices.height === 'orange') { bCy = yourCy - 42; bColor = 'var(--accent-warm)'; }
+        else /* red */                    { bCy = yourCy - 20; bColor = '#ff3355'; }
+        // For wall position, bring the ball horizontally closer to the back glass
+        if (fromBehind) { bCy = yourCy - 25 + (choices.height === 'green' ? -28 : choices.height === 'orange' ? -12 : 4); }
+
+        // Trajectory dashed line from where the ball *comes from* to where it sits
+        const traj = document.createElementNS(ns, 'path');
+        let trajStart;
+        if (fromBehind) {
+          // From behind the player — from the back-glass region
+          trajStart = { x: yourCx + 35, y: 315 };
+        } else {
+          // From opponents
+          const oppY = (choices.opponents === 'both-back') ? 55 :
+                       (choices.opponents === 'split')     ? 75 : 145;
+          const oppX = (choices.opponents === 'split') ? 120 : 120;
+          trajStart = { x: oppX, y: oppY };
+        }
+        const midX = (trajStart.x + bCx) / 2;
+        const midY = Math.min(trajStart.y, bCy) - 25;
+        traj.setAttribute('d', `M ${trajStart.x} ${trajStart.y} Q ${midX} ${midY}, ${bCx} ${bCy}`);
+        traj.setAttribute('class', 'court-trajectory show');
+        svg.appendChild(traj);
+
+        // Glow
+        const ballGlow = document.createElementNS(ns, 'circle');
+        ballGlow.setAttribute('cx', bCx); ballGlow.setAttribute('cy', bCy);
+        ballGlow.setAttribute('r', '11');
+        ballGlow.setAttribute('fill', bColor);
+        ballGlow.setAttribute('opacity', '0.18');
+        svg.appendChild(ballGlow);
+        // Ball
+        const ball = document.createElementNS(ns, 'circle');
+        ball.setAttribute('cx', bCx); ball.setAttribute('cy', bCy);
+        ball.setAttribute('r', '5');
+        ball.setAttribute('fill', bColor);
+        ball.setAttribute('stroke', 'rgba(255,255,255,0.4)');
+        ball.setAttribute('stroke-width', '0.8');
+        ball.setAttribute('class', 'court-ball');
+        svg.appendChild(ball);
+
+        // Zone label (small text next to the ball, on the side with more room)
+        const zoneTxt = document.createElementNS(ns, 'text');
+        const labelOnLeft = bCx > 160;  // bal dichtbij rechterglas → label naar links
+        zoneTxt.setAttribute('x', bCx + (labelOnLeft ? -10 : 11));
+        zoneTxt.setAttribute('y', bCy + 3);
+        zoneTxt.setAttribute('text-anchor', labelOnLeft ? 'end' : 'start');
+        zoneTxt.setAttribute('font-family', 'JetBrains Mono, monospace');
+        zoneTxt.setAttribute('font-size', '8');
+        zoneTxt.setAttribute('fill', bColor);
+        zoneTxt.setAttribute('letter-spacing', '0.1em');
+        zoneTxt.textContent = choices.height === 'green'  ? 'GROEN' :
+                              choices.height === 'orange' ? 'ORANJE' : 'ROOD';
+        svg.appendChild(zoneTxt);
+      }
+
+      // --- 5. Verdict trajectory (arrow showing recommended shot) ---
+      if (isVerdict && choices.position && choices.height && choices.opponents) {
+        const decision = decide(choices);
+        const shotId = decision.primary;
+        const target = recommendedTarget(shotId, choices);
+        if (target) {
+          // Curve depending on shot type — lob/contralob = high arc;
+          // smash/bajada = sharper straighter line; bandeja/víbora = mid-arc
+          const arc = ({
+            globo: 60, contralob: 50,
+            smash: 5,  bajada: 12,
+            bandeja: 25, vibora: 22, chiquita: 18,
+            'flat-volley': 6, 'low-volley': 6,
+            'defensive-return': 30, 'middle-attack': 10,
+            'return-and-up': 25
+          })[shotId] ?? 18;
+          const midX = (yourCx + target.x) / 2;
+          const midY = Math.min(yourCy, target.y) - arc;
+
+          // Outer glow (wider stroke, low opacity, no marker)
+          const glow = document.createElementNS(ns, 'path');
+          glow.setAttribute('d', `M ${yourCx} ${yourCy} Q ${midX} ${midY}, ${target.x} ${target.y}`);
+          glow.setAttribute('stroke', 'var(--accent)');
+          glow.setAttribute('stroke-width', '7');
+          glow.setAttribute('fill', 'none');
+          glow.setAttribute('stroke-linecap', 'round');
+          glow.setAttribute('opacity', '0.18');
+          svg.appendChild(glow);
+
+          // Main shot path with arrow marker on the end
+          const path = document.createElementNS(ns, 'path');
+          path.setAttribute('d', `M ${yourCx} ${yourCy} Q ${midX} ${midY}, ${target.x} ${target.y}`);
+          path.setAttribute('stroke', 'var(--accent)');
+          path.setAttribute('stroke-width', '2.2');
+          path.setAttribute('fill', 'none');
+          path.setAttribute('stroke-linecap', 'round');
+          path.setAttribute('opacity', '0.95');
+          path.setAttribute('marker-end', 'url(#shot-arrow)');
+          svg.appendChild(path);
+
+          // Tiny target indicator at the impact point — small ring, not a filled disc
+          const targetRing = document.createElementNS(ns, 'circle');
+          targetRing.setAttribute('cx', target.x);
+          targetRing.setAttribute('cy', target.y);
+          targetRing.setAttribute('r', '9');
+          targetRing.setAttribute('fill', 'none');
+          targetRing.setAttribute('stroke', 'var(--accent)');
+          targetRing.setAttribute('stroke-width', '1');
+          targetRing.setAttribute('opacity', '0.5');
+          targetRing.setAttribute('stroke-dasharray', '2 2');
+          svg.appendChild(targetRing);
+
+          // Shot-name label near the target — robust clamp.
+          // The label is Bebas Neue 14px with 0.05em letter-spacing.
+          // Approx char width ~7.5px. Cap at SHOT name's char count.
+          const shotName = SHOTS[shotId].name.toUpperCase();
+          const labelW = shotName.length * 7.5;
+          const dx = target.x - yourCx;
+          // Try placing label on the side AWAY from where you stand
+          // (so it doesn't visually collide with the JIJ marker).
+          let labelOnRight = dx >= 0;
+          const PADDING = 12;
+          // If right-side would clip the right glass, flip to left
+          if (labelOnRight && target.x + 14 + labelW > 220 - PADDING) labelOnRight = false;
+          // If left-side would clip the left glass, flip to right
+          if (!labelOnRight && target.x - 14 - labelW < 20 + PADDING) labelOnRight = true;
+          // If BOTH would clip (very narrow targets), center the label under/above target
+          let centered = false;
+          if (target.x + 14 + labelW > 220 - PADDING && target.x - 14 - labelW < 20 + PADDING) {
+            centered = true;
+          }
+          const shotLabel = document.createElementNS(ns, 'text');
+          if (centered) {
+            shotLabel.setAttribute('x', target.x);
+            shotLabel.setAttribute('text-anchor', 'middle');
+          } else {
+            shotLabel.setAttribute('x', target.x + (labelOnRight ? 14 : -14));
+            shotLabel.setAttribute('text-anchor', labelOnRight ? 'start' : 'end');
+          }
+          // Vertical placement: keep inside court y: 20–320
+          let labelY;
+          if (target.y < 50)       labelY = target.y + 22;   // near top — push down
+          else if (target.y > 300) labelY = target.y - 14;   // near bottom — push up
+          else                     labelY = target.y - 14;
+          shotLabel.setAttribute('y', labelY);
+          shotLabel.setAttribute('font-family', 'Bebas Neue, sans-serif');
+          shotLabel.setAttribute('font-size', '14');
+          shotLabel.setAttribute('fill', 'var(--accent)');
+          shotLabel.setAttribute('letter-spacing', '0.05em');
+          shotLabel.textContent = shotName;
+          svg.appendChild(shotLabel);
+        }
+      }
+
+      return svg;
+    }
+
+    function addOpp(svg, ns, cx, cy) {
+      const c = document.createElementNS(ns, 'circle');
+      c.setAttribute('cx', cx); c.setAttribute('cy', cy);
+      c.setAttribute('r', '7');
+      c.setAttribute('class', 'court-player-opp');
+      svg.appendChild(c);
+    }
+
+    function recommendedTarget(shotId, choices) {
+      // Targets for shot trajectories on the court SVG (opponent's half = top)
+      // Returns x,y for arrowhead destination
+      const oppPositions = {
+        'both-net':  { left: {x: 85,  y: 145}, right: {x: 155, y: 145} },
+        'both-back': { left: {x: 85,  y: 55},  right: {x: 155, y: 55} },
+        'split':     { front:{x: 85,  y: 145}, back:  {x: 155, y: 55} }
+      };
+      const opps = oppPositions[choices.opponents];
+
+      switch (shotId) {
+        case 'smash':
+          // Target between or behind opponents — out via side wall
+          if (choices.opponents === 'both-net')  return { x: 50, y: 165 };  // at feet
+          if (choices.opponents === 'both-back') return { x: 215, y: 50 };  // side wall out
+          return { x: 155, y: 55 };  // on back opponent
+        case 'bandeja':
+          // Deep, low to feet
+          return { x: 60, y: 100 };
+        case 'vibora':
+          return { x: 210, y: 95 };  // side angle, sharp out
+        case 'bajada':
+          if (choices.opponents === 'both-net') return { x: 85, y: 165 };
+          return { x: 120, y: 85 };
+        case 'flat-volley':
+          if (choices.opponents === 'both-net')  return { x: 120, y: 165 };
+          if (choices.opponents === 'both-back') return { x: 85,  y: 75 };
+          return { x: 120, y: 100 };
+        case 'low-volley':
+          return { x: 120, y: 165 };  // safe down the middle
+        case 'globo':
+          if (choices.opponents === 'both-net') return { x: 155, y: 45 };  // over their heads, deep
+          return { x: 120, y: 35 };
+        case 'chiquita':
+          return { x: 120, y: 175 };  // just past net
+        case 'contralob':
+          return { x: 75, y: 40 };
+        case 'middle-attack':
+          if (choices.opponents === 'both-net') return { x: 120, y: 150 };
+          return { x: 120, y: 80 };
+        case 'defensive-return':
+        case 'return-and-up':
+          return { x: 120, y: 95 };
+      }
+      return null;
+    }
+
+    function renderCourtCard(choices, isVerdict) {
+      const readout = el('div', { class: 'sd-court-readout' });
+      const items = [
+        ['Positie',     labelFor('position', choices.position)],
+        ['Balhoogte',   labelFor('height',   choices.height)],
+        ['Tegenstand.', labelFor('opponents',choices.opponents)],
+        ['Druk',        labelFor('pressure', choices.pressure)]
+      ];
+      items.forEach(([k, v]) => {
+        const line = el('div', {}, [
+          el('span', { class: 'rkey' }, k.padEnd(12, '\u00a0') + ' '),
+          el('span', { class: v ? (isVerdict ? 'rval accent' : 'rval') : 'rval empty' }, v || '—')
+        ]);
+        readout.appendChild(line);
+      });
+
+      const title = el('div', { class: 'sd-court-card-title' }, [
+        el('span', { class: 'live-pulse' }),
+        'Tactische staat'
+      ]);
+
+      const card = el('div', { class: 'sd-court-card' }, [ title ]);
+      card.appendChild(renderCourtSVG(choices, isVerdict));
+      card.appendChild(readout);
+      return el('div', { class: 'sd-court-col' }, [ card ]);
+    }
+
+    function labelFor(key, id) {
+      if (!id) return null;
+      const q = QUESTIONS.find(q => q.key === key);
+      if (!q) return null;
+      const opt = q.options.find(o => o.id === id);
+      return opt ? opt.title : null;
+    }
+
+    // ---- Intro screen ----
+    function renderIntro() {
+      const intro = el('div', { class: 'sd-intro' });
+      intro.appendChild(el('div', { class: 'sd-eyebrow' }, '— Shot Decider · Live'));
+      intro.appendChild(el('h1', { html: 'Welke slag<br><em>nu?</em>' }));
+      intro.appendChild(el('p', { class: 'sd-intro-lede' },
+        'Vier vragen — positie, balhoogte, tegenstanders, druk. Eén aanbeveling. Plus waarom, plus het alternatief, plus de patroon waar deze slag bij hoort.'));
+      intro.appendChild(el('p', { class: 'sd-intro-lede' },
+        'Geen "het hangt ervan af". De beslisboom is gebouwd op klassieke padel-coachingsprincipes: hoge bal = aanval, lage bal = bouwen, het net winnen kost één goede lob, en mid-court is waar punten sterven.'));
+
+      const meta = el('div', { class: 'sd-intro-meta' }, [
+        el('div', { class: 'sd-intro-meta-item' }, [
+          el('strong', {}, '4'), 'vragen'
+        ]),
+        el('div', { class: 'sd-intro-meta-item' }, [
+          el('strong', {}, '12'), 'mogelijke slagen'
+        ]),
+        el('div', { class: 'sd-intro-meta-item' }, [
+          el('strong', {}, '< 30s'), 'tot uitslag'
+        ])
+      ]);
+      intro.appendChild(meta);
+
+      const startBtn = el('button', {
+        class: 'cta-primary',
+        on: { click: startQuiz }
+      }, [ 'Start beslisboom ', el('span', {}, '→') ]);
+      intro.appendChild(startBtn);
+
+      wrap.innerHTML = '';
+      wrap.appendChild(intro);
+    }
+
+    // ---- Question screen ----
+    function renderQuestion() {
+      const q = QUESTIONS[state.stepIdx];
+
+      const layout = el('div', { class: 'sd-layout' });
+
+      // LEFT: Question column
+      const left = el('div', { class: 'sd-question-col' });
+
+      // Progress
+      const progress = el('div', { class: 'sd-progress' });
+      for (let i = 0; i < QUESTIONS.length; i++) {
+        const bar = el('div', {
+          class: 'sd-progress-bar ' + (i < state.stepIdx ? 'done' : (i === state.stepIdx ? 'active' : ''))
+        });
+        progress.appendChild(bar);
+      }
+      left.appendChild(progress);
+
+      const qWrap = el('div', { class: 'sd-question-wrap' });
+      qWrap.appendChild(el('div', { class: 'sd-step-label' }, q.label));
+      qWrap.appendChild(el('h2', { class: 'sd-question' }, q.title));
+      qWrap.appendChild(el('p', { class: 'sd-subq' }, q.subtitle));
+
+      const opts = el('div', { class: 'sd-options' });
+      q.options.forEach((opt, idx) => {
+        const optEl = el('button', {
+          class: 'sd-option' + (state.choices[q.key] === opt.id ? ' selected' : ''),
+          on: { click: () => onSelect(q.key, opt.id, optEl) }
+        }, [
+          el('span', { class: 'sd-option-num' }, String(idx + 1).padStart(2, '0')),
+          el('div', { class: 'sd-option-body' }, [
+            el('div', { class: 'sd-option-title' }, opt.title),
+            el('p', { class: 'sd-option-hint' }, opt.hint)
+          ]),
+          opt.dot ? el('span', { class: 'zone-dot ' + opt.dot }) : null
+        ]);
+        opts.appendChild(optEl);
+      });
+      qWrap.appendChild(opts);
+
+      // Back button
+      const controls = el('div', { class: 'sd-controls' });
+      const backBtn = el('button', {
+        class: 'sd-btn-back',
+        on: { click: goBack }
+      }, [ el('span', {}, '←'), ' Terug' ]);
+      if (state.stepIdx === 0) backBtn.setAttribute('disabled', 'disabled');
+      controls.appendChild(backBtn);
+      qWrap.appendChild(controls);
+
+      left.appendChild(qWrap);
+
+      // RIGHT: Court column
+      const right = renderCourtCard(state.choices, false);
+
+      layout.appendChild(left);
+      layout.appendChild(right);
+
+      wrap.innerHTML = '';
+      wrap.appendChild(layout);
+    }
+
+    function onSelect(key, id, optEl) {
+      state.choices[key] = id;
+      // visual flash
+      document.querySelectorAll('.sd-option').forEach(e => e.classList.remove('selected'));
+      optEl.classList.add('selected');
+
+      // animated exit then next step
+      const qWrap = document.querySelector('.sd-question-wrap');
+      setTimeout(() => {
+        if (qWrap) qWrap.classList.add('exit');
+        setTimeout(() => {
+          if (state.stepIdx < QUESTIONS.length - 1) {
+            state.stepIdx++;
+            renderQuestion();
+          } else {
+            renderVerdict();
+          }
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 280);
+      }, 250);
+    }
+
+    function goBack() {
+      if (state.stepIdx === 0) return;
+      state.stepIdx--;
+      renderQuestion();
+    }
+
+    function startQuiz() {
+      state.screen = 'question';
+      state.stepIdx = 0;
+      state.choices = {};
+      renderQuestion();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ---- Verdict screen ----
+    function renderVerdict() {
+      state.screen = 'verdict';
+      const decision = decide(state.choices);
+      const primary = SHOTS[decision.primary];
+      const alt = SHOTS[decision.alt];
+
+      const layout = el('div', { class: 'sd-layout' });
+
+      // LEFT: verdict
+      const left = el('div', { class: 'sd-verdict-wrap' });
+
+      left.appendChild(el('div', { class: 'sd-verdict-eyebrow' }, [
+        el('span', { class: 'live-pulse' }),
+        'Aanbevolen slag'
+      ]));
+      left.appendChild(el('h1', { class: 'sd-shot-name' }, primary.name));
+      left.appendChild(el('p', { class: 'sd-shot-spanish' }, primary.spanish));
+      left.appendChild(el('p', { class: 'sd-shot-lede', html: decision.primaryWhy }));
+
+      // Detail cards: execution + risk
+      const grid = el('div', { class: 'sd-detail-grid' });
+      grid.appendChild(el('div', { class: 'sd-detail-card' }, [
+        el('h4', {}, 'Uitvoering'),
+        el('p', {}, primary.execution)
+      ]));
+      grid.appendChild(el('div', { class: 'sd-detail-card warn' }, [
+        el('h4', {}, 'Waarschuwing'),
+        el('p', {}, primary.risk)
+      ]));
+      left.appendChild(grid);
+
+      // Alternative
+      const altBlock = el('div', { class: 'sd-alt-row' }, [
+        el('h4', {}, 'Of, als alternatief'),
+        el('div', { class: 'sd-alt-shot' }, alt.name + ' '),
+        el('p', { class: 'sd-alt-why' }, decision.altWhy)
+      ]);
+      left.appendChild(altBlock);
+
+      // Link to patterns + restart
+      const linkRow = el('div', { class: 'sd-link-row' });
+      if (primary.pattern) {
+        linkRow.appendChild(el('a', {
+          class: 'sd-link-pattern',
+          href: `/tools/patterns.html#${primary.pattern}`
+        }, [ 'Bekijk in Patterns 3D ', el('span', {}, '→') ]));
+      }
+      linkRow.appendChild(el('button', {
+        class: 'sd-link-restart',
+        on: { click: startQuiz }
+      }, [ el('span', {}, '↺'), ' Andere situatie' ]));
+      left.appendChild(linkRow);
+
+      // Recap of choices
+      const recap = el('div', { class: 'sd-recap' });
+      [
+        ['Positie',     labelFor('position', state.choices.position)],
+        ['Balhoogte',   labelFor('height',   state.choices.height)],
+        ['Tegenstand.', labelFor('opponents',state.choices.opponents)],
+        ['Druk',        labelFor('pressure', state.choices.pressure)]
+      ].forEach(([k, v]) => {
+        recap.appendChild(el('div', { class: 'sd-recap-chip' }, [
+          el('span', { class: 'rkey' }, k),
+          v || '—'
+        ]));
+      });
+      left.appendChild(recap);
+
+      // RIGHT: court with verdict trajectory
+      const right = renderCourtCard(state.choices, true);
+
+      layout.appendChild(left);
+      layout.appendChild(right);
+
+      wrap.innerHTML = '';
+      wrap.appendChild(layout);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Initial render
+    renderIntro();
+
+  })();
+  </script>
+</body>
+</html>
