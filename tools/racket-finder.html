@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Racket Finder — vind het juiste padelracket op basis van niveau, speelstijl, fysiek en budget. Concept met visualisatie." />
+  <meta name="description" content="Racket Finder. Vind het juiste padelracket op basis van niveau, speelstijl, fysiek en budget. Concept met visualisatie." />
   <meta name="theme-color" content="#050709" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="canonical" href="https://padelpatterns.com/tools/racket-finder.html" />
@@ -577,7 +577,7 @@
       {
         key: 'level',
         q: 'Wat is je niveau?',
-        sub: 'Eerlijk, geen valse bescheidenheid. We gebruiken het om rackets te filteren die echt bij je passen — niet de pro\'s racket als je nog moet leren placen.',
+        sub: 'Eerlijk, geen valse bescheidenheid. We gebruiken het om rackets te filteren die echt bij je passen, niet de pro\'s racket als je nog moet leren placen.',
         options: [
           { v:'beginner',     label:'Beginner',      sub:'Minder dan 2 jaar speel-ervaring' },
           { v:'intermediate', label:'Gevorderd',     sub:'2-5 jaar, vaste partner' },
@@ -588,7 +588,7 @@
       {
         key: 'style',
         q: 'Welke rol speel je het liefst?',
-        sub: 'Als jij en je partner samen spelen — sta jij liever achter en lob je hoog, of zoek je het net en de kill?',
+        sub: 'Als jij en je partner samen spelen: sta jij liever achter en lob je hoog, of zoek je het net en de kill?',
         options: [
           { v:'defender',  label:'Verdediger',  sub:'Geduld, lobben, vanaf de bodem opbouwen' },
           { v:'allround',  label:'Allrounder',  sub:'Beide kanten, situationeel kiezen' },
@@ -627,20 +627,20 @@
 
       if (racket.levels.includes(state.level)) {
         score += 40;
-        if (state.level === 'beginner')      reasons.push('Past bij beginnend niveau — vergevingsgezind en stuurt zichzelf');
-        else if (state.level === 'intermediate') reasons.push('Geschikt voor gevorderd spel — geeft je ruimte om te groeien');
+        if (state.level === 'beginner')      reasons.push('Past bij beginnend niveau: vergevingsgezind en stuurt zichzelf');
+        else if (state.level === 'intermediate') reasons.push('Geschikt voor gevorderd spel: geeft je ruimte om te groeien');
         else if (state.level === 'advanced') reasons.push('Voldoende controle én power voor competitief padel');
-        else                                  reasons.push('Pro-niveau racket — vraagt techniek, beloont met scherpte');
+        else                                  reasons.push('Pro-niveau racket: vraagt techniek, beloont met scherpte');
       }
 
       if (racket.styles.includes(state.style)) {
         score += 30;
         if (state.style === 'defender' && racket.shape === 'rond') {
-          reasons.push('Ronde vorm — maximaal sweetspot, ideaal voor controle en lange rallies');
+          reasons.push('Ronde vorm: maximaal sweetspot, ideaal voor controle en lange rallies');
         } else if (state.style === 'attacker' && racket.shape === 'diamond') {
-          reasons.push('Diamond-vorm met hoge balans — extra power bij smash en víbora');
+          reasons.push('Diamond-vorm met hoge balans: extra power bij smash en víbora');
         } else if (state.style === 'allround' && racket.shape === 'druppel') {
-          reasons.push('Druppel-vorm — balans tussen controle en power, voor alle slagen');
+          reasons.push('Druppel-vorm: balans tussen controle en power, voor alle slagen');
         } else {
           reasons.push('Past bij jouw speelstijl');
         }
@@ -649,21 +649,21 @@
       if (state.physical === 'power') {
         if (racket.weight >= 365 && racket.hardness !== 'zacht') {
           score += 20;
-          reasons.push('Iets zwaarder en harder — je hebt de armkracht om de power eruit te halen');
+          reasons.push('Iets zwaarder en harder: je hebt de armkracht om de power eruit te halen');
         } else if (racket.weight >= 365) {
           score += 12;
         }
       } else if (state.physical === 'control') {
         if (racket.weight <= 365 && racket.hardness === 'zacht') {
           score += 20;
-          reasons.push('Lichter en zachter — vriendelijk voor pols en elleboog, makkelijke swing');
+          reasons.push('Lichter en zachter: vriendelijk voor pols en elleboog, makkelijke swing');
         } else if (racket.hardness === 'zacht') {
           score += 12;
         }
       } else {
         if (racket.hardness === 'medium') {
           score += 18;
-          reasons.push('Middelhard — geeft feedback maar slaat niet door op je arm');
+          reasons.push('Middelhard: geeft feedback maar slaat niet door op je arm');
         } else {
           score += 10;
         }
@@ -677,7 +677,7 @@
       if (racket.price <= maxBudget) {
         score += 10;
         if (state.budget !== 'nolimit' && racket.price >= maxBudget - 80 && racket.price <= maxBudget) {
-          reasons.push('Binnen budget — €' + racket.price + ' ligt mooi in jouw range');
+          reasons.push('Binnen budget · €' + racket.price + ' ligt mooi in jouw range');
         }
       } else {
         score -= 30;
@@ -724,7 +724,7 @@
       + '<div class="rf-options">' + optionsHtml + '</div>'
       + '<div class="rf-actions">'
       + (state.step > 0 ? '<button class="rf-btn-back" id="rf-back">← Vorige</button>' : '')
-      + '<span class="rf-step-counter">Tik om te kiezen — auto-doorgaan</span>'
+      + '<span class="rf-step-counter">Tik om te kiezen · auto-doorgaan</span>'
       + '</div>'
       + '</div>';
 
@@ -875,10 +875,10 @@
         '<div class="rf-results-intro">'
       + '<div class="rf-eyebrow">— Racket Finder · Jouw resultaten</div>'
       + '<h1 class="rf-results-title">Drie rackets voor jou.</h1>'
-      + '<p class="rf-results-sub">Gebaseerd op je antwoorden. De top-match scoort het hoogst op de combinatie van niveau, speelstijl, fysiek en budget. Niet de duurste — wel de juiste.</p>'
+      + '<p class="rf-results-sub">Gebaseerd op je antwoorden. De top-match scoort het hoogst op de combinatie van niveau, speelstijl, fysiek en budget. Niet de duurste, wel de juiste.</p>'
       + '</div>'
       + cardsHtml
-      + '<div class="rf-disclaimer"><p><strong style="color: var(--text); font-weight: 500;">Werkende versie met 30 rackets.</strong> "Vergelijk prijzen" opent Google Shopping — je ziet meteen waar het racket te koop is en voor welke prijs. Geen tracking, geen verborgen voorkeur. Database breidt verder uit naar 60+ modellen in komende updates.</p></div>'
+      + '<div class="rf-disclaimer"><p><strong style="color: var(--text); font-weight: 500;">Werkende versie met 30 rackets.</strong> "Vergelijk prijzen" opent Google Shopping. Je ziet meteen waar het racket te koop is en voor welke prijs. Geen tracking, geen verborgen voorkeur. Database breidt verder uit naar 60+ modellen in komende updates.</p></div>'
       + '<div class="rf-restart"><button id="rf-restart">↻ Opnieuw zoeken</button></div>';
 
       // Count-up animation for match scores

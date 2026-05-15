@@ -1289,18 +1289,18 @@ const STRATEGIES = [
     tip: 'Stel je een touw van 4 meter voor tussen jullie middens. Strakker = slechte spacing, slap = jullie staan te ver uit elkaar.',
     steps: [
       {
-        text: 'Startpositie — Team B aan het net, Team A verdedigt achterin.',
+        text: 'Startpositie: Team B aan het net, Team A verdedigt achterin.',
         players: { A1: POS.A_DEFEND_L, A2: POS.A_DEFEND_R, B1: POS.B_NET_L, B2: POS.B_NET_R },
         ball: { x: 3, y: 1, z: -8.5 }
       },
       {
-        text: 'Bal gaat cross-court. Beide A-spelers schuiven mee naar links — het touw blijft strak.',
+        text: 'Bal gaat cross-court. Beide A-spelers schuiven mee naar links. Het touw blijft strak.',
         players: { A1: { x: -4, z: -8.5 }, A2: { x: -1, z: -8.5 }, B1: { x: -3.5, z: 3 }, B2: { x: -1, z: 3 } },
         ball: { x: -3.5, y: 1, z: 3 },
         ballArc: 'lob'
       },
       {
-        text: 'Antwoord komt diagonaal terug naar rechts. Alle vier verschuiven samen — geen gaten.',
+        text: 'Antwoord komt diagonaal terug naar rechts. Alle vier verschuiven samen, geen gaten.',
         players: { A1: { x: -1, z: -8.5 }, A2: { x: 4, z: -8.5 }, B1: { x: -1, z: 3 }, B2: { x: 4, z: 3 } },
         ball: { x: 4, y: 1, z: -8.5 },
         ballArc: 'lob'
@@ -1331,18 +1331,18 @@ const STRATEGIES = [
         ballArc: 'high-lob'
       },
       {
-        text: 'B1 moet zich omdraaien en sprinten. A1 én A2 stormen naar het net — als één eenheid.',
+        text: 'B1 moet zich omdraaien en sprinten. A1 én A2 stormen naar het net, als één eenheid.',
         players: { A1: { x: -2.5, z: -2.5 }, A2: { x: 2.5, z: -2.5 }, B1: { x: -3.5, z: 8.5 }, B2: { x: 0, z: 5 } },
         ball: { x: -3.5, y: 0.3, z: 8.5 }
       },
       {
-        text: 'B speelt een verdedigende lob terug — kort en speelbaar voor A.',
+        text: 'B speelt een verdedigende lob terug, kort en speelbaar voor A.',
         players: { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
         ball: { x: 2.5, y: 2.5, z: -3 },
         ballArc: 'lob'
       },
       {
-        text: 'A2 vangt de lob op heuphoogte aan het net — klaar voor de bandeja-finish.',
+        text: 'A2 vangt de lob op heuphoogte aan het net, klaar voor de bandeja-finish.',
         players: { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
         ball: { x: 2.5, y: 2.3, z: -3 }
       },
@@ -1378,18 +1378,18 @@ const STRATEGIES = [
         ballArc: 'chiquita'
       },
       {
-        text: 'B2 moet bukken en omhoog spelen. Bal komt zwak en hoog terug — A2 stapt al naar voren.',
+        text: 'B2 moet bukken en omhoog spelen. Bal komt zwak en hoog terug, A2 stapt al naar voren.',
         players: { A1: { x: -3, z: -5 }, A2: { x: 2.5, z: -5 }, B1: { x: -2.5, z: 4 }, B2: { x: 2, z: 1.5 } },
         ball: { x: 1, y: 2.2, z: -2 },
         ballArc: 'high-lob'
       },
       {
-        text: 'A2 vangt de zwakke bal aan het net op heuphoogte — perfecte volley-positie.',
+        text: 'A2 vangt de zwakke bal aan het net op heuphoogte. Perfecte volley-positie.',
         players: { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: { x: -2.5, z: 4 }, B2: { x: 2.5, z: 4 } },
         ball: { x: 2.3, y: 1.0, z: -3 }
       },
       {
-        text: 'Volley vliegt laag naar B2\'s voeten — punt voor A.',
+        text: 'Volley vliegt laag naar B2\'s voeten. Punt voor A.',
         players: { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: { x: -2.5, z: 4 }, B2: { x: 2.5, z: 4 } },
         ball: { x: 2.5, y: 0.4, z: 5 },
         ballArc: 'volley'
@@ -1402,14 +1402,14 @@ const STRATEGIES = [
     spanish: 'la bandeja',
     level: 'intermediate',
     intent: 'positional',
-    summary: 'De controle-overhead. Geen smash — wel een gecontroleerde, vlakke slag met snijspin om diep te plaatsen en aan het net te blijven.',
+    summary: 'De controle-overhead. Geen smash, wel een gecontroleerde vlakke slag met snijspin om diep te plaatsen en aan het net te blijven.',
     when: ['Op elke lob die niet écht over je heen gaat', 'Als je geen tijd hebt voor een smash', 'Defensief tegen goede globos'],
     shots: ['Bandeja (geslepen snij-overhead)'],
     mistakes: ['Bandeja vervangen door risicovolle smash', 'Te kort plaatsen', 'Niet snel terug naar netpositie'],
-    tip: '80% kracht, 100% plaatsing. Mik op de hoek waar zij- en achterglas elkaar raken — onspeelbaar.',
+    tip: '80% kracht, 100% plaatsing. Mik op de hoek waar zij- en achterglas elkaar raken. Onspeelbaar.',
     steps: [
       {
-        text: 'Team A staat aan het net. Team B speelt een lob — bal stijgt over A2 heen.',
+        text: 'Team A staat aan het net. Team B speelt een lob. Bal stijgt over A2 heen.',
         players: { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
         ball: { x: 2.5, y: 2.5, z: 5 }
       },
@@ -1440,12 +1440,12 @@ const STRATEGIES = [
     intent: 'offensive',
     summary: 'De adder. Agressieve overhead met heftige zijspin, die laag het glas in glipt en de bal onspeelbaar tegen de hoek perst.',
     when: ['Op rechte lobs in de rechterzone', 'Als je netpositie wil houden én druk opvoeren', 'Tegen verdedigers die slecht uit de hoek komen'],
-    shots: ['Víbora — continentale grip, gesneden, schuin neerwaarts'],
+    shots: ['Víbora · continentale grip, gesneden, schuin neerwaarts'],
     mistakes: ['Te recht = gewone bandeja zonder spin', 'Te hard = controle weg', 'Verkeerde grip = geen spin'],
     tip: 'Stel je voor dat je een steen over het wateroppervlak laat ketsen. De zwaai is vlak en zijwaarts.',
     steps: [
       {
-        text: 'A staat aan het net. B speelt een lob — niet diep genoeg, A2 ziet zijn kans.',
+        text: 'A staat aan het net. B speelt een lob. Niet diep genoeg, A2 ziet zijn kans.',
         players: { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
         ball: { x: 2.5, y: 2.5, z: 4 }
       },
@@ -1474,7 +1474,7 @@ const STRATEGIES = [
     spanish: 'la bajada',
     level: 'advanced',
     intent: 'offensive',
-    summary: 'De omkeerslag: bal stuit van het achterglas omhoog. Je slaat aanvallend cross terwijl hij daalt — het punt kantelt.',
+    summary: 'De omkeerslag: bal stuit van het achterglas omhoog. Je slaat aanvallend cross terwijl hij daalt. Het punt kantelt.',
     when: ['Diepe bal stuit zacht van achterglas', 'Bij snelle herkenning (0,5 sec)', 'Tegen voorspelbare bandeja-spelers'],
     shots: ['Bajada (drive op dalende bal vanuit hoge stuit)'],
     mistakes: ['Te lang wachten → bal te laag', 'Te hard zonder placement', 'Niet meekomen naar voren'],
@@ -1486,18 +1486,18 @@ const STRATEGIES = [
         ball: { x: 3, y: 0.5, z: -9.5 }
       },
       {
-        text: 'Bal stuit omhoog van het achterglas. A2 herkent het — bal komt op heuphoogte.',
+        text: 'Bal stuit omhoog van het achterglas. A2 herkent het: bal komt op heuphoogte.',
         players: { A1: POS.A_DEFEND_L, A2: { x: 3.5, z: -8 }, B1: POS.B_NET_L, B2: POS.B_NET_R },
         ball: { x: 3.5, y: 1.5, z: -8 }
       },
       {
-        text: 'BAJADA! Aanvallende drive cross-court — bal daalt naar de voeten van B1.',
+        text: 'BAJADA. Aanvallende drive cross-court, bal daalt naar de voeten van B1.',
         players: { A1: POS.A_DEFEND_L, A2: { x: 3.5, z: -8 }, B1: POS.B_NET_L, B2: POS.B_NET_R },
         ball: { x: -2.5, y: 0.3, z: 3 },
         ballArc: 'drive'
       },
       {
-        text: 'B1 op zijn voeten gevangen. A2 (en A1) volgen direct naar voren — punt gekanteld.',
+        text: 'B1 op zijn voeten gevangen. A2 (en A1) volgen direct naar voren. Punt gekanteld.',
         players: { A1: { x: -2.5, z: -3 }, A2: { x: 2.5, z: -4 }, B1: POS.B_NET_L, B2: POS.B_NET_R },
         ball: { x: -2.5, y: 0.3, z: 3 }
       }
@@ -1516,7 +1516,7 @@ const STRATEGIES = [
     tip: 'Server en partner bewegen als duo vanaf het moment dat de bal het racket verlaat.',
     steps: [
       {
-        text: 'Startpositie — B2 serveert van rechts, B1 al klaar bij de servicelijn. Team A wacht op return.',
+        text: 'Startpositie: B2 serveert van rechts, B1 al klaar bij de servicelijn. Team A wacht op return.',
         players: { A1: { x: -3.5, z: -5 }, A2: POS.A_RETURN_R, B1: { x: -2.5, z: 4 }, B2: POS.B_SERVE_R },
         ball: { x: 3.5, y: 0.9, z: 9 }
       },
@@ -1547,18 +1547,18 @@ const STRATEGIES = [
   },
   {
     id: 'por-tres',
-    name: 'X3 — Por Tres',
+    name: 'X3 · Por Tres',
     spanish: 'por tres',
     level: 'intermediate',
     intent: 'offensive',
-    summary: 'De smash die de bal de baan uit slaat — over de zijkooi heen. Het ultieme finishing-shot.',
-    when: ['Op een korte, hoge lob in jouw groene zone', 'Wanneer tegenstander dicht bij zijwand staat', 'Sleutelmomenten — psychologisch effect'],
+    summary: 'De smash die de bal de baan uit slaat, over de zijkooi heen. Het ultieme finishing-shot.',
+    when: ['Op een korte, hoge lob in jouw groene zone', 'Wanneer tegenstander dicht bij zijwand staat', 'Sleutelmomenten · psychologisch effect'],
     shots: ['Smash met zijwaartse snijspin'],
     mistakes: ['Te recht = bal stuit in de baan', 'Verkeerde hoek = bal raakt zijglas', 'Forceren bij niet-ideale ballen'],
-    tip: 'Mik niet op de baan — mik 2 meter búíten de baan, in de lucht. De stuit doet de rest.',
+    tip: 'Mik niet op de baan, mik 2 meter búíten de baan, in de lucht. De stuit doet de rest.',
     steps: [
       {
-        text: 'Team A aan het net. B speelt een korte lob — fataal in de groene zone.',
+        text: 'Team A aan het net. B speelt een korte lob. Fataal in de groene zone.',
         players: { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
         ball: { x: 1, y: 2.8, z: 2 }
       },
@@ -1569,7 +1569,7 @@ const STRATEGIES = [
         ballArc: 'high-lob'
       },
       {
-        text: 'POR TRES — smash met zijspin, mikt diagonaal naar de zijhoek. Bal stuit en vliegt over de kooi.',
+        text: 'POR TRES · smash met zijspin, mikt diagonaal naar de zijhoek. Bal stuit en vliegt over de kooi.',
         players: { A1: POS.A_NET_L, A2: { x: 1.5, z: -5 }, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
         ball: { x: 7, y: 2, z: 9 },
         ballArc: 'por-tres'
@@ -1591,22 +1591,22 @@ const STRATEGIES = [
     when: ['Tijdens elke rally', 'Bij twijfel over slagkeuze', 'Bij lezen van tegenstander'],
     shots: ['Globo (rood)', 'Chiquita (oranje)', 'Volley/Bandeja/Smash (groen)'],
     mistakes: ['Vanuit het rood proberen te winnen', 'Vanuit het groen passief blijven', 'In het oranje blijven hangen'],
-    tip: 'Roep tijdens de rally "rood" of "groen" — helpt jullie de juiste mindset kiezen.',
+    tip: 'Roep tijdens de rally "rood" of "groen". Helpt jullie de juiste mindset kiezen.',
     steps: [
       {
-        text: 'Rode zone — laatste 2 meter voor het glas. Doel: in de rally blijven. Slag: globo of trage cross.',
+        text: 'Rode zone: laatste 2 meter voor het glas. Doel: in de rally blijven. Slag: globo of trage cross.',
         players: { A1: POS.A_DEFEND_L, A2: POS.A_DEFEND_R, B1: POS.B_NET_L, B2: POS.B_NET_R },
         ball: { x: 3, y: 0.5, z: -9 },
         zone: 'red'
       },
       {
-        text: 'Oranje zone — middenveld. Doel: opbouwen. Slag: chiquita naar de voeten.',
+        text: 'Oranje zone: middenveld. Doel: opbouwen. Slag: chiquita naar de voeten.',
         players: { A1: POS.A_MID_L, A2: POS.A_MID_R, B1: POS.B_NET_L, B2: POS.B_NET_R },
         ball: { x: 2.8, y: 0.8, z: -5.5 },
         zone: 'orange'
       },
       {
-        text: 'Groene zone — 3 meter voor het net. Doel: finishen. Slag: volley, smash, vibora.',
+        text: 'Groene zone: 3 meter voor het net. Doel: finishen. Slag: volley, smash, vibora.',
         players: { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
         ball: { x: 2.5, y: 1, z: -3 },
         zone: 'green'
@@ -1637,7 +1637,7 @@ const STRATEGIES = [
         ballArc: 'volley'
       },
       {
-        text: 'A1 dekt de lijn die A2 leeg laat. Verschuiven samen — gat is gedicht.',
+        text: 'A1 dekt de lijn die A2 leeg laat. Verschuiven samen, gat is gedicht.',
         players: { A1: { x: -3.5, z: -3.5 }, A2: { x: 1, z: -3 }, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
         ball: { x: -2.5, y: 0.3, z: 3 },
         ballArc: 'volley'
@@ -1652,12 +1652,12 @@ const STRATEGIES = [
     intent: 'offensive',
     summary: 'Vooraf afgesproken set-play: één net-speler doet alsof hij blijft, partner steekt diagonaal over om bal te onderscheppen.',
     when: ['Tegen voorspelbare cross-court spelers', 'Op sleutelpunten', 'Wanneer hand-signalen afgesproken zijn'],
-    shots: ['Volley diagonaal omlaag — finishing'],
+    shots: ['Volley diagonaal omlaag · finishing'],
     mistakes: ['Te vroeg bewegen', 'Geen dekking achter', 'Te vaak gebruiken'],
     tip: 'Hand-signalen achter rug. Open hand = poach, vuist = blijven. Eén keer per set.',
     steps: [
       {
-        text: 'A aan het net. B speelt vanaf links — patroon is altijd cross-court naar A2.',
+        text: 'A aan het net. B speelt vanaf links. Patroon is altijd cross-court naar A2.',
         players: { A1: POS.A_NET_L, A2: POS.A_NET_R, B1: POS.B_DEFEND_L, B2: POS.B_DEFEND_R },
         ball: { x: -3, y: 0.5, z: 9 }
       },
@@ -1688,9 +1688,9 @@ const STRATEGIES = [
     intent: 'defensive',
     summary: 'Reset na een aanvalslob: in plaats van paniekerig terug aanvallen, lob je zelf hoog terug. Geduld breekt de tegenstander.',
     when: ['In de rode zone, klem in de hoek', 'Lange rallies waar geduld wint', 'Tegen tegenstanders die op fouten wachten'],
-    shots: ['Contraglobo — hoge, diepe lob met topspin'],
+    shots: ['Contraglobo · hoge diepe lob met topspin'],
     mistakes: ['Aanvallen vanuit defensie', 'Lob te kort', 'Te plat slaan'],
-    tip: 'Eerst overleven, dan winnen. Rally heeft 30 ballen — geduld breekt hen.',
+    tip: 'Eerst overleven, dan winnen. Rally heeft 30 ballen. Geduld breekt hen.',
     steps: [
       {
         text: 'B heeft een goede bandeja gespeeld, bal is diep gelandt. A is in de rode zone.',
@@ -1698,24 +1698,24 @@ const STRATEGIES = [
         ball: { x: 3.5, y: 0.5, z: -9 }
       },
       {
-        text: 'A2 weerstaat de impuls om aan te vallen. Kiest contralob — hoog, diep, geduldig.',
+        text: 'A2 weerstaat de impuls om aan te vallen. Kiest contralob: hoog, diep, geduldig.',
         players: { A1: { x: -3.5, z: -9 }, A2: { x: 3.5, z: -9 }, B1: POS.B_NET_L, B2: POS.B_NET_R },
         ball: { x: 0, y: 4, z: 0 },
         ballArc: 'high-lob'
       },
       {
-        text: 'Bal stijgt hoog over het net. B moet terug — overhead of laten stuiteren?',
+        text: 'Bal stijgt hoog over het net. B moet terug. Overhead of laten stuiteren?',
         players: { A1: { x: -3.5, z: -9 }, A2: { x: 3.5, z: -9 }, B1: { x: -2.5, z: 6 }, B2: { x: 2.5, z: 6 } },
         ball: { x: 0, y: 0.5, z: 9 },
         ballArc: 'high-lob'
       },
       {
-        text: 'B2 sprint achteruit en kiest bandeja — defensief overhead met snij-spin.',
+        text: 'B2 sprint achteruit en kiest bandeja: defensief overhead met snij-spin.',
         players: { A1: { x: -3.5, z: -9 }, A2: { x: 3.5, z: -9 }, B1: { x: -2.5, z: 6 }, B2: { x: 1, z: 8 } },
         ball: { x: 1, y: 2.5, z: 8 }
       },
       {
-        text: 'Bandeja komt diep terug bij A2 — uitwisseling is gereset, geduld won.',
+        text: 'Bandeja komt diep terug bij A2. Uitwisseling is gereset, geduld won.',
         players: { A1: POS.A_DEFEND_L, A2: POS.A_DEFEND_R, B1: POS.B_NET_L, B2: { x: 2.5, z: 5 } },
         ball: { x: 3, y: 1, z: -8 },
         ballArc: 'bandeja'

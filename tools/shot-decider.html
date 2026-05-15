@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Shot Decider — welke slag speel je nu? Beantwoord vier vragen over positie, balhoogte en tegenstanders, en krijg de tactisch juiste slag met uitleg." />
+  <meta name="description" content="Shot Decider. Welke slag speel je nu? Beantwoord vier vragen over positie, balhoogte en tegenstanders, en krijg de tactisch juiste slag met uitleg." />
   <meta name="theme-color" content="#050709" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="canonical" href="https://padelpatterns.com/tools/shot-decider.html" />
@@ -582,7 +582,7 @@
     </div>
   </footer>
 
-  <div class="version-marker">v33-shot-decider</div>
+  <div class="version-marker">v34-shot-decider-dashclean</div>
 
   <script>
   (function() {
@@ -599,12 +599,12 @@
         subtitle: 'De positie waar jij de bal gaat raken. Dit bepaalt 70% van wat tactisch logisch is.',
         options: [
           { id: 'net',  title: 'Aan het net',
-            hint: 'Volley-zone — jij dicteert. Punt-makende positie.' },
+            hint: 'Volley-zone. Jij dicteert. Punt-makende positie.' },
           { id: 'mid',  title: 'Mid-court',
-            hint: 'Tussen servicelijn en net. Overgangszone — kwetsbaar maar agressief.' },
+            hint: 'Tussen servicelijn en net. Overgangszone: kwetsbaar maar agressief.' },
           { id: 'back', title: 'Achter de servicelijn',
             hint: 'Verdedigende basislijn-positie. Jij krijgt de bal, niet anders om.' },
-          { id: 'wall', title: 'Net achter de bal — na glas-kaats',
+          { id: 'wall', title: 'Net achter de bal, na glas-kaats',
             hint: 'De bal heeft net het achterglas geraakt en komt op je af. Klassieke padel-situatie.' }
         ]
       },
@@ -614,13 +614,13 @@
         title: 'Hoe hoog komt de bal?',
         subtitle: 'De zone bepaalt of je kan aanvallen of moet verdedigen. Universele padel-logica: hoog = aanval, laag = bouwen.',
         options: [
-          { id: 'green',  title: 'Groen — boven schouder',
+          { id: 'green',  title: 'Groen, boven schouder',
             hint: 'Hoge bal. Je kan agressief, naar beneden slaan.',
             dot: 'zone-green' },
-          { id: 'orange', title: 'Oranje — heup tot borst',
+          { id: 'orange', title: 'Oranje, heup tot borst',
             hint: 'Middelhoog. Gecontroleerd spel, niet forceren.',
             dot: 'zone-orange' },
-          { id: 'red',    title: 'Rood — onder de knie',
+          { id: 'red',    title: 'Rood, onder de knie',
             hint: 'Lage bal. Verdediging-modus, opnieuw opbouwen.',
             dot: 'zone-red' }
         ]
@@ -629,13 +629,13 @@
         key: 'opponents',
         label: 'Stap 3 / 4',
         title: 'Waar staan de tegenstanders?',
-        subtitle: 'Hun positie bepaalt de gaten op het veld. Jij slaat altijd naar de gaten — niet naar de spelers.',
+        subtitle: 'Hun positie bepaalt de gaten op het veld. Jij slaat altijd naar de gaten, niet naar de spelers.',
         options: [
           { id: 'both-net',   title: 'Beiden aan het net',
             hint: 'Het meest agressieve scenario voor hen. Voeten en lobs worden goud.' },
           { id: 'both-back',  title: 'Beiden achterin',
-            hint: 'Defensieve formatie. Het net is leeg — claim het.' },
-          { id: 'split',      title: 'Verspreid — één voor, één achter',
+            hint: 'Defensieve formatie. Het net is leeg, claim het.' },
+          { id: 'split',      title: 'Verspreid, één voor en één achter',
             hint: 'Onbalans. Sla op de speler achterin of in het gat tussen ze.' }
         ]
       },
@@ -660,7 +660,7 @@
       smash: {
         name: 'Smash',
         spanish: 'remate',
-        lede: 'De punt-afmaker. Bovenhands, hard, naar beneden — vaak via de zijwand om de bal uit de baan te krijgen.',
+        lede: 'De punt-afmaker. Bovenhands, hard, naar beneden, vaak via de zijwand om de bal uit de baan te krijgen.',
         execution: 'Schouder naar de bal. Sla door de bal heen op zijn hoogste punt. Mik op zijwand-naar-glas-uit als ze diep staan, op de voeten als ze aan het net staan.',
         risk: 'De smash gaat te vaak verloren omdat spelers hem oversold spelen. Hard slaan zonder doel is dom slaan.',
         pattern: 'por-tres'
@@ -668,9 +668,9 @@
       bandeja: {
         name: 'Bandeja',
         spanish: 'het dienblad',
-        lede: 'De koningin van padel. Een 70% smash met slice — controle boven kracht. Houdt jouw team aan het net.',
+        lede: 'De koningin van padel. Een 70% smash met slice, controle boven kracht. Houdt jouw team aan het net.',
         execution: 'Korte uithaal, racket vlak als een dienblad, slice door de bal. Diep en laag de baan in, richting voeten of zijwand.',
-        risk: 'Niet de bal afmaken — die taak heeft de bandeja niet. De bandeja bouwt het volgende punt.',
+        risk: 'Niet de bal afmaken. Die taak heeft de bandeja niet. De bandeja bouwt het volgende punt.',
         pattern: 'bandeja'
       },
       vibora: {
@@ -678,13 +678,13 @@
         spanish: 'de adder',
         lede: 'Bandeja\'s agressieve broer. Side-spin, scherpe hoek, gaat via zijwand de baan uit. Hogere risico, hogere reward.',
         execution: 'Zijwaartse swing, racket op zijn kant, snijdt de bal door. Mik de bal voor de zijwand-glas-T van de tegenstander.',
-        risk: 'Vereist hoge bal én tijd. Niet als de bal je voorbij is — dan bandeja.',
+        risk: 'Vereist hoge bal én tijd. Niet als de bal je voorbij is. Dan bandeja.',
         pattern: 'vibora'
       },
       bajada: {
         name: 'Bajada',
         spanish: 'de daalslag',
-        lede: 'De aanvalsslag na een bal-uit-glas. Bal hoog gestuiterd uit de achterwand — sla hem op zijn weg naar beneden, vanaf bovenaan.',
+        lede: 'De aanvalsslag na een bal-uit-glas. Bal hoog gestuiterd uit de achterwand: sla hem op zijn weg naar beneden, vanaf bovenaan.',
         execution: 'Wacht tot de bal uit het glas op heuphoogte tot schouderhoogte zit, sla er bovenop met flat-of-topspin. Diep, naar voeten of tussen tegenstanders door.',
         risk: 'Vereist een hoge, langzame stuit uit het glas. Bij een lage stuit terug: defend, niet aanvallen.',
         pattern: 'bajada'
@@ -693,62 +693,62 @@
         name: 'Volley',
         spanish: 'volea',
         lede: 'Korte, gecontroleerde slag op heuphoogte vanaf het net. Je houdt de druk hoog door simpelweg niet uit positie te komen.',
-        execution: 'Korte uithaal — bijna geen swing. Racket-blok met lichte forward push. Mik op voeten of tussen de tegenstanders.',
-        risk: 'De volley wint geen punten, maar verliest ze ook niet. Geduld is je wapen — wacht op de fout.',
+        execution: 'Korte uithaal, bijna geen swing. Racket-blok met lichte forward push. Mik op voeten of tussen de tegenstanders.',
+        risk: 'De volley wint geen punten, maar verliest ze ook niet. Geduld is je wapen. Wacht op de fout.',
         pattern: 'invisible-rope'
       },
       'low-volley': {
         name: 'Lage volley',
         spanish: 'volea baja',
-        lede: 'Lage bal vanaf het net — geen aanval, wel positiebehoud. Knieën buigen, racket open, bal gewoon over het net duwen.',
-        execution: 'Buig door je benen, racket-face open, korte push diep en zacht. Niet hard — je verliest dan de net-positie.',
+        lede: 'Lage bal vanaf het net. Geen aanval, wel positiebehoud. Knieën buigen, racket open, bal gewoon over het net duwen.',
+        execution: 'Buig door je benen, racket-face open, korte push diep en zacht. Niet hard, je verliest dan de net-positie.',
         risk: 'De grootste fout: hem oppakken in plaats van blokken. Bij twijfel: laat het pad over en lob.',
         pattern: 'invisible-rope'
       },
       globo: {
         name: 'Globo',
         spanish: 'de lob',
-        lede: 'De reset-knop van padel. Diepe, hoge lob over hun hoofd — jullie pakken het net, zij gaan terug.',
-        execution: 'Open racket-face, lift de bal met je benen, hoog en diep — minstens schouderhoogte voor de tegenstander, idealiter tot de achterwand.',
+        lede: 'De reset-knop van padel. Diepe, hoge lob over hun hoofd. Jullie pakken het net, zij gaan terug.',
+        execution: 'Open racket-face, lift de bal met je benen, hoog en diep. Minstens schouderhoogte voor de tegenstander, idealiter tot de achterwand.',
         risk: 'Te kort = kado in de groene zone. Bij twijfel: hoger en dieper dan je denkt.',
         pattern: 'globo-take-net'
       },
       chiquita: {
         name: 'Chiquita',
         spanish: 'de kleine',
-        lede: 'Kort, zacht, in de voeten van de net-spelers. De anti-power-shot — je dwingt ze om laag op te pakken vanuit een onmogelijke positie.',
-        execution: 'Korte halve volley of slag. Bal vlak boven het net, korte parabool, diep voor hun voeten. Geen kracht — alles is touch.',
+        lede: 'Kort, zacht, in de voeten van de net-spelers. De anti-power-shot: je dwingt ze om laag op te pakken vanuit een onmogelijke positie.',
+        execution: 'Korte halve volley of slag. Bal vlak boven het net, korte parabool, diep voor hun voeten. Geen kracht, alles is touch.',
         risk: 'Te hoog = bandeja-kado voor de tegenstander. Te kort = net. Vereist gevoel.',
         pattern: 'chiquita'
       },
       'defensive-return': {
         name: 'Diepe verdediging',
         spanish: 'la defensa',
-        lede: 'Geen slag-naam, een principe. Diep, midden, geen risico. Geef geen punt weg — laat hen de fout maken.',
+        lede: 'Geen slag-naam, een principe. Diep, midden, geen risico. Geef geen punt weg. Laat hen de fout maken.',
         execution: 'Stevige tweehands-backhand of geslicede forehand. Bal moet over de servicelijn passeren. Hoogte boven snelheid, diepte boven hoeken.',
-        risk: 'Wachten op de globo-mogelijkheid. Probeer niet vanuit deze positie een winner te slaan — dat is hoe je punten verliest.',
+        risk: 'Wachten op de globo-mogelijkheid. Probeer niet vanuit deze positie een winner te slaan. Dat is hoe je punten verliest.',
         pattern: 'three-zones'
       },
       'return-and-up': {
         name: 'Return & op naar het net',
         spanish: 'subir tras el resto',
-        lede: 'Service retour gecontroleerd langs het tweetal — dan rennen jullie naar het net. Standaard padel-DNA: het ontvangende paar claimt het net.',
-        execution: 'Diepe, gecontroleerde return — vaak een lob bij snelle service, of een platte slag in het midden. Direct erna: lopen, niet stappen.',
+        lede: 'Service retour gecontroleerd langs het tweetal, dan rennen jullie naar het net. Standaard padel-DNA: het ontvangende paar claimt het net.',
+        execution: 'Diepe, gecontroleerde return: vaak een lob bij snelle service, of een platte slag in het midden. Direct erna: lopen, niet stappen.',
         risk: 'Niet aarzelen. Ofwel je gaat erop af, ofwel je blijft. Halverwege gevangen is de slechtste positie van het veld.',
         pattern: 'serve-and-volley'
       },
       'contralob': {
         name: 'Contralob',
         spanish: 'el contralob',
-        lede: 'De lob tegen een lob. Tegenstanders hebben jullie achteruit gestuurd — sla terug over hun hoofd voor het net dat ze net pakten.',
+        lede: 'De lob tegen een lob. Tegenstanders hebben jullie achteruit gestuurd: sla terug over hun hoofd voor het net dat ze net pakten.',
         execution: 'Hoog, diep, naar de andere kant dan waar zij heen lopen. Tijd vraagt geduld: laat de glas-stuit komen, sla niet te vroeg.',
-        risk: 'Te kort = smash-kado. Onder druk een contralob proberen is risky — dan eerder een diepe defensieve return.',
+        risk: 'Te kort = smash-kado. Onder druk een contralob proberen is risky. Dan eerder een diepe defensieve return.',
         pattern: 'contralob'
       },
       'middle-attack': {
         name: 'Aanval door het midden',
         spanish: 'al medio',
-        lede: 'De middelste lijn tussen twee spelers is altijd een gat — twijfel over wie hem pakt. Sla daar gewoon door.',
+        lede: 'De middelste lijn tussen twee spelers is altijd een gat. Twijfel over wie hem pakt. Sla daar gewoon door.',
         execution: 'Krachtige, platte slag of half-volley door het centrum, iets op de speler-met-de-zwakste-zijde toe. Hoogte: net over het net.',
         risk: 'Werkt vooral als beide tegenstanders aan het net staan. Bij verspreid: kies de gat-speler, niet het midden.',
         pattern: 'middle-ball'
@@ -778,11 +778,11 @@
           if (opponents === 'both-net') {
             return { primary: 'smash', primaryWhy:
               'Tegenstanders aan het net + jij ook aan het net + hoge bal = enige goede zone om de bal heen te krijgen is op de voeten of via zijwand-uit. Smash op de voeten, niet hard maar geplaatst.',
-              alt: 'middle-attack', altWhy: 'Bij snelle reactie van het tegenpaar: sla het midden — twee rackets, één bal, gegarandeerde aarzeling.' };
+              alt: 'middle-attack', altWhy: 'Bij snelle reactie van het tegenpaar: sla het midden. Twee rackets, één bal, gegarandeerde aarzeling.' };
           }
           if (opponents === 'both-back') {
             return { primary: 'smash', primaryWhy:
-              'Hoge bal vanaf het net tegen achterin staande tegenstanders: smash via zijwand de baan uit. Klassieke "por tres" — de bal mag het glas raken en de baan verlaten.',
+              'Hoge bal vanaf het net tegen achterin staande tegenstanders: smash via zijwand de baan uit. Klassieke "por tres", de bal mag het glas raken en de baan verlaten.',
               alt: 'vibora', altWhy: 'Als je niet 100% boven de bal kunt komen: víbora met side-spin doet vergelijkbaar werk met minder risico.' };
           }
           // split
@@ -793,22 +793,22 @@
         if (height === 'orange') {
           if (opponents === 'both-net') {
             return { primary: 'flat-volley', primaryWhy:
-              'Beide paren aan het net, middelhoge bal — dit is een geduldsoefening. Korte volley, op de voeten of midden, wacht op hun fout.',
-              alt: 'middle-attack', altWhy: 'Als één speler een meter te dicht op de ander staat: explosief het midden in — de definitie van "middle ball".' };
+              'Beide paren aan het net, middelhoge bal. Dit is een geduldsoefening: korte volley, op de voeten of midden, wacht op hun fout.',
+              alt: 'middle-attack', altWhy: 'Als één speler een meter te dicht op de ander staat: explosief het midden in, de definitie van "middle ball".' };
           }
           if (opponents === 'both-back') {
             return { primary: 'flat-volley', primaryWhy:
-              'Diepe, gecontroleerde volley naar voeten of zijwand — niet hard. Tegenstanders staan achterin: druk handhaven is het hele plan.',
+              'Diepe, gecontroleerde volley naar voeten of zijwand, niet hard. Tegenstanders staan achterin: druk handhaven is het hele plan.',
               alt: 'globo', altWhy: 'Of een korte chiquita-volley: zacht en kort, dwing ze om naar voren te rennen vanuit verdediging.' };
           }
           return { primary: 'flat-volley', primaryWhy:
-            'Eén tegenstander voor, één achter — sla naar de achterste in de hoek. Of nog beter: zacht door het midden om communicatie te breken.',
+            'Eén tegenstander voor, één achter: sla naar de achterste in de hoek. Of nog beter: zacht door het midden om communicatie te breken.',
             alt: 'middle-attack', altWhy: 'Middle-attack op de speler-achter: zijn partner is fysiek niet in staat hem te helpen.' };
         }
         // red zone at net
         return { primary: 'low-volley', primaryWhy:
           'Lage bal bij het net = niet aanvallen. Lage volley: knieën buigen, racket open, zacht en diep terug. Behoud net-positie ten koste van alles.',
-          alt: 'globo', altWhy: 'Als je echt niets kan: leg een verdedigende lob (vanaf het net!) — geeft jullie tijd om te herstellen.' };
+          alt: 'globo', altWhy: 'Als je echt niets kan: leg een verdedigende lob, vanaf het net. Geeft jullie tijd om te herstellen.' };
       }
 
       // --- Position: MID-COURT (the no-man's-land — never stay here) ---
@@ -816,12 +816,12 @@
         if (height === 'green') {
           return { primary: 'bandeja', primaryWhy:
             'Mid-court + hoge bal = bandeja terwijl je doorloopt naar het net. De bandeja is gemaakt voor exact deze situatie: aanvallen zonder positie op te geven.',
-            alt: 'vibora', altWhy: 'Als de bal hoog genoeg staat en je voeten goed: víbora met side-spin — agressiever maar lastiger te timen.' };
+            alt: 'vibora', altWhy: 'Als de bal hoog genoeg staat en je voeten goed: víbora met side-spin. Agressiever, maar lastiger te timen.' };
         }
         if (height === 'orange') {
           return { primary: 'globo', primaryWhy:
             'Mid-court is dé positie waar je niet wil blijven. Middelhoge bal = lob over hun hoofd, dan loop je naar het net waar je hoort.',
-            alt: 'flat-volley', altWhy: 'Of de korte half-volley diep: speel de bal terug en sprint mee — eerst de slag, dán de positie.' };
+            alt: 'flat-volley', altWhy: 'Of de korte half-volley diep: speel de bal terug en sprint mee. Eerst de slag, dán de positie.' };
         }
         // red — worst spot on the court
         if (pressure === 'pressed') {
@@ -831,7 +831,7 @@
         }
         return { primary: 'globo', primaryWhy:
           'Lage bal in mid-court = gevaarlijke zone. Speel een lob terug de baan uit, gebruik de tijd om naar het net te komen. Geen risico met flat shots vanaf hier.',
-          alt: 'chiquita', altWhy: 'Als beide tegenstanders aan het net staan: een korte chiquita — laag voor hun voeten — kan ze breken.' };
+          alt: 'chiquita', altWhy: 'Als beide tegenstanders aan het net staan: een korte chiquita, laag voor hun voeten, kan ze breken.' };
       }
 
       // --- Position: BACK (defensive back-court) ---
@@ -841,59 +841,59 @@
           if (opponents === 'both-net') {
             if (pressure === 'pressed') {
               return { primary: 'globo', primaryWhy:
-                'Tegenstanders aan het net + hoge bal achterin onder druk = lob over hun hoofd. Geen risico met platte slagen — die zijn een smash-kado.',
-                alt: 'defensive-return', altWhy: 'Als de lob niet veilig kan: een diepe slice midden — voorkomt direct verlies, accepteert dat zij druk houden.' };
+                'Tegenstanders aan het net + hoge bal achterin onder druk = lob over hun hoofd. Geen risico met platte slagen, die zijn een smash-kado.',
+                alt: 'defensive-return', altWhy: 'Als de lob niet veilig kan: een diepe slice midden. Voorkomt direct verlies, accepteert dat zij druk houden.' };
             }
             return { primary: 'contralob', primaryWhy:
-              'Hoge bal achterin tegen tegenstanders aan het net + jij hebt tijd = perfecte contralob-situatie. Sla over hun hoofd naar de andere kant dan waar zij naartoe lopen — winnaars-bal.',
-              alt: 'globo', altWhy: 'Veiliger variant: een rechte hoge globo — minder spectaculair, even effectief om hen achteruit te krijgen.' };
+              'Hoge bal achterin tegen tegenstanders aan het net + jij hebt tijd = perfecte contralob-situatie. Sla over hun hoofd naar de andere kant dan waar zij naartoe lopen. Winnaars-bal.',
+              alt: 'globo', altWhy: 'Veiliger variant: een rechte hoge globo. Minder spectaculair, even effectief om hen achteruit te krijgen.' };
           }
           if (opponents === 'both-back') {
             // Both back-court: no one to lob over, build the point
             return { primary: 'defensive-return', primaryWhy:
-              'Hoge bal achterin tegen tegenstanders óók achterin = niemand drukt. Geen reden om te lobben — niemand staat aan het net. Speel een diepe rally-bal en kijk wie als eerste fouten maakt.',
-              alt: 'bandeja', altWhy: 'Als je de bal écht hoog en op tijd raakt: een bandeja-stijl slice diep — zet jullie team in marscamodus naar het net.' };
+              'Hoge bal achterin tegen tegenstanders óók achterin: niemand drukt. Geen reden om te lobben, niemand staat aan het net. Speel een diepe rally-bal en kijk wie als eerste fouten maakt.',
+              alt: 'bandeja', altWhy: 'Als je de bal écht hoog en op tijd raakt: een bandeja-stijl slice diep. Zet jullie team in marscamodus naar het net.' };
           }
           // split: one opp at net — lob over their net player
           return { primary: 'globo', primaryWhy:
             'Eén tegenstander aan het net, één achterin + hoge bal voor jou = lob over de net-speler heen, diep in hun helft. Forceer een collision-moment tussen hen.',
-            alt: 'contralob', altWhy: 'Met tijd: een diepe contralob naar de open hoek — de net-speler kan onmogelijk recoveren.' };
+            alt: 'contralob', altWhy: 'Met tijd: een diepe contralob naar de open hoek. De net-speler kan onmogelijk recoveren.' };
         }
         if (height === 'orange') {
           if (opponents === 'both-net') {
             if (pressure === 'pressed') {
               return { primary: 'globo', primaryWhy:
                 'Tegenstanders aan het net + middelhoogte achterin onder druk = lob is de enige veilige optie. Hoog en diep, vergeet de hoek.',
-                alt: 'defensive-return', altWhy: 'Als de lob te risky is: diep middenin met topspin — niet ideaal, maar je geeft geen punt weg.' };
+                alt: 'defensive-return', altWhy: 'Als de lob te risky is: diep middenin met topspin. Niet ideaal, maar je geeft geen punt weg.' };
             }
             return { primary: 'globo', primaryWhy:
               'Tegenstanders aan het net + jullie achterin = jullie verliezen het punt als jullie blijven. Lob over hun hoofd, diep en hoog.',
-              alt: 'chiquita', altWhy: 'Variant: een chiquita kort voor hun voeten — geeft één twijfelmoment waarin jullie kunnen lopen.' };
+              alt: 'chiquita', altWhy: 'Variant: een chiquita kort voor hun voeten. Geeft één twijfelmoment waarin jullie kunnen lopen.' };
           }
           if (opponents === 'both-back') {
             return { primary: 'defensive-return', primaryWhy:
               'Middenhoogte achterin tegen tegenstanders óók achterin: niemand drukt. Diepe rally-bal middenin, bouw het punt, wacht op de hoge.',
-              alt: 'globo', altWhy: 'Zet ze direct vast met een diepe lob — neem hen het initiatief af voordat zij het net krijgen.' };
+              alt: 'globo', altWhy: 'Zet ze direct vast met een diepe lob. Neem hen het initiatief af voordat zij het net krijgen.' };
           }
           // split
           return { primary: 'globo', primaryWhy:
             'Verspreide tegenstanders + middelhoogte achterin = lob over de net-speler. Sla hem naar de kant waar de achter-speler níét staat.',
-            alt: 'defensive-return', altWhy: 'Veiliger: speel diep door het midden — laat hun communicatie zelf de fout maken.' };
+            alt: 'defensive-return', altWhy: 'Veiliger: speel diep door het midden. Laat hun communicatie zelf de fout maken.' };
         }
         // red
         if (pressure === 'pressed') {
           return { primary: 'globo', primaryWhy:
             'Lage bal, achterin, onder druk. De enige correct slag in padel-101: hoge defensieve lob. Hoogte = tijd. Tijd = hoop. Vergeet snelheid.',
-            alt: 'defensive-return', altWhy: 'Als je nog net niet kan liften: een diepe slice midden in het veld — maar de lob is bijna altijd beter.' };
+            alt: 'defensive-return', altWhy: 'Als je nog net niet kan liften: een diepe slice midden in het veld. Maar de lob is bijna altijd beter.' };
         }
         if (opponents === 'both-back') {
           return { primary: 'defensive-return', primaryWhy:
             'Lage bal achterin, geen druk, tegenstanders ook achterin = bouwbal. Diep, middenin, geen ambitie. Wacht tot zij iets stoms doen.',
-            alt: 'chiquita', altWhy: 'Korte chiquita als variant — kort voor het net, dwingt ze om naar voren te komen vanuit verdediging.' };
+            alt: 'chiquita', altWhy: 'Korte chiquita als variant: kort voor het net, dwingt ze om naar voren te komen vanuit verdediging.' };
         }
         return { primary: 'defensive-return', primaryWhy:
           'Lage bal achterin zonder directe druk = bouwbal. Diep, middenin, geen ambitie. Maak geen fout. Wacht tot zij iets stoms doen.',
-          alt: 'globo', altWhy: 'Of zet ze direct vast met een lob — als ze al aan het net staan, dat is het ergste wat je hen kan aandoen.' };
+          alt: 'globo', altWhy: 'Of zet ze direct vast met een lob. Als ze al aan het net staan, dat is het ergste wat je hen kan aandoen.' };
       }
 
       // --- Position: WALL (after a ball has bounced off the back glass) ---
@@ -901,27 +901,27 @@
         if (height === 'green') {
           return { primary: 'bajada', primaryWhy:
             'Bal hoog gestuiterd uit het glas terug = exact wat de bajada vraagt. Hoge contact-punt, sla naar beneden, op de voeten of door het midden. Achterglas dat hoog stuitert is het beste cadeau in padel.',
-            alt: 'globo', altWhy: 'Als je niet boven de bal kunt komen: lob de uitkomst. Nooit vanuit een hoog stuit-punt half-aanvallen — alles of niets.' };
+            alt: 'globo', altWhy: 'Als je niet boven de bal kunt komen: lob de uitkomst. Nooit vanuit een hoog stuit-punt half-aanvallen, alles of niets.' };
         }
         if (height === 'orange') {
           if (opponents === 'both-net') {
             return { primary: 'globo', primaryWhy:
-              'Middelhoge stuit uit glas + paar aan het net: lob is de meest betrouwbare reset. Probeer geen bajada op heuphoogte — te risky, te lage hoek.',
-              alt: 'defensive-return', altWhy: 'Of een diepe gecontroleerde slag richting hun voeten — niet ideaal, maar veiliger dan een geforceerde aanval.' };
+              'Middelhoge stuit uit glas + paar aan het net: lob is de meest betrouwbare reset. Probeer geen bajada op heuphoogte, te risky, te lage hoek.',
+              alt: 'defensive-return', altWhy: 'Of een diepe gecontroleerde slag richting hun voeten. Niet ideaal, maar veiliger dan een geforceerde aanval.' };
           }
           return { primary: 'defensive-return', primaryWhy:
             'Bal stuit middelhoog uit glas, niemand drukt jullie aan het net: geen reden voor risico. Diepe rally-bal middenin, behoud positie.',
-            alt: 'globo', altWhy: 'Of lob als je de extra meter onder de bal kunt komen — neutraliseert hun net-formatie als die zich vormt.' };
+            alt: 'globo', altWhy: 'Of lob als je de extra meter onder de bal kunt komen. Neutraliseert hun net-formatie als die zich vormt.' };
         }
         // red — low after wall
         if (pressure === 'pressed') {
           return { primary: 'globo', primaryWhy:
-            'Lage stuit uit glas onder druk = de moeilijkste bal in padel. Buig diep door je benen, schep de bal omhoog. Hoogte vóór alles — diep helpt, maar omhoog is wat telt.',
+            'Lage stuit uit glas onder druk = de moeilijkste bal in padel. Buig diep door je benen, schep de bal omhoog. Hoogte vóór alles. Diep helpt, maar omhoog is wat telt.',
             alt: 'defensive-return', altWhy: 'Als de lob niet lukt: korte slice over het net, niet hard. Geef hen de bal terug, niet jezelf in de problemen.' };
         }
         return { primary: 'globo', primaryWhy:
           'Lage bal uit glas zonder directe druk: lob is je vriend. Geeft jullie tijd om naar het net te komen. Achterwand-glas-spel hoort bij langzaam padel.',
-          alt: 'defensive-return', altWhy: 'Of een geslicede diepe middenbal — minder ambitieus, ook minder fout-gevoelig.' };
+          alt: 'defensive-return', altWhy: 'Of een geslicede diepe middenbal. Minder ambitieus, ook minder fout-gevoelig.' };
       }
     }
 
@@ -1355,7 +1355,7 @@
       intro.appendChild(el('div', { class: 'sd-eyebrow' }, '— Shot Decider · Live'));
       intro.appendChild(el('h1', { html: 'Welke slag<br><em>nu?</em>' }));
       intro.appendChild(el('p', { class: 'sd-intro-lede' },
-        'Vier vragen — positie, balhoogte, tegenstanders, druk. Eén aanbeveling. Plus waarom, plus het alternatief, plus de patroon waar deze slag bij hoort.'));
+        'Vier vragen: positie, balhoogte, tegenstanders, druk. Eén aanbeveling. Plus waarom, plus het alternatief, plus de patroon waar deze slag bij hoort.'));
       intro.appendChild(el('p', { class: 'sd-intro-lede' },
         'Geen "het hangt ervan af". De beslisboom is gebouwd op klassieke padel-coachingsprincipes: hoge bal = aanval, lage bal = bouwen, het net winnen kost één goede lob, en mid-court is waar punten sterven.'));
 
