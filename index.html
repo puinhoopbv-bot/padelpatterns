@@ -192,24 +192,18 @@
 
     <div class="tool-grid">
 
-      <!-- HERO: Match Coach, AI-powered, full width at the top -->
-      <a href="/tools/match-coach" class="tool-tile tool-tile-ai tool-tile-ai-hero">
-        <div class="ai-hero-content">
-          <div class="ai-hero-left">
-            <div class="tool-tile-eyebrow"><span class="dot"></span> Nieuw, AI-aangedreven</div>
-            <h3>Match Coach</h3>
-            <div class="spanish">el entrenador inteligente</div>
-          </div>
-          <div class="ai-hero-right">
-            <p>
-              Vertel over een wedstrijd in vier vragen. De Match Coach analyseert je tactische beslissingen, identificeert het kantelpunt, en geeft een concreet plan plus trainings-thema. Pro-niveau analyse, niet generieke tips.
-            </p>
-            <div class="tool-tile-arrow">Analyseer je match <span>→</span></div>
-          </div>
-        </div>
+      <!-- 1. Match Coach, AI-tool, bovenaan om te tonen dat dit anders is -->
+      <a href="/tools/match-coach" class="tool-tile tool-tile-ai">
+        <div class="tool-tile-eyebrow"><span class="dot"></span> Nieuw, AI</div>
+        <h3>Match Coach</h3>
+        <div class="spanish">el entrenador inteligente</div>
+        <p>
+          Vertel over je wedstrijd. Krijg tactisch advies waarom het misging en wat je nu zou moeten trainen. AI-aangedreven analyse.
+        </p>
+        <div class="tool-tile-arrow">Analyseer je match <span>→</span></div>
       </a>
 
-      <!-- 1. Patterns 3D, LIVE -->
+      <!-- 2. Patterns 3D, LIVE -->
       <a href="/tools/patterns" class="tool-tile">
         <div class="tool-tile-eyebrow"><span class="dot"></span> Beschikbaar</div>
         <h3>Patterns 3D</h3>
@@ -555,12 +549,12 @@
           <text x="215" y="540" text-anchor="middle">ONBEPERKT</text>
         </g>
 
-        <!-- Ghost flight paths -->
+        <!-- Ghost flight paths: diagonal zigzag, no oval loop, no figure -->
         <g stroke="#d4ff00" fill="none" stroke-linecap="round" stroke-opacity="0.10">
-          <path d="M 105 115 Q 160 80 215 115" stroke-width="1.5"/>
-          <path d="M 215 115 Q 280 300 215 485" stroke-width="1.5"/>
-          <path d="M 215 485 Q 160 520 105 485" stroke-width="1.5"/>
-          <path d="M 105 485 Q 40 300 105 115" stroke-width="1.5"/>
+          <path d="M 105 115 Q 160 250 215 485" stroke-width="1.5"/>
+          <path d="M 215 485 Q 245 300 215 115" stroke-width="1.5"/>
+          <path d="M 215 115 Q 160 250 105 485" stroke-width="1.5"/>
+          <path d="M 105 485 Q 75 300 105 115" stroke-width="1.5"/>
         </g>
 
         <!-- BALL: outer halo -->
@@ -571,7 +565,7 @@
             calcMode="spline"
             keyTimes="0; 0.25; 0.5; 0.75; 1"
             keySplines="0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1"
-            path="M 105 115 Q 160 80 215 115 Q 280 300 215 485 Q 160 520 105 485 Q 40 300 105 115"/>
+            path="M 105 115 Q 160 250 215 485 Q 245 300 215 115 Q 160 250 105 485 Q 75 300 105 115"/>
         </circle>
         <!-- BALL: main body -->
         <circle r="6" fill="#d4ff00" filter="url(#rallyBallGlowM)" class="rally-ball-m">
@@ -581,7 +575,7 @@
             calcMode="spline"
             keyTimes="0; 0.25; 0.5; 0.75; 1"
             keySplines="0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1"
-            path="M 105 115 Q 160 80 215 115 Q 280 300 215 485 Q 160 520 105 485 Q 40 300 105 115"/>
+            path="M 105 115 Q 160 250 215 485 Q 245 300 215 115 Q 160 250 105 485 Q 75 300 105 115"/>
         </circle>
         <!-- BALL: white core -->
         <circle r="2.5" fill="#ffffff" class="rally-ball-m">
@@ -591,7 +585,7 @@
             calcMode="spline"
             keyTimes="0; 0.25; 0.5; 0.75; 1"
             keySplines="0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1"
-            path="M 105 115 Q 160 80 215 115 Q 280 300 215 485 Q 160 520 105 485 Q 40 300 105 115"/>
+            path="M 105 115 Q 160 250 215 485 Q 245 300 215 115 Q 160 250 105 485 Q 75 300 105 115"/>
         </circle>
       </svg>
     </div>

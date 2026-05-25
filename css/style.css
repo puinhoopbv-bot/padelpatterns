@@ -540,9 +540,9 @@ body.has-bg-effects::before {
 .rally-flash-3 { animation: rallyImpact 8s linear infinite; animation-delay: 4s; }
 .rally-flash-4 { animation: rallyImpact 8s linear infinite; animation-delay: 6s; }
 .rally-flash-m1 { animation: rallyImpact 8s linear infinite; animation-delay: 0s; }
-.rally-flash-m2 { animation: rallyImpact 8s linear infinite; animation-delay: 2s; }
-.rally-flash-m3 { animation: rallyImpact 8s linear infinite; animation-delay: 4s; }
-.rally-flash-m4 { animation: rallyImpact 8s linear infinite; animation-delay: 6s; }
+.rally-flash-m2 { animation: rallyImpact 8s linear infinite; animation-delay: 4s; }
+.rally-flash-m3 { animation: rallyImpact 8s linear infinite; animation-delay: 6s; }
+.rally-flash-m4 { animation: rallyImpact 8s linear infinite; animation-delay: 2s; }
 
 /* Stat pulse, briefly enlarge + brighten when ball arrives */
 @keyframes rallyStatPulse {
@@ -556,9 +556,9 @@ body.has-bg-effects::before {
 .rally-stat-3 { animation: rallyStatPulse 8s linear infinite; animation-delay: 4s; transform-origin: 475px 220px; }
 .rally-stat-4 { animation: rallyStatPulse 8s linear infinite; animation-delay: 6s; transform-origin: 725px 220px; }
 .rally-stat-m1 { animation: rallyStatPulse 8s linear infinite; animation-delay: 0s; transform-origin: 105px 115px; }
-.rally-stat-m2 { animation: rallyStatPulse 8s linear infinite; animation-delay: 2s; transform-origin: 215px 115px; }
-.rally-stat-m3 { animation: rallyStatPulse 8s linear infinite; animation-delay: 4s; transform-origin: 215px 485px; }
-.rally-stat-m4 { animation: rallyStatPulse 8s linear infinite; animation-delay: 6s; transform-origin: 105px 485px; }
+.rally-stat-m2 { animation: rallyStatPulse 8s linear infinite; animation-delay: 4s; transform-origin: 215px 115px; }
+.rally-stat-m3 { animation: rallyStatPulse 8s linear infinite; animation-delay: 6s; transform-origin: 105px 485px; }
+.rally-stat-m4 { animation: rallyStatPulse 8s linear infinite; animation-delay: 2s; transform-origin: 215px 485px; }
 
 /* Accessibility: respect reduced-motion */
 @media (prefers-reduced-motion: reduce) {
@@ -890,68 +890,6 @@ body.has-bg-effects::before {
 }
 .tool-tile-ai .tool-tile-arrow {
   color: var(--accent-warm);
-}
-
-/* AI hero variant: spans the full grid width above the regular tools.
-   Two-column internal layout so it doesn't feel empty at large widths. */
-.tool-tile-ai-hero {
-  grid-column: 1 / -1;
-  min-height: auto;
-  padding: 36px 40px;
-  background: linear-gradient(135deg, rgba(255, 107, 53, 0.10) 0%, rgba(255, 107, 53, 0.02) 50%, var(--bg-card) 100%);
-  border-color: rgba(255, 107, 53, 0.4);
-}
-.tool-tile-ai-hero::before {
-  width: 280px;
-  height: 280px;
-  background: radial-gradient(circle at top right, rgba(255, 107, 53, 0.20) 0%, transparent 65%);
-}
-.ai-hero-content {
-  display: grid;
-  grid-template-columns: 1fr 1.4fr;
-  gap: 48px;
-  align-items: center;
-}
-.ai-hero-left h3 {
-  font-family: var(--font-display);
-  font-size: 44px;
-  letter-spacing: 0.01em;
-  margin: 0 0 8px;
-  color: var(--text);
-  line-height: 1;
-}
-.ai-hero-left .spanish {
-  font-family: var(--font-body);
-  font-style: italic;
-  font-size: 16px;
-  color: var(--text-dim);
-  margin-top: 4px;
-}
-.ai-hero-right p {
-  font-family: var(--font-body);
-  font-size: 17px;
-  line-height: 1.55;
-  color: var(--text);
-  margin: 0 0 18px;
-}
-.ai-hero-right .tool-tile-arrow {
-  margin-top: 0;
-}
-
-@media (max-width: 880px) {
-  .tool-tile-ai-hero {
-    padding: 28px 24px;
-  }
-  .ai-hero-content {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-  .ai-hero-left h3 {
-    font-size: 36px;
-  }
-  .ai-hero-right p {
-    font-size: 15px;
-  }
 }
 
 .tool-tile-eyebrow {
