@@ -1251,3 +1251,33 @@ body.debug-mode .version-marker { display: block; }
   color: var(--text);
   font-family: var(--font-body);
 }
+
+/* =====================================================================
+   SHOT DIAGRAMS, top-down court visualizations on slag pages
+   ===================================================================== */
+.shot-diagram {
+  margin: 40px 0;
+  padding: 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+}
+.shot-diagram svg {
+  display: block;
+  margin: 0 auto 16px;
+  max-width: 100%;
+  height: auto;
+}
+.shot-diagram figcaption {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--text-dim);
+  text-align: center;
+  line-height: 1.5;
+  max-width: 480px;
+  margin: 0 auto;
+}
+@media (max-width: 540px) {
+  .shot-diagram { padding: 16px; }
+  .shot-diagram figcaption { font-size: 12px; }
+}
