@@ -1,41 +1,407 @@
 <!DOCTYPE html>
-<!-- padellab v0.1 · niveau · coming-soon -->
 <html lang="nl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Niveau Indicator, welk LTA/PPA-niveau ben jij eigenlijk? Eerlijke 1.0-7.0 inschatting op basis van 10 vragen. In ontwikkeling bij PadelLab." />
   <meta name="theme-color" content="#050709" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="canonical" href="https://padelpatterns.com/tools/niveau" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fraunces:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/css/style.css" />
-  <title>Padel Niveau Indicator, Wat is jouw LTA/PPA niveau? | PadelLab</title>
-  <meta name="description" content="Welk padelniveau ben jij? Eerlijke 1.0-7.0 inschatting op basis van 10 vragen. Volgens LTA/PPA-schaal." />
-  <meta name="keywords" content="padel niveau, padel niveau test, LTA padel, PPA padel, padel level" />
+
+  <title>Padel Niveau Indicator, eerlijk in 10 vragen | PadelLab</title>
+  <meta name="description" content="Welk padelniveau ben jij echt? 10 stevige vragen, een eerlijke uitkomst op een schaal van 1.0 tot 7.0, met Nederlandse categorie." />
+  <meta name="keywords" content="padel niveau, padel niveau test, padel level, padel rating, padel niveau bepalen, KNLTB padel" />
   <meta name="author" content="PadelLab" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="canonical" href="https://padelpatterns.com/tools/niveau" />
 
-  <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://padelpatterns.com/tools/niveau" />
-  <meta property="og:title" content="Padel Niveau Indicator, 1.0 tot 7.0" />
-  <meta property="og:description" content="Eerlijke padel-niveau inschatting op basis van 10 vragen." />
+  <meta property="og:title" content="Padel Niveau Indicator, eerlijk in 10 vragen" />
+  <meta property="og:description" content="Geen pluimstrijkerij. 10 vragen, een eerlijke uitkomst." />
   <meta property="og:image" content="https://padelpatterns.com/og-image.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:locale" content="nl_NL" />
   <meta property="og:site_name" content="PadelLab" />
 
-  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:url" content="https://padelpatterns.com/tools/niveau" />
-  <meta name="twitter:title" content="Padel Niveau Indicator, 1.0 tot 7.0" />
-  <meta name="twitter:description" content="Eerlijke padel-niveau inschatting op basis van 10 vragen." />
+  <meta name="twitter:title" content="Padel Niveau Indicator, eerlijk in 10 vragen" />
+  <meta name="twitter:description" content="10 stevige vragen, een eerlijke uitkomst." />
   <meta name="twitter:image" content="https://padelpatterns.com/og-image.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fraunces:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+
+  <style>
+    .ni-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 120px 32px 80px;
+      min-height: 70vh;
+    }
+    @media (max-width: 720px) { .ni-wrap { padding: 100px 18px 60px; } }
+
+    .ni-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .ni-intro h1 {
+      font-family: var(--font-display);
+      font-size: clamp(48px, 8vw, 84px);
+      line-height: 0.95;
+      letter-spacing: 0.01em;
+      margin: 0 0 18px;
+      color: var(--text);
+    }
+    .ni-intro .lede {
+      font-family: var(--font-body);
+      font-size: 20px;
+      line-height: 1.5;
+      color: var(--text-dim);
+      margin: 0 0 24px;
+      max-width: 620px;
+    }
+
+    .ni-warning {
+      margin: 28px 0 36px;
+      padding: 20px 22px;
+      background: rgba(255, 107, 53, 0.08);
+      border-left: 3px solid var(--accent-warm);
+      border-radius: 0 4px 4px 0;
+    }
+    .ni-warning-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent-warm);
+      margin-bottom: 8px;
+    }
+    .ni-warning p {
+      margin: 0;
+      font-family: var(--font-body);
+      font-size: 15px;
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    .ni-meta {
+      font-family: var(--font-body);
+      color: var(--text-dim);
+      font-size: 15px;
+      margin: 0 0 24px;
+    }
+
+    .ni-start-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 28px;
+      background: var(--accent);
+      color: var(--bg-night);
+      font-family: var(--font-ui);
+      font-weight: 600;
+      font-size: 16px;
+      letter-spacing: 0.02em;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .ni-start-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(212, 255, 0, 0.25);
+    }
+
+    .ni-progress { display: flex; gap: 6px; margin-bottom: 36px; }
+    .ni-progress-bar {
+      flex: 1; height: 3px;
+      background: var(--border-light);
+      border-radius: 2px;
+      transition: background 0.3s ease;
+    }
+    .ni-progress-bar.active {
+      background: var(--accent);
+      box-shadow: 0 0 10px rgba(212, 255, 0, 0.5);
+    }
+    .ni-progress-bar.done { background: rgba(212, 255, 0, 0.5); }
+
+    .ni-step-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--text-faint);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .ni-question-wrap { animation: niEnter 0.4s cubic-bezier(.2,.8,.2,1) both; }
+    .ni-question-wrap.exit { animation: niExit 0.25s ease both; }
+    @keyframes niEnter {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes niExit {
+      from { opacity: 1; transform: translateY(0); }
+      to   { opacity: 0; transform: translateY(-10px); }
+    }
+
+    .ni-question {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.05;
+      letter-spacing: 0.01em;
+      margin: 0 0 12px;
+      color: var(--text);
+    }
+    .ni-subq {
+      font-family: var(--font-body);
+      font-size: 16px;
+      color: var(--text-dim);
+      margin: 0 0 28px;
+      font-style: italic;
+    }
+
+    .ni-options { display: flex; flex-direction: column; gap: 10px; }
+    .ni-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 22px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: left;
+      width: 100%;
+      font: inherit;
+      color: inherit;
+    }
+    .ni-option:hover {
+      border-color: var(--border-accent);
+      background: rgba(212, 255, 0, 0.04);
+      transform: translateX(2px);
+    }
+    .ni-option-text {
+      font-family: var(--font-body);
+      font-size: 17px;
+      line-height: 1.4;
+      color: var(--text);
+    }
+    .ni-option-arrow {
+      flex-shrink: 0;
+      font-family: var(--font-mono);
+      color: var(--text-faint);
+      font-size: 18px;
+      transition: color 0.15s ease, transform 0.15s ease;
+    }
+    .ni-option:hover .ni-option-arrow {
+      color: var(--accent);
+      transform: translateX(4px);
+    }
+
+    .ni-result-wrap { animation: niEnter 0.5s cubic-bezier(.2,.8,.2,1) both; }
+    .ni-result-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      color: var(--text-faint);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .ni-result-headline {
+      font-family: var(--font-display);
+      font-size: clamp(72px, 14vw, 140px);
+      line-height: 0.9;
+      letter-spacing: 0;
+      margin: 0 0 8px;
+      color: var(--accent);
+    }
+    .ni-result-label {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 4vw, 44px);
+      letter-spacing: 0.02em;
+      color: var(--text);
+      margin: 0 0 24px;
+    }
+    .ni-result-international {
+      display: inline-block;
+      padding: 6px 14px;
+      background: rgba(212, 255, 0, 0.08);
+      border: 1px solid var(--border-accent);
+      border-radius: 100px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      margin-bottom: 32px;
+    }
+    .ni-result-verdict {
+      padding: 24px 26px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      margin-bottom: 28px;
+    }
+    .ni-result-verdict p {
+      font-family: var(--font-body);
+      font-size: 17px;
+      line-height: 1.6;
+      color: var(--text);
+      margin: 0 0 14px;
+    }
+    .ni-result-verdict p:last-child { margin-bottom: 0; }
+
+    .ni-result-section { margin-bottom: 32px; }
+    .ni-result-section h3 {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin: 0 0 14px;
+    }
+    .ni-result-section ul { list-style: none; padding: 0; margin: 0; }
+    .ni-result-section li {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-light);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.5;
+      color: var(--text);
+      display: flex;
+      gap: 12px;
+    }
+    .ni-result-section li:last-child { border-bottom: none; }
+    .ni-result-section li::before {
+      content: "→";
+      color: var(--accent);
+      font-family: var(--font-mono);
+      flex-shrink: 0;
+    }
+
+    .ni-result-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 32px;
+    }
+    .ni-btn-primary, .ni-btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 22px;
+      font-family: var(--font-ui);
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.02em;
+      border-radius: 4px;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.15s ease;
+      text-decoration: none;
+    }
+    .ni-btn-primary {
+      background: var(--accent);
+      color: var(--bg-night);
+    }
+    .ni-btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border-medium);
+    }
+    .ni-btn-primary:hover, .ni-btn-secondary:hover { transform: translateY(-1px); }
+
+    .ni-scale {
+      margin: 0 0 32px;
+      padding: 22px 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+    }
+    .ni-scale-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 12px;
+    }
+    .ni-scale-track {
+      position: relative;
+      height: 6px;
+      background: var(--border-light);
+      border-radius: 3px;
+      margin: 22px 0 10px;
+    }
+    .ni-scale-fill {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      background: linear-gradient(to right, #ff6b35 0%, #d4ff00 100%);
+      border-radius: 3px;
+      transition: width 1s cubic-bezier(.2,.8,.2,1);
+    }
+    .ni-scale-marker {
+      position: absolute;
+      top: -6px;
+      width: 4px;
+      height: 18px;
+      background: var(--text);
+      border-radius: 2px;
+      transform: translateX(-50%);
+      transition: left 1s cubic-bezier(.2,.8,.2,1);
+    }
+    .ni-scale-ticks {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-faint);
+      letter-spacing: 0.05em;
+    }
+
+    .ni-recap {
+      margin-top: 24px;
+      padding: 18px 22px;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border-light);
+      border-radius: 4px;
+    }
+    .ni-recap-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 10px;
+    }
+    .ni-recap-row {
+      display: flex;
+      gap: 12px;
+      padding: 8px 0;
+      font-size: 13px;
+      color: var(--text-dim);
+      font-family: var(--font-body);
+      border-bottom: 1px solid var(--border-light);
+    }
+    .ni-recap-row:last-child { border-bottom: none; }
+    .ni-recap-q { flex: 1; }
+    .ni-recap-a { color: var(--text); font-weight: 500; flex-shrink: 0; max-width: 50%; text-align: right; }
+    @media (max-width: 540px) {
+      .ni-recap-row { flex-direction: column; gap: 2px; }
+      .ni-recap-a { max-width: 100%; text-align: left; }
+    }
+  </style>
 </head>
 <body class="has-bg-effects">
 
@@ -60,47 +426,7 @@
     </nav>
   </header>
 
-  <section class="content-section">
-    <div class="hero-eyebrow" style="margin-bottom: 16px;">Tool · In ontwikkeling</div>
-    <h1>Niveau Indicator</h1>
-    <p class="lede" style="font-style: italic; color: var(--text-faint); font-family: var(--font-body);">tu nivel real</p>
-
-    <div class="coming-card">
-      <span class="badge">Binnenkort beschikbaar</span>
-      <h2 style="font-family: var(--font-display); font-size: 28px; margin: 0 0 14px;">Welk niveau ben je écht?</h2>
-      <p>
-        "Ik speel 3.5", maar wat betekent dat eigenlijk? In Nederland gebruikt iedereen z'n eigen schaal,
-        Spanje heeft een ander systeem, en het PPA-circuit nog een derde. Wij vertalen je antwoorden op
-        tien concrete vragen naar één eerlijke score op de internationale 1.0–7.0 schaal.
-      </p>
-
-      <ul class="feature-list">
-        <li>Vragen over speeljaren, frequentie, en tegen welk niveau je gewoonlijk wint</li>
-        <li>Geen zelfinschatting. Wel data-gedreven uit je antwoorden</li>
-        <li>Internationale 1.0–7.0 schaal (LTA / PPA / FIP-compatibel)</li>
-        <li>Vertaling naar lokale schalen: NL · ES · IT · DE</li>
-        <li>Onthoud je score, kom terug voor heronderzoek na drie maanden</li>
-      </ul>
-    </div>
-
-    <h2>Waarom deze tool?</h2>
-    <p>
-      Niveau-bepaling is de eerste discussie bij elke nieuwe wedstrijd. Niveau-bepaling is ook de basis voor
-      twee andere PadelLab tools: de Racket Finder gebruikt je niveau om gepaste rackets aan te raden, en
-      Match Log analyseert je trend tegen niveau-categorieën. Eén keer doen, drie tools beter.
-    </p>
-
-    <h2>Wanneer beschikbaar?</h2>
-    <p>
-      Komt na Shot Decider. We mikken op de komende weken.
-    </p>
-
-    <div style="margin-top: 48px;">
-      <a href="/tools/patterns" class="cta-primary">
-        Bekijk intussen Patterns 3D <span>→</span>
-      </a>
-    </div>
-  </section>
+  <main class="ni-wrap" id="ni-app"></main>
 
   <footer class="site-footer">
     <div class="site-footer-grid">
@@ -108,8 +434,7 @@
         <div class="site-logo-mark">PADEL<span style="color: var(--accent);">LAB</span></div>
         <p>Tactische tools voor de denkende padelspeler.</p>
         <p style="font-size: 12px; color: var(--text-faint); margin-top: 12px;">
-          PadelLab gebruikt affiliate-links bij racket-aanbevelingen. Dat be&iuml;nvloedt onze
-          rangschikkingen niet.
+          PadelLab gebruikt affiliate-links bij racket-aanbevelingen. Dat be&iuml;nvloedt onze rangschikkingen niet.
         </p>
       </div>
       <div>
@@ -129,8 +454,7 @@
           <li><a href="/tools/racket-finder">Racket Finder</a></li>
           <li><a href="/tools/spelregels">Spelregels Beslisser</a></li>
           <li><a href="/tools/niveau">Niveau Indicator</a></li>
-          <li><a href="/tools/match-log">Match Log</a></li>
-          <li><a href="/tools/coach-card">Coach Card</a></li>
+          <li><a href="/tools/training">Trainings-generator</a></li>
         </ul>
       </div>
       <div>
@@ -145,11 +469,393 @@
     </div>
     <div class="site-footer-bottom">
       <span>© 2026 PadelLab</span>
-      <span>v0.2 · 6 tools</span>
     </div>
   </footer>
 
-  <div class="version-marker">v20-niveau</div>
+<script>
+const QUESTIONS = [
+  {
+    id: 'years',
+    q: 'Hoe lang speel je padel?',
+    sub: 'Eerlijk. Een keer in het jaar telt niet.',
+    options: [
+      { text: 'Net begonnen, minder dan zes maanden', score: 0 },
+      { text: 'Tussen zes maanden en een jaar', score: 0.8 },
+      { text: 'Tussen een en drie jaar', score: 1.6 },
+      { text: 'Drie tot vijf jaar', score: 2.2 },
+      { text: 'Meer dan vijf jaar', score: 2.6 },
+    ]
+  },
+  {
+    id: 'frequency',
+    q: 'Hoe vaak speel je gemiddeld per week?',
+    sub: 'Over het hele jaar, niet je beste maand.',
+    options: [
+      { text: 'Eens per twee weken of minder', score: 0 },
+      { text: 'Een keer per week', score: 0.6 },
+      { text: 'Twee keer per week', score: 1.3 },
+      { text: 'Drie keer per week', score: 1.9 },
+      { text: 'Vier keer of meer', score: 2.3 },
+    ]
+  },
+  {
+    id: 'lessons',
+    q: 'Hoeveel padel-lessen heb je in totaal gevolgd?',
+    sub: 'Privelessen of clinics. YouTube-videos tellen niet.',
+    options: [
+      { text: 'Geen of bijna geen', score: 0 },
+      { text: 'Tussen een en vijf', score: 0.5 },
+      { text: 'Tussen vijf en vijftien', score: 1.2 },
+      { text: 'Meer dan vijftien, regelmatig training', score: 1.8 },
+      { text: 'Wekelijks training met coach', score: 2.4 },
+    ]
+  },
+  {
+    id: 'competition',
+    q: 'Speel je competitie of toernooien?',
+    sub: 'Geregeld, niet een keer geprobeerd.',
+    options: [
+      { text: 'Nee, alleen gezellig met vrienden', score: 0 },
+      { text: 'Soms een open toernooi, geen vaste competitie', score: 0.7 },
+      { text: 'KNLTB padel-competitie, lagere klasse', score: 1.6 },
+      { text: 'KNLTB padel-competitie, middenklasse', score: 2.3 },
+      { text: 'Hoofdklasse, eerste klasse of internationaal', score: 3.0 },
+    ]
+  },
+  {
+    id: 'bandeja',
+    q: 'Hoe betrouwbaar is je bandeja?',
+    sub: 'Niet of je hem kunt slaan, maar of hij consistent goed valt.',
+    options: [
+      { text: 'Wat is een bandeja?', score: 0 },
+      { text: 'Ik probeer hem, lukt soms', score: 0.4 },
+      { text: 'Lukt in vier van de tien gevallen', score: 1.0 },
+      { text: 'Zes tot acht van de tien, diep cross-court', score: 1.7 },
+      { text: 'Wapen, ik gebruik hem agressief en consistent', score: 2.4 },
+    ]
+  },
+  {
+    id: 'walls',
+    q: 'Hoe ga je om met ballen via de muur?',
+    sub: 'Is het glas je vriend, of je vijand?',
+    options: [
+      { text: 'Ik laat ze vaak gaan of mis ze', score: 0 },
+      { text: 'Ik kan ze redden, niet aanvallen', score: 0.6 },
+      { text: 'Soms een bajada, vaak verdedigend', score: 1.4 },
+      { text: 'Bajada is een vast onderdeel van mijn spel', score: 2.1 },
+      { text: 'Ik scoor regelmatig vanaf de muur', score: 2.7 },
+    ]
+  },
+  {
+    id: 'positioning',
+    q: 'Hoe is je positiespel met je maatje?',
+    sub: 'Eerlijk over de samenwerking, niet wat je hoopt.',
+    options: [
+      { text: 'We staan vaak verkeerd, gaten in het midden', score: 0 },
+      { text: 'We schuiven wel mee, maar te laat', score: 0.7 },
+      { text: 'Meestal goed, soms een gat', score: 1.5 },
+      { text: 'Strak, we communiceren tijdens punten', score: 2.2 },
+      { text: 'Patroon-spel, vaste afspraken, voorspelbaar voor elkaar', score: 2.8 },
+    ]
+  },
+  {
+    id: 'shotchoice',
+    q: 'Hoe kies je welke slag je speelt?',
+    sub: 'Bewuste keuze of gewoon "raken en kijken"?',
+    options: [
+      { text: 'Ik sla wat lukt, denk er niet over', score: 0 },
+      { text: 'Soms denk ik na, soms reflex', score: 0.7 },
+      { text: 'Ik kies bewust tussen drive, lob en chiquita', score: 1.5 },
+      { text: 'Ik lees tegenstanders en kies tactisch', score: 2.2 },
+      { text: 'Ik herken patronen en zet vallen op', score: 2.8 },
+    ]
+  },
+  {
+    id: 'wins',
+    q: 'Win je van competitiespelers op clubniveau?',
+    sub: 'Iemand die KNLTB speelt in middenklasse of hoger.',
+    options: [
+      { text: 'Nooit, totaal niet in mijn league', score: 0 },
+      { text: 'Soms een set, nooit een match', score: 0.6 },
+      { text: 'Soms een match, als ze niet hun beste dag hebben', score: 1.4 },
+      { text: 'Geregeld, ze moeten echt aan de bak', score: 2.1 },
+      { text: 'Ja, ik ben zelf zo iemand', score: 2.8 },
+    ]
+  },
+  {
+    id: 'losses',
+    q: 'Tegen wie verlies je nog wel eens?',
+    sub: 'De eerlijkste vraag van alles.',
+    options: [
+      { text: 'Bijna iedereen wint van mij', score: 0 },
+      { text: 'Iedereen die langer speelt of vaker traint', score: 0.7 },
+      { text: 'Tegen serieuze recreanten zit het soms erin', score: 1.4 },
+      { text: 'Alleen tegen competitiespelers in hogere klasses', score: 2.1 },
+      { text: 'Bijna alleen tegen ex-pros of buitenlandse spelers', score: 2.7 },
+    ]
+  },
+];
+
+function scoreToLevel(rawScore) {
+  const MAX_RAW = 26.5;
+  const normalized = Math.min(rawScore / MAX_RAW, 1);
+  const curved = Math.pow(normalized, 1.05);
+  const level = 1.0 + curved * 6.0;
+  return Math.round(level * 10) / 10;
+}
+
+function levelToCategory(level) {
+  if (level < 2.0) return { name: 'Beginner', range: '1.0 tot 1.9' };
+  if (level < 3.0) return { name: 'Recreant', range: '2.0 tot 2.9' };
+  if (level < 4.0) return { name: 'Gevorderd', range: '3.0 tot 3.9' };
+  if (level < 5.0) return { name: 'Competitief', range: '4.0 tot 4.9' };
+  if (level < 6.0) return { name: 'Sterke competitie', range: '5.0 tot 5.9' };
+  return { name: '(Sub-)top', range: '6.0 tot 7.0' };
+}
+
+function levelToVerdict(level) {
+  if (level < 1.5) {
+    return {
+      honest: "Je bent net begonnen, en dat is geen schande. Maar laten we niet doen alsof je 4.0 bent. Je hebt nog vrijwel alles te leren, en dat is precies de leukste fase, want je verbetert maandelijks zichtbaar.",
+      reference: "Dit is het niveau van iemand die voor het eerst de baan op stapt of maximaal een paar maanden speelt. Forehand en backhand komen wel over het net, maar consistentie ontbreekt. Het glas wordt nog als obstakel ervaren, niet als spelelement.",
+      next: [
+        "Pak twee lessen per maand, niet meer, niet minder",
+        "Speel minimaal twee keer per week",
+        "Leer eerst de drie basis: drive, volley en lob",
+        "Lees de pagina voor beginners",
+      ],
+      nextLink: '/padel-voor-beginners'
+    };
+  }
+  if (level < 2.5) {
+    return {
+      honest: "Je bent een gevorderde beginner of beginnende recreant. Je houdt rally's in gang, maar je positiespel en slagkeuze zijn nog gokwerk. Op clubs ben je nog niet de speler die mensen graag als maatje kiezen tegen sterkere teams, en dat is oke voor deze fase.",
+      reference: "Je kunt een potje spelen zonder dat het pijn doet om naar te kijken. Lobs gaan vaak wel over, maar zelden diep genoeg. Volleys lukken op heuphoogte, alles hoger of lager is gokwerk. Bandeja is bekend in theorie, niet in praktijk.",
+      next: [
+        "Werk gericht aan de bandeja, dat is de slag die je verder brengt",
+        "Train je lob met focus op diepte, niet hoogte",
+        "Speel bewust cross-court, niet langs de lijn",
+        "Lees de tactiek-pagina over posities en zones",
+      ],
+      nextLink: '/padel-posities'
+    };
+  }
+  if (level < 3.5) {
+    return {
+      honest: "Je bent een degelijke recreant op weg naar gevorderd. Niet meer de zwakste op de baan, maar nog niet iemand die mensen actief uitkiezen voor competitiematches. Je bandeja begint te werken, je positiespel is redelijk, maar je tactische keuzes zijn nog wisselend.",
+      reference: "Op clubs sta je in het stevige middenveld. Je kunt prima een vrijdagavond-toernooi spelen en niet snel uitvallen. Tegen serieuze competitiespelers verlies je vrij eenduidig, maar je hangt soms een set lang mee.",
+      next: [
+        "Begin met patroondenken, niet alleen losse slagen",
+        "Train je vibora en chiquita gericht",
+        "Speel bewust met dezelfde maatje, dan ontstaan patronen",
+        "Overweeg KNLTB-competitie in de laagste klasse",
+      ],
+      nextLink: '/padel-tactiek-gevorderden'
+    };
+  }
+  if (level < 4.5) {
+    return {
+      honest: "Je bent een gevorderde speler die op de grens van competitief staat. Je hebt een arsenaal, je weet wat je doet, en je wint van de meeste mensen op je club. Maar tegen echte competitiespelers in de middenklasse zit je nog niet betrouwbaar in de winnende helft.",
+      reference: "Dit is het niveau waarop je KNLTB-competitie speelt in de lagere of middenklasse, of dat je daar binnenkort instapt. Internationaal vergelijkbaar met PPA 3.5 tot 4.5. Op clubs ben je een vaste keuze voor competitietoernooien.",
+      next: [
+        "Specialiseer je in twee patronen samen met je vaste maatje",
+        "Werk aan je achterglas-spel, de bajada bepaalt nu of je doorbreekt",
+        "Speel bewust tegen sterkere paren, ook als je verliest",
+        "Train mentaal: lange rally's, niet forceren",
+      ],
+      nextLink: '/bajada'
+    };
+  }
+  if (level < 5.5) {
+    return {
+      honest: "Je bent competitief tot serieus competitief. Je speelt al jaren, traint regelmatig, en wint van het overgrote deel van de club-spelers. In de middenklasse competitie ben je een vaste waarde. Maar de top van het Nederlandse padel is nog een aparte league.",
+      reference: "KNLTB middenklasse tot hoofdklasse. Internationaal PPA 4.5 tot 5.5. Op toernooien haal je geregeld de halve finales of finales in de juiste klasse. Je hebt waarschijnlijk een vaste coach of trainingsmaatje.",
+      next: [
+        "Werk aan specialistische slagen: gancho, rulo, contralob",
+        "Match-analyse na elke wedstrijd, niet alleen techniek",
+        "Train fysiek serieus, conditie wordt nu beslissend",
+        "Speel met spelers boven je niveau om door te groeien",
+      ],
+      nextLink: '/padel-tactiek-gevorderden'
+    };
+  }
+  if (level < 6.5) {
+    return {
+      honest: "Je zit in de Nederlandse sub-top of bovenste competitielagen. Je hebt waarschijnlijk een professionele coach, traint meerdere keren per week, en speelt nationaal of internationaal toernooi. Wat een tool als deze je nog kan vertellen is beperkt: jij weet zelf het beste waar je staat.",
+      reference: "KNLTB hoofdklasse of eerste klasse. Internationaal PPA 5.5 tot 6.5. Je bent waarschijnlijk gerankt nationaal of speelt mee in FIP-gesanctioneerde toernooien.",
+      next: [
+        "Match-analyse met video, niet meer alleen techniek-werk",
+        "Periodisering en specifieke fysieke programma's",
+        "Werk met sportpsycholoog aan mentale wedstrijdgame",
+        "Doorgroei is nu kleine procentpunten, geen grote sprongen meer",
+      ],
+      nextLink: '/tactiek'
+    };
+  }
+  return {
+    honest: "Je bent een (sub-)pro of internationaal toernooispeler. Een online tool gaat je geen niveau-inschatting geven die jij niet zelf scherper hebt. Mooi dat je hier bent, maar laten we eerlijk zijn dat onze tools niet voor jou geschreven zijn.",
+    reference: "Nederlandse top of internationaal. PPA 6.5+. Je hebt waarschijnlijk een ranking en sponsoring.",
+    next: [
+      "Onze tools zijn niet voor jouw niveau bedoeld",
+      "Maar als je tactische 3D-visualisaties leuk vindt, neem een kijkje bij Patterns 3D",
+    ],
+    nextLink: '/tools/patterns'
+  };
+}
+
+const state = { screen: 'intro', current: 0, answers: [] };
+const app = document.getElementById('ni-app');
+
+function renderIntro() {
+  app.innerHTML = `
+    <div class="ni-intro">
+      <div class="ni-eyebrow">Niveau Indicator</div>
+      <h1>Welk padelniveau<br>ben je echt?</h1>
+      <p class="lede">Tien stevige vragen, een eerlijk antwoord op een schaal van 1.0 tot 7.0, met Nederlandse categorie en internationale referentie.</p>
+
+      <div class="ni-warning">
+        <div class="ni-warning-label">Heads up</div>
+        <p>Dit is geen leuke quiz. We zeggen niet dat iedereen 4.0 is. Antwoord eerlijk, niet zoals je hoopt te spelen. De waarde van deze tool zit in de stevigheid van de output.</p>
+      </div>
+
+      <p class="ni-meta">Duur: ongeveer 90 seconden. Geen account, geen tracking, geen e-mail.</p>
+
+      <button class="ni-start-btn" id="ni-start">
+        Start de test <span>→</span>
+      </button>
+    </div>
+  `;
+  document.getElementById('ni-start').addEventListener('click', () => {
+    state.screen = 'question';
+    state.current = 0;
+    state.answers = [];
+    renderQuestion();
+  });
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[state.current];
+  const total = QUESTIONS.length;
+
+  const progressBars = QUESTIONS.map((_, i) => {
+    let cls = '';
+    if (i < state.current) cls = 'done';
+    else if (i === state.current) cls = 'active';
+    return `<div class="ni-progress-bar ${cls}"></div>`;
+  }).join('');
+
+  const optionButtons = q.options.map((opt, idx) => `
+    <button class="ni-option" data-idx="${idx}">
+      <span class="ni-option-text">${opt.text}</span>
+      <span class="ni-option-arrow">→</span>
+    </button>
+  `).join('');
+
+  app.innerHTML = `
+    <div class="ni-question-wrap" id="ni-qwrap">
+      <div class="ni-progress">${progressBars}</div>
+      <div class="ni-step-label">Vraag ${state.current + 1} van ${total}</div>
+      <h2 class="ni-question">${q.q}</h2>
+      <p class="ni-subq">${q.sub}</p>
+      <div class="ni-options">${optionButtons}</div>
+    </div>
+  `;
+
+  document.querySelectorAll('.ni-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.idx, 10);
+      const opt = q.options[idx];
+      state.answers.push({ qid: q.id, qtext: q.q, atext: opt.text, score: opt.score });
+
+      const wrap = document.getElementById('ni-qwrap');
+      wrap.classList.add('exit');
+
+      setTimeout(() => {
+        if (state.current < QUESTIONS.length - 1) {
+          state.current++;
+          renderQuestion();
+        } else {
+          state.screen = 'result';
+          renderResult();
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 250);
+    });
+  });
+}
+
+function renderResult() {
+  const totalScore = state.answers.reduce((sum, a) => sum + a.score, 0);
+  const level = scoreToLevel(totalScore);
+  const cat = levelToCategory(level);
+  const verdict = levelToVerdict(level);
+  const markerPos = ((level - 1) / 6) * 100;
+
+  const nextItems = verdict.next.map(n => `<li>${n}</li>`).join('');
+  const recapRows = state.answers.map(a => `
+    <div class="ni-recap-row">
+      <div class="ni-recap-q">${a.qtext}</div>
+      <div class="ni-recap-a">${a.atext}</div>
+    </div>
+  `).join('');
+
+  app.innerHTML = `
+    <div class="ni-result-wrap">
+      <div class="ni-result-eyebrow">Je niveau</div>
+      <div class="ni-result-headline">${level.toFixed(1)}</div>
+      <div class="ni-result-label">${cat.name}</div>
+      <div class="ni-result-international">PPA ${level.toFixed(1)} · NL-categorie: ${cat.range}</div>
+
+      <div class="ni-scale">
+        <div class="ni-scale-label">Op de schaal van 1.0 tot 7.0</div>
+        <div class="ni-scale-track">
+          <div class="ni-scale-fill" id="ni-fill" style="width: 0%"></div>
+          <div class="ni-scale-marker" id="ni-marker" style="left: 0%"></div>
+        </div>
+        <div class="ni-scale-ticks">
+          <span>1.0</span><span>2.0</span><span>3.0</span><span>4.0</span><span>5.0</span><span>6.0</span><span>7.0</span>
+        </div>
+      </div>
+
+      <div class="ni-result-verdict">
+        <p>${verdict.honest}</p>
+        <p style="color: var(--text-dim); font-size: 15px; font-style: italic;">${verdict.reference}</p>
+      </div>
+
+      <div class="ni-result-section">
+        <h3>Wat je nu zou moeten doen</h3>
+        <ul>${nextItems}</ul>
+      </div>
+
+      <div class="ni-result-actions">
+        <a href="${verdict.nextLink}" class="ni-btn-primary">Volgende stap <span>→</span></a>
+        <button class="ni-btn-secondary" id="ni-restart">Opnieuw doen</button>
+      </div>
+
+      <div class="ni-recap">
+        <div class="ni-recap-label">Jouw antwoorden</div>
+        ${recapRows}
+      </div>
+    </div>
+  `;
+
+  setTimeout(() => {
+    document.getElementById('ni-fill').style.width = markerPos + '%';
+    document.getElementById('ni-marker').style.left = markerPos + '%';
+  }, 200);
+
+  document.getElementById('ni-restart').addEventListener('click', () => {
+    state.screen = 'intro';
+    state.current = 0;
+    state.answers = [];
+    renderIntro();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
+
+renderIntro();
+</script>
+
 <script>if(location.search.includes('debug'))document.body.classList.add('debug-mode');</script>
 </body>
 </html>

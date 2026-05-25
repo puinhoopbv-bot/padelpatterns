@@ -7,6 +7,16 @@
       "has": [{ "type": "host", "value": "www.padelpatterns.com" }],
       "destination": "https://padelpatterns.com/$1",
       "permanent": true
+    },
+    {
+      "source": "/tools/coach-card",
+      "destination": "/tools/training",
+      "permanent": true
+    },
+    {
+      "source": "/tools/match-log",
+      "destination": "/tools/niveau",
+      "permanent": true
     }
   ],
   "headers": [

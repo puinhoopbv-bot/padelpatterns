@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#050709" />
+
+  <title>Padel Trainings-generator, een sessie op maat in 30 seconden | PadelLab</title>
+  <meta name="description" content="Gestructureerde padel-trainingssessie op maat. Kies niveau, doel, spelers en tijd, krijg een sessie met warm-up, drills en match-situaties. Printbaar. Gratis." />
+  <meta name="keywords" content="padel training, padel oefeningen, padel sessie, padel drills, padel oefenen, padel trainingsschema" />
+  <meta name="author" content="PadelLab" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="canonical" href="https://padelpatterns.com/tools/training" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://padelpatterns.com/tools/training" />
+  <meta property="og:title" content="Padel Trainings-generator, een sessie op maat" />
+  <meta property="og:description" content="Geef je niveau, doel en tijd. Krijg een gestructureerde sessie met drills en match-situaties. Printbaar." />
+  <meta property="og:image" content="https://padelpatterns.com/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="nl_NL" />
+  <meta property="og:site_name" content="PadelLab" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://padelpatterns.com/tools/training" />
+  <meta name="twitter:title" content="Padel Trainings-generator, een sessie op maat" />
+  <meta name="twitter:description" content="Geef je niveau, doel en tijd. Krijg een sessie." />
+  <meta name="twitter:image" content="https://padelpatterns.com/og-image.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fraunces:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+
+  <style>
+    .tg-wrap {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 120px 32px 80px;
+      min-height: 70vh;
+    }
+    @media (max-width: 720px) { .tg-wrap { padding: 100px 18px 60px; } }
+
+    .tg-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .tg-intro h1 {
+      font-family: var(--font-display);
+      font-size: clamp(48px, 8vw, 84px);
+      line-height: 0.95;
+      letter-spacing: 0.01em;
+      margin: 0 0 18px;
+      color: var(--text);
+    }
+    .tg-lede {
+      font-family: var(--font-body);
+      font-size: 20px;
+      line-height: 1.5;
+      color: var(--text-dim);
+      margin: 0 0 40px;
+      max-width: 640px;
+    }
+
+    /* Form */
+    .tg-form {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      margin-bottom: 40px;
+    }
+    .tg-field-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 12px;
+      display: block;
+    }
+    .tg-field-q {
+      font-family: var(--font-body);
+      font-size: 18px;
+      color: var(--text);
+      margin: 0 0 14px;
+    }
+    .tg-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .tg-chip {
+      padding: 10px 18px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 4px;
+      font-family: var(--font-ui);
+      font-size: 14px;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .tg-chip:hover {
+      border-color: var(--border-accent);
+      background: rgba(212, 255, 0, 0.04);
+    }
+    .tg-chip.active {
+      background: var(--accent);
+      color: var(--bg-night);
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
+    .tg-generate-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 28px;
+      background: var(--accent);
+      color: var(--bg-night);
+      font-family: var(--font-ui);
+      font-weight: 600;
+      font-size: 16px;
+      letter-spacing: 0.02em;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      align-self: flex-start;
+    }
+    .tg-generate-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(212, 255, 0, 0.25);
+    }
+    .tg-generate-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* Session output */
+    .tg-session-wrap {
+      animation: tgEnter 0.5s cubic-bezier(.2,.8,.2,1) both;
+    }
+    @keyframes tgEnter {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .tg-session-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .tg-session-title {
+      font-family: var(--font-display);
+      font-size: clamp(34px, 6vw, 56px);
+      line-height: 1;
+      letter-spacing: 0.01em;
+      margin: 0 0 8px;
+      color: var(--text);
+    }
+    .tg-session-meta {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+    .tg-session-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .tg-action-btn {
+      padding: 10px 16px;
+      background: transparent;
+      border: 1px solid var(--border-medium);
+      color: var(--text);
+      font-family: var(--font-ui);
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .tg-action-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .tg-phase {
+      margin-bottom: 36px;
+      padding: 24px 26px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+    }
+    .tg-phase-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .tg-phase-title {
+      font-family: var(--font-display);
+      font-size: 24px;
+      letter-spacing: 0.02em;
+      margin: 0;
+      color: var(--text);
+    }
+    .tg-phase-duration {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      flex-shrink: 0;
+    }
+    .tg-phase-desc {
+      font-family: var(--font-body);
+      font-size: 15px;
+      color: var(--text-dim);
+      font-style: italic;
+      margin: 0 0 18px;
+      line-height: 1.5;
+    }
+    .tg-drill-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .tg-drill {
+      padding: 14px 16px;
+      background: rgba(0, 0, 0, 0.25);
+      border-left: 2px solid var(--accent);
+      border-radius: 0 4px 4px 0;
+    }
+    .tg-drill-name {
+      font-family: var(--font-ui);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .tg-drill-detail {
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+    .tg-drill-detail strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .tg-coach-tip {
+      margin: 28px 0;
+      padding: 20px 22px;
+      background: rgba(212, 255, 0, 0.06);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 4px 4px 0;
+    }
+    .tg-coach-tip-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .tg-coach-tip p {
+      margin: 0;
+      font-family: var(--font-body);
+      font-size: 16px;
+      font-style: italic;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .tg-regenerate {
+      margin-top: 32px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* Print-friendly */
+    @media print {
+      body { background: white !important; color: black !important; }
+      .site-header, .site-footer, .tg-session-actions, .tg-regenerate, .tg-eyebrow {
+        display: none !important;
+      }
+      .has-bg-effects::before, .has-bg-effects::after { display: none !important; }
+      .tg-wrap { padding: 20px !important; max-width: 100% !important; }
+      .tg-session-title, .tg-phase-title, .tg-drill-name {
+        color: black !important;
+      }
+      .tg-phase, .tg-drill, .tg-coach-tip {
+        background: white !important;
+        border: 1px solid #ccc !important;
+        color: black !important;
+        page-break-inside: avoid;
+      }
+      .tg-phase-desc, .tg-drill-detail, .tg-session-meta {
+        color: #555 !important;
+      }
+      .tg-phase-duration {
+        color: #000 !important;
+        font-weight: bold;
+      }
+      .tg-coach-tip p { color: black !important; }
+      .tg-drill { border-left-color: #888 !important; }
+    }
+  </style>
+</head>
+<body class="has-bg-effects">
+
+  <header class="site-header">
+    <a href="/" class="site-logo">
+      <div>
+        <div class="site-logo-mark">PADEL<span>LAB</span></div>
+        <div class="site-logo-tag">Tactische tools</div>
+      </div>
+    </a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" />
+    <label for="nav-toggle" class="nav-burger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </label>
+    <nav class="site-nav">
+      <a href="/tools/patterns" class="nav-link">Patterns 3D</a>
+      <a href="/slagen" class="nav-link">Slagen</a>
+      <a href="/tactiek" class="nav-link">Tactiek</a>
+      <a href="/tools/shot-decider" class="nav-link">Shot Decider</a>
+      <a href="/tools/racket-finder" class="nav-link">Racket Finder</a>
+      <a href="/over" class="nav-link">Over</a>
+    </nav>
+  </header>
+
+  <main class="tg-wrap" id="tg-app"></main>
+
+  <footer class="site-footer">
+    <div class="site-footer-grid">
+      <div class="site-footer-brand">
+        <div class="site-logo-mark">PADEL<span style="color: var(--accent);">LAB</span></div>
+        <p>Tactische tools voor de denkende padelspeler.</p>
+        <p style="font-size: 12px; color: var(--text-faint); margin-top: 12px;">
+          PadelLab gebruikt affiliate-links bij racket-aanbevelingen. Dat be&iuml;nvloedt onze rangschikkingen niet.
+        </p>
+      </div>
+      <div>
+        <h4>Leren</h4>
+        <ul>
+          <li><a href="/slagen">Alle slagen</a></li>
+          <li><a href="/tactiek">Tactiek</a></li>
+          <li><a href="/woordenboek">Padel-woordenboek</a></li>
+          <li><a href="/leren">Waar te beginnen</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Tools</h4>
+        <ul>
+          <li><a href="/tools/patterns">Patterns 3D</a></li>
+          <li><a href="/tools/shot-decider">Shot Decider</a></li>
+          <li><a href="/tools/racket-finder">Racket Finder</a></li>
+          <li><a href="/tools/spelregels">Spelregels Beslisser</a></li>
+          <li><a href="/tools/niveau">Niveau Indicator</a></li>
+          <li><a href="/tools/training">Trainings-generator</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Site</h4>
+        <ul>
+          <li><a href="/over">Over PadelLab</a></li>
+          <li><a href="/privacy">Privacy</a></li>
+          <li><a href="/disclaimer">Disclaimer</a></li>
+          <li><a href="mailto:hello@padelpatterns.com">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="site-footer-bottom">
+      <span>© 2026 PadelLab</span>
+    </div>
+  </footer>
+
+<script>
+/* =====================================================================
+   TRAINING SESSION GENERATOR
+   Builds a structured session from 4 inputs:
+   - level (beginner/recreant/gevorderd/competitief)
+   - goal (8 options)
+   - players (2/3/4/ball-machine)
+   - duration (30/45/60/90 min)
+
+   Session structure: warmup + 2-3 drills + match-situation + cooldown
+   Total duration matches the selected time budget.
+===================================================================== */
+
+const LEVELS = [
+  { id: 'beginner', label: 'Beginner' },
+  { id: 'recreant', label: 'Recreant' },
+  { id: 'gevorderd', label: 'Gevorderd' },
+  { id: 'competitief', label: 'Competitief' },
+];
+
+const GOALS = [
+  { id: 'bandeja', label: 'Bandeja' },
+  { id: 'volley', label: 'Volley' },
+  { id: 'lob', label: 'Lob' },
+  { id: 'chiquita', label: 'Chiquita' },
+  { id: 'glas', label: 'Glas / bajada' },
+  { id: 'smash', label: 'Smash / aanval' },
+  { id: 'positie', label: 'Positiespel' },
+  { id: 'ritme', label: 'Ritme / match-feel' },
+];
+
+const PLAYERS = [
+  { id: '2', label: '2 (jij + maatje)' },
+  { id: '3', label: '3 spelers' },
+  { id: '4', label: '4 (vol veld)' },
+  { id: 'machine', label: 'Ball-machine' },
+];
+
+const DURATIONS = [
+  { id: '30', label: '30 min', mins: 30 },
+  { id: '45', label: '45 min', mins: 45 },
+  { id: '60', label: '60 min', mins: 60 },
+  { id: '90', label: '90 min', mins: 90 },
+];
+
+/* =====================================================================
+   DRILL TEMPLATES
+   Indexed by goal + level. Each template has a name, description,
+   relative weight, and rep/duration scaling info.
+===================================================================== */
+
+const DRILLS = {
+  bandeja: {
+    beginner: [
+      {
+        name: 'Bandeja-positionering zonder bal',
+        desc: 'Sta op je gewone netpositie. Maatje wijst alleen, links of rechts. Jij draait je schouders, stapt zijwaarts, racket boven. Geen bal. Doel: voetenwerk inslijpen. <strong>20 herhalingen, dan wissel.</strong>'
+      },
+      {
+        name: 'Hand-feed bandeja',
+        desc: 'Maatje gooit bal met de hand vanaf de baseline, hoog en richting jouw forehand-bandeja-zone. Jij vangt op en slaat vlak met underspin, mikt op cross-court diepte. <strong>Geen volle kracht, alleen techniek.</strong>'
+      },
+      {
+        name: 'Racket-feed bandeja met landingsmarker',
+        desc: 'Leg een handdoek op de diagonale baseline-hoek. Maatje slaat normale lobs vanaf de baseline. Jij speelt bandeja en mikt op de handdoek. <strong>Tel: 3 van 10 raak = je bent eerlijk bezig.</strong>'
+      },
+    ],
+    recreant: [
+      {
+        name: 'Bandeja onder druk',
+        desc: 'Maatje speelt 5 lobs op rij, alle op verschillende dieptes. Jij speelt elke bal als bandeja, niet als smash. <strong>Focus: geen winner-pogingen, alleen diepte en plaatsing.</strong>'
+      },
+      {
+        name: 'Bandeja cross vs lijn',
+        desc: '10 bandeja\'s cross-court achter elkaar, daarna 10 langs de lijn. Maatje feed\'t lobs op gemiddelde hoogte. <strong>Vergelijk je foutpercentage tussen de twee.</strong> Verwacht: cross is veel betrouwbaarder.'
+      },
+      {
+        name: 'Bandeja naar zijglas',
+        desc: 'Doel: bal landt zo dat hij in de hoek wegrolt richting het zijglas. Mik op de hoek bij de zijwand, niet op de baseline. <strong>Werkt zes van de tien? Dan ben je echt iets aan het bouwen.</strong>'
+      },
+    ],
+    gevorderd: [
+      {
+        name: 'Bandeja-bandeja-smash ketting',
+        desc: 'Maatje speelt diepe lob. Jij bandeja diep cross. Maatje contralob. Jij bandeja weer. Maatje speelt een korte lob. Jij smash. <strong>Repeat 5x.</strong> Doel: keten herkennen en uitvoeren zonder na te denken.'
+      },
+      {
+        name: 'Bandeja onder vermoeidheid',
+        desc: 'Maatje speelt 20 lobs achter elkaar zonder pauze. Jij speelt 20 bandeja\'s. <strong>De laatste 5 zijn diagnostisch.</strong> Als je vorm zakt, ligt het aan techniek, niet kracht.'
+      },
+      {
+        name: 'Bandeja vs vibora switching',
+        desc: 'Maatje feed\'t willekeurig: hoge lob (bandeja) of korte lob (víbora). Jij beslist en speelt. <strong>15 ballen. Tel hoeveel keer je de juiste slag koos.</strong>'
+      },
+    ],
+    competitief: [
+      {
+        name: 'Patroon-bandeja in 4-spelers context',
+        desc: 'Speel 10 punten waarbij de regel is: je opent met een bandeja als je een lob krijgt, ongeacht of het optimaal is. <strong>Doel: pijn voelen waar jouw bandeja niet werkt onder match-druk.</strong>'
+      },
+      {
+        name: 'Bandeja met visualisatie-pre-set',
+        desc: 'Voor elke bandeja zeg je hardop tegen je maatje waar je hem gaat plaatsen. ("Cross, achterhoek.") Daarna sla je. <strong>Versterkt intentie-met-uitvoering.</strong> Klinkt belachelijk, werkt enorm.'
+      },
+      {
+        name: 'Bandeja als opener voor specifieke punten-plan',
+        desc: 'Vooraf afgesproken: na elke bandeja loopt maatje één meter naar binnen om de poach te zoeken. Speel 10 punten met dit patroon. <strong>Werkt het patroon? Heb je timing? Vraag eerlijk feedback.</strong>'
+      },
+    ],
+  },
+  volley: {
+    beginner: [
+      {
+        name: 'Stille volley aan het net',
+        desc: 'Maatje gooit ballen met de hand op jouw forehand-volley-hoogte, jij speelt met punch-beweging diep terug. <strong>Geen swing. Continental grip.</strong> 20 ballen forehand, 20 backhand.'
+      },
+      {
+        name: 'Volley naar voeten',
+        desc: 'Maatje staat aan de baseline en geeft volley-feed. Jij mikt al je volleys op zijn voeten, niet op de baseline. <strong>Pak een rugzak en leg hem op de service-T.</strong> Doel: de rugzak raken.'
+      },
+      {
+        name: 'Volley plus bewegen',
+        desc: 'Na elke volley doe je twee kleine pasjes opzij. Maatje speelt ballen op gemiddelde snelheid. <strong>Doel: niet stilstaan aan het net.</strong> Voeten constant klein bewegen.'
+      },
+    ],
+    recreant: [
+      {
+        name: 'Drie soorten volleys, geforceerd',
+        desc: 'Maatje speelt 15 ballen vanaf de baseline: 5 langzaam (controle-volley), 5 sneller (placerings-volley), 5 hoog/zwak (winner). Jij past je volley aan. <strong>Niet voor elke bal hard slaan.</strong>'
+      },
+      {
+        name: 'Volley vs lob keuze',
+        desc: 'Maatje speelt willekeurig: drive of lob. Jij beslist of je volleyt of teruggaat. <strong>Doel: snelle besluitvorming, geen "ah" momenten.</strong>'
+      },
+      {
+        name: 'Korte volley naar T',
+        desc: 'Tien volleys op rij die precies op de service-T van de tegenstander moeten landen. Niet diep. <strong>Geeft jou een kort bal-terug-kans, je staat al klaar.</strong>'
+      },
+    ],
+    gevorderd: [
+      {
+        name: 'Volley-volley-winner sequence',
+        desc: 'Maatje speelt drives, jij speelt eerste twee volleys diep, derde volley kort en hard. <strong>Train deze keten 10x, dan switchen.</strong>'
+      },
+      {
+        name: 'Volley met poach trap',
+        desc: 'Vier spelers. Een speler aan het net beweegt cross-court om de retour te poachen terwijl de andere blijft staan. <strong>Communicatie cruciaal. Train signalen.</strong>'
+      },
+      {
+        name: 'Reactie-volley training',
+        desc: 'Sta dichtbij het net (1m), maatje slaat ballen hard vanaf middenveld. Jij blok-volleyt alleen, niet aanvallend. <strong>Stevige pols, geen swing.</strong> Doel: reflex en hand-snelheid.'
+      },
+    ],
+    competitief: [
+      {
+        name: 'Volley-keuze onder match-druk',
+        desc: 'Speel 10 punten waarbij elke bal voor jou aan het net beslist een ander type volley nodig heeft. Maatje varieert bewust. <strong>Tel je foutpercentage in elk type.</strong>'
+      },
+      {
+        name: 'Volley plus footwork sprint',
+        desc: 'Maatje speelt 20 ballen, jij speelt elke volley en doet daarna 2m sprint naar de andere kant. <strong>Conditie-element. Volleys zakken? Dat is je werk-punt.</strong>'
+      },
+      {
+        name: 'Volley vanuit oranje zone',
+        desc: 'Sta in de oranje zone (tussen service-T en baseline), niet aan het net. Maatje speelt ballen. Jij volleyt vanuit deze "verkeerde" positie. <strong>Doel: weten waarom oranje zone slecht is.</strong>'
+      },
+    ],
+  },
+  lob: {
+    beginner: [
+      {
+        name: 'Lob over een lijn',
+        desc: 'Span een lijn (of stel je voor) 3m boven het net. Maatje speelt ballen vanaf de andere kant, jij lobt over de lijn. <strong>Geen kracht, alleen hoogte en diepte.</strong> 20 lobs.'
+      },
+      {
+        name: 'Lob naar achterste meter',
+        desc: 'Leg een handdoek op de baseline. Mik 10 lobs op de handdoek. <strong>Eerlijk: minder dan 3 van 10 raak? Train hoogte en lengte apart eerst.</strong>'
+      },
+      {
+        name: 'Lob plus aanrukken',
+        desc: 'Speel een lob, sprint daarna meteen naar het net. Maatje speelt willekeurig terug. <strong>Doel: lob en aanrukken zijn één beweging, geen optie.</strong>'
+      },
+    ],
+    recreant: [
+      {
+        name: 'Lob onder druk',
+        desc: 'Maatje speelt harde diepe ballen vanaf de baseline. Jij lobt vanaf je defensieve positie. <strong>Onder druk goed lobben is een ander kunstje dan een gratis lob slaan.</strong>'
+      },
+      {
+        name: 'Lob op tegenstander-voet-positie',
+        desc: 'Maatje staat aan het net en wisselt voet-positie (strak/niet-strak). Jij beslist: lob (hielen tegen net) of geen lob. <strong>Doel: oogcontact met voeten van tegenstanders.</strong>'
+      },
+      {
+        name: 'Cross vs lijn lob ratio',
+        desc: '10 cross-court lobs, daarna 10 langs de lijn. <strong>Vergelijk diepte en foutpercentage.</strong> Cross moet beter zijn (meer diagonaal afstand). Zo niet: je staat verkeerd.'
+      },
+    ],
+    gevorderd: [
+      {
+        name: 'Lob vs chiquita keuze',
+        desc: 'Maatje varieert positie: soms strak aan het net, soms 1m terug. Jij speelt lob óf chiquita afhankelijk. <strong>Goede keuze is belangrijker dan goede uitvoering.</strong>'
+      },
+      {
+        name: 'Globo y subir match-ritme',
+        desc: 'Speel 10 punten waarbij elke punt opent met een lob plus aanrukken. <strong>Zelfs als het slim lijkt om iets anders te doen.</strong> Doel: lob als reflex installeren.'
+      },
+      {
+        name: 'Contralob onder vermoeidheid',
+        desc: 'Maatje speelt 5 bandeja\'s achter elkaar. Op de zesde speel jij een contralob. <strong>Tel hoe vaak je hem nog diep krijgt na de fysieke druk.</strong>'
+      },
+    ],
+    competitief: [
+      {
+        name: 'Lob-frequentie bewust verhogen',
+        desc: 'Speel een set en tel hoeveel procent van je ballen lob is. <strong>Doel: minimaal 25%.</strong> Onder de 15%? Je speelt geen padel, je speelt tennis op een padel-baan.'
+      },
+      {
+        name: 'Topspin-lob vs slice-lob',
+        desc: 'Twee verschillende technieken. Slice = veiliger, topspin = lastiger te smashen maar moeilijker te plaatsen. <strong>Train beide gericht, weet wanneer je welke gebruikt.</strong>'
+      },
+      {
+        name: 'Lob met partner-coordinatie',
+        desc: 'Vooraf afspraak: na elke lob die jij speelt, beweegt maatje 1 stap diagonaal. Patroon zodat jullie samen aanrukken. <strong>15 lobs, evalueer timing tussen punten.</strong>'
+      },
+    ],
+  },
+  chiquita: {
+    beginner: [
+      {
+        name: 'Chiquita doel-zone',
+        desc: 'Leg twee rugzakken neer: één 50cm achter het net, één 1m. Maatje speelt comfortabele ballen vanaf de baseline. Jij speelt chiquita\'s tussen de rugzakken. <strong>10 ballen.</strong>'
+      },
+      {
+        name: 'Slice-grip vinger-training',
+        desc: 'Hou je racket in continental grip. Voel je grip-druk. Op een schaal van 10 mag deze maximaal 3 zijn. <strong>Te strak en de chiquita wordt te diep.</strong>'
+      },
+      {
+        name: 'Korte slag oefenen zonder bal',
+        desc: 'Schaduw-techniek. Hoge voorbereiding, korte snij-beweging, stop. <strong>20 keer. Geen volle follow-through.</strong>'
+      },
+    ],
+    recreant: [
+      {
+        name: 'Chiquita ritme-breker',
+        desc: 'Speel 5 punten waarbij je tegenstander 3 ballen op heuphoogte krijgt, dan kom je met chiquita. <strong>Doel: ze leren niet meer voorover te leunen.</strong>'
+      },
+      {
+        name: 'Chiquita plus volgen',
+        desc: 'Na elke chiquita beweeg je drie passen naar voren. Maatje speelt terug. <strong>Niet bewegen na chiquita = halve aanval.</strong>'
+      },
+      {
+        name: 'Chiquita keuze: kort vs te diep',
+        desc: 'Maatje verandert positie: 1m achter net, 2m, 3m. Jij speelt chiquita alleen als hij 1m+ van het net staat. <strong>Tegen strakke net-spelers: lob in plaats van chiquita.</strong>'
+      },
+    ],
+    gevorderd: [
+      {
+        name: 'Chiquita ketting setup',
+        desc: 'Speel chiquita, krijg zwakke retour, sla volley naar voeten, krijg nog kortere retour, finish. <strong>Train deze 3-bal-keten 10x.</strong>'
+      },
+      {
+        name: 'Backhand chiquita',
+        desc: 'Veelal alleen aan forehand getraind. Aan backhand-kant minstens zo cruciaal. <strong>15 backhand chiquita\'s vanaf je backhand-baseline.</strong>'
+      },
+      {
+        name: 'Chiquita onder match-spanning',
+        desc: 'Speel 5 punten waar je in elk punt minstens één chiquita móet spelen. <strong>Het gevoel dat je gedwongen wordt te kiezen lijkt op match-druk.</strong>'
+      },
+    ],
+    competitief: [
+      {
+        name: 'Chiquita als opener vs counter',
+        desc: 'Twee scenarios: chiquita als ritmebreker (jij dicteert) en chiquita als counter (zij dicteren, jij breekt hun aanval). <strong>Allebei in deze sessie trainen, anders blijft je chiquita eendimensionaal.</strong>'
+      },
+      {
+        name: 'Chiquita-frequentie meten',
+        desc: 'Speel een set en tel hoeveel chiquita\'s je hebt gespeeld. <strong>Pro\'s spelen er 10 tot 15 per set.</strong> Heb jij er minder dan 5? Te weinig.'
+      },
+      {
+        name: 'Chiquita met intentie-uitspraak',
+        desc: 'Voor elke chiquita zeg je tegen je maatje: "chiquita, ik volg op". Hardop. <strong>Maakt jullie patroon-spel zichtbaarder en je maatje weet wat te doen.</strong>'
+      },
+    ],
+  },
+  glas: {
+    beginner: [
+      {
+        name: 'Glas-lezen zonder racket',
+        desc: 'Sta aan het achterglas. Maatje gooit ballen met de hand tegen het glas op verschillende hoogtes. Jij stapt weg en vangt de stuit op heuphoogte. <strong>20 ballen, geen racket.</strong>'
+      },
+      {
+        name: 'Eerste contact met de stuit',
+        desc: 'Maatje speelt langzame ballen die het glas raken. Jij speelt elke bal terug, maar alleen na de glas-stuit. <strong>Doel: leren wachten.</strong>'
+      },
+      {
+        name: 'Drie-meter regel',
+        desc: 'Sta altijd op exact 3m van het achterglas wanneer je een bal richting het glas ziet komen. <strong>Markeer met handdoek of jas waar je moet staan.</strong>'
+      },
+    ],
+    recreant: [
+      {
+        name: 'Bajada-positie en timing',
+        desc: 'Maatje speelt bandeja\'s diep. Jij staat klaar, wacht op glas-stuit, slaat bajada. <strong>15 ballen. Tel hoe vaak je goed positioneert.</strong>'
+      },
+      {
+        name: 'Bajada cross vs lijn',
+        desc: '10 bajada\'s cross-court, 10 langs de lijn. <strong>Cross is veiliger maar minder agressief. Allebei in je arsenaal.</strong>'
+      },
+      {
+        name: 'Bajada plus aanrukken',
+        desc: 'Een goede bajada draait de rally om. Na elke bajada loop je richting het net. <strong>Bajada plus stilstaan = geen bajada.</strong>'
+      },
+    ],
+    gevorderd: [
+      {
+        name: 'Bajada uit hoge bal vs lage bal',
+        desc: 'Verschillende glas-stuiten geven verschillende hoogtes. Train beide: bajada op heuphoogte en bajada op borsthoogte. <strong>De techniek verschilt subtiel.</strong>'
+      },
+      {
+        name: 'Bajada na vermoeiende rally',
+        desc: 'Maatje speelt 8 ballen waarmee jij moet lopen, dan een diepe bal naar het glas. <strong>Test je bajada onder fysieke vermoeidheid.</strong>'
+      },
+      {
+        name: 'Glas-stuit lezen onder snelheid',
+        desc: 'Maatje slaat harde smashes naar het glas. Jij anticipeert waar de bal terugkomt en speelt bajada. <strong>Snelheidsanticipatie is gevorderd-niveau training.</strong>'
+      },
+    ],
+    competitief: [
+      {
+        name: 'Bajada-keuze in patroon-context',
+        desc: 'Speel 5 punten waar elke punt minstens één glas-stuit zit. Soms bajada, soms verdedigend terug. <strong>Wanneer aanval, wanneer reset.</strong>'
+      },
+      {
+        name: 'Dubbele glas-stuit lezen',
+        desc: 'Bal raakt eerst achterglas, dan zijglas (hoek). Anticipatie wordt complex. Train deze hoek-ballen 15x. <strong>Op club-niveau gemist door 90%.</strong>'
+      },
+      {
+        name: 'Bajada vs counter-bandeja keuze',
+        desc: 'Soms is het beter om de bal vóór de glas-stuit te raken (counter-bandeja) in plaats van te wachten. <strong>Train de keuze, niet alleen de slag.</strong>'
+      },
+    ],
+  },
+  smash: {
+    beginner: [
+      {
+        name: 'Smash voorbereiding zonder bal',
+        desc: 'Schaduw-smashes: racket meteen omhoog, niet-slaande arm wijst naar de bal. <strong>Train 20x. Geen swing-time.</strong>'
+      },
+      {
+        name: 'Smash met ball-feed laag tempo',
+        desc: 'Maatje feed\'t makkelijke korte lobs. Jij smasht. <strong>Geen kracht: focus op contactpunt.</strong> Boven hoofd, iets voor je lichaam.'
+      },
+      {
+        name: 'Smash-bal vs bandeja-bal onderscheid',
+        desc: 'Maatje speelt verschillende soorten lobs. Jij beslist hardop: "smash" of "bandeja". <strong>Beslis voordat je slaat, dan oefen je judgment.</strong>'
+      },
+    ],
+    recreant: [
+      {
+        name: 'Smash naar specifieke hoek',
+        desc: 'Leg een handdoek in elke hoek van het tegenoverliggende veld. Smash 5x naar elke hoek. <strong>Plaatsing belangrijker dan kracht.</strong>'
+      },
+      {
+        name: 'Smash plus volgen',
+        desc: 'Na elke smash beweeg je richting het net (1 stap). Doel: niet bewonderen na de slag. <strong>De rally is niet voorbij tot de bal stilligt.</strong>'
+      },
+      {
+        name: 'Smash-frequentie verlagen',
+        desc: 'Speel 10 punten waar je maximaal één smash mag spelen. <strong>Forceer bandeja-keuzes. Voel het verschil in foutpercentage.</strong>'
+      },
+    ],
+    gevorderd: [
+      {
+        name: 'Por tres training',
+        desc: 'Mik op de hoek tussen service-T en zijglas. Met topspin zodat hij hard naar glas-zijwand stuitert. <strong>Hoge mislukt-ratio, maar als hij raak is = punt.</strong>'
+      },
+      {
+        name: 'Smash onder druk vanaf middenveld',
+        desc: 'Niet altijd sta je dichtbij het net. Smash vanaf service-T is een aparte vaardigheid. <strong>10 smashes vanaf die positie, leer of het werkt voor je.</strong>'
+      },
+      {
+        name: 'Rulo aanloop',
+        desc: 'Topspin smash met landing op service-T en lage bounce naar zijglas. <strong>Lukt aan begin nul keer van de tien. Doel: één van de tien deze sessie.</strong>'
+      },
+    ],
+    competitief: [
+      {
+        name: 'Smash-keuze in 4-spelers context',
+        desc: 'Speel 10 punten. Voor elke smash-kans vraag jezelf: balans? gaten? Sla alleen als beide ja. <strong>Tel hoe vaak je smasht en je foutpercentage.</strong>'
+      },
+      {
+        name: 'Rulo onder match-druk',
+        desc: 'Probeer rulo in echte punten, niet in oefening. <strong>Verlies wat punten erdoor. Leer het verschil tussen oefening-rulo en match-rulo.</strong>'
+      },
+      {
+        name: 'Smash-mix variatie',
+        desc: 'Train per sessie 4 verschillende smashes: vlakke, topspin, rulo, por tres. <strong>Tegenstanders moeten niet kunnen anticiperen.</strong>'
+      },
+    ],
+  },
+  positie: {
+    beginner: [
+      {
+        name: 'Onzichtbaar touw stap-oefening',
+        desc: 'Jij en maatje verbonden met denkbeeldig touw van 4m. Maatje beweegt langzaam, jij volgt met dezelfde afstand. <strong>Geen bal. 3 minuten lang.</strong>'
+      },
+      {
+        name: 'Zone-awareness',
+        desc: 'Speel een rally waarbij je hardop zegt in welke zone je staat: rood, oranje, groen. <strong>Doel: bewust maken van positie tijdens spelen.</strong>'
+      },
+      {
+        name: 'Samen naar voren',
+        desc: 'Maatje speelt lob, beide spelers rukken op naar het net. Repeat 10x. <strong>Niemand mag stil blijven staan na een lob.</strong>'
+      },
+    ],
+    recreant: [
+      {
+        name: 'Schuif-training met bal',
+        desc: 'Bal gaat cross-court van A naar B. Beide spelers per kant schuiven mee in dezelfde richting. <strong>Strakte touw vasthouden, geen gaten in midden.</strong>'
+      },
+      {
+        name: 'Oranje-zone vermijden',
+        desc: 'Speel 5 punten waarbij je nooit langer dan 2 seconden in de oranje zone mag staan. <strong>Of vooruit, of terug. Niet staan en gokken.</strong>'
+      },
+      {
+        name: 'Communicatie tijdens punten',
+        desc: 'Verbale signalen: "mijne", "jouwe", "lob", "kort". Speel 10 punten met expliciete communicatie. <strong>Stilte op de baan = verlies.</strong>'
+      },
+    ],
+    gevorderd: [
+      {
+        name: 'Patroon-spel afspraak',
+        desc: 'Vooraf afgesproken patroon: bv. globo-y-subir bij elke comfortabele bal. Speel 10 punten met dit patroon. <strong>Forceer ook als het niet optimaal lijkt.</strong>'
+      },
+      {
+        name: 'Poach trap setup',
+        desc: 'Net-speler beweegt cross-court om de retour te poachen, andere speler blijft. <strong>Train signalen tussen punten. Slecht uitgevoerd = openvallen.</strong>'
+      },
+      {
+        name: 'Defensieve schuif-snelheid',
+        desc: 'Maatje speelt 10 ballen waarbij jullie samen schuiven. Tijd elke schuif. <strong>Trager dan 1 seconde = je hebt een gat.</strong>'
+      },
+    ],
+    competitief: [
+      {
+        name: 'Pre-set patroon-spel sessie',
+        desc: 'Vooraf vier patronen kiezen die jullie gaan oefenen. Speel match-punten waarbij elk patroon minstens 3x gebruikt moet worden. <strong>Tactische dwang.</strong>'
+      },
+      {
+        name: 'Tegenstander-lezing',
+        desc: 'Maatje speelt 10 willekeurige ballen. Jij voorspelt hardop waar de volgende komt. <strong>Tel je hit-rate.</strong> Boven 70%? Je leest goed.'
+      },
+      {
+        name: 'Match-simulatie met video review',
+        desc: 'Film een set, analyseer achteraf positionering tussen punten. <strong>Coach-niveau training.</strong>'
+      },
+    ],
+  },
+  ritme: {
+    beginner: [
+      {
+        name: 'Lange rally\'s eindeloos',
+        desc: 'Speel rally\'s met regel: geen winners, alleen rally houden. Probeer 10 ballen, dan 15, dan 20. <strong>Geen punten, geen tellen.</strong>'
+      },
+      {
+        name: 'Spiegel-spel',
+        desc: 'Wat maatje doet, doe jij ook. Drive op drive, volley op volley, lob op lob. <strong>15 ballen.</strong>'
+      },
+      {
+        name: 'Tempo-controle',
+        desc: 'Eerst 5 minuten zo langzaam mogelijk. Daarna 5 minuten normaal. <strong>Voel het verschil in foutpercentage.</strong>'
+      },
+    ],
+    recreant: [
+      {
+        name: 'Geen winner-punten',
+        desc: 'Speel een set waarbij winners verboden zijn. Alle punten moeten via fout van de tegenstander. <strong>Geduld als wapen.</strong>'
+      },
+      {
+        name: 'Tempo wisselen tijdens rally',
+        desc: 'Speel een lange rally. Maatje verandert tempo, jij volgt. Daarna draaien. <strong>Bewust ritme-management.</strong>'
+      },
+      {
+        name: 'Match-feel met scoring',
+        desc: 'Speel echte games, tel score, ervaar de druk van match-punten. <strong>Verschillende sensatie dan trainen.</strong>'
+      },
+    ],
+    gevorderd: [
+      {
+        name: 'Ritme-wissel als wapen',
+        desc: 'Speel 5 punten met snelle aanval. Dan 5 punten met geduldig opbouwen. <strong>Tegenstander aan vragen welke ritme moeilijker te verdedigen was.</strong>'
+      },
+      {
+        name: 'Anti-tilt training',
+        desc: 'Maatje speelt expres een paar irritante ballen (gelukkertjes, snijballen). Train je reactie: blijven of opwarmen. <strong>Mentale weerbaarheid.</strong>'
+      },
+      {
+        name: 'Sets onder vermoeidheid',
+        desc: 'Speel 3 sets zonder pauze tussendoor. <strong>De laatste set is je werkelijke niveau.</strong>'
+      },
+    ],
+    competitief: [
+      {
+        name: 'Best-of-3 match simulatie',
+        desc: 'Speel een volledige best-of-3 met match-druk. <strong>Geen onderbrekingen, geen losse oefeningen. Pure wedstrijd.</strong>'
+      },
+      {
+        name: 'Tie-break stress test',
+        desc: 'Speel 5 tie-breaks achter elkaar tegen zelfde maatjes. <strong>Druk-bestendigheid.</strong>'
+      },
+      {
+        name: 'Recovery tussen punten',
+        desc: 'Train wat jullie tussen punten doen: communicatie, water, mentaal. 20 punten met expliciete recovery-protocol. <strong>Wat tussen punten gebeurt, beslist matches.</strong>'
+      },
+    ],
+  },
+};
+
+const WARMUPS = {
+  short: { name: 'Warm-up', duration: 5, drills: [
+    { name: 'Mini-rally vanaf service-T', desc: '2 minuten controle-rally zonder kracht, alleen techniek.' },
+    { name: 'Schaduw-volley en lob', desc: '1 minuut volley-bewegingen zonder bal, 1 minuut lob-bewegingen.' },
+  ]},
+  medium: { name: 'Warm-up', duration: 8, drills: [
+    { name: 'Mini-rally vanaf service-T', desc: '3 minuten controle-rally, geen winner-pogingen.' },
+    { name: 'Drive forehand en backhand', desc: '2 minuten drive vanaf de baseline op halve kracht.' },
+    { name: 'Volleys aan het net', desc: '2 minuten zachte volleys, focus op contactpunt.' },
+  ]},
+  long: { name: 'Warm-up', duration: 12, drills: [
+    { name: 'Mini-rally vanaf service-T', desc: '3 minuten controle-rally, opbouw van tempo.' },
+    { name: 'Drive forehand en backhand', desc: '3 minuten drive vanaf de baseline, links en rechts wisselen.' },
+    { name: 'Volleys aan het net', desc: '3 minuten zachte volleys, focus op contactpunt.' },
+    { name: 'Service en first volley', desc: '2 minuten opslag plus eerste volley, beide kanten.' },
+  ]},
+};
+
+const COOLDOWNS = {
+  short: { name: 'Cool-down', duration: 3, drills: [
+    { name: 'Vrije rally lage intensiteit', desc: '2 minuten ontspannen rally, body afkoelen.' },
+    { name: 'Stretching', desc: '1 minuut stretching: schouders, polsen, kuiten.' },
+  ]},
+  medium: { name: 'Cool-down', duration: 5, drills: [
+    { name: 'Vrije rally lage intensiteit', desc: '3 minuten ontspannen rally op halve snelheid.' },
+    { name: 'Reflectie met maatje', desc: '1 minuut: wat ging goed, wat niet, wat is volgende sessie focus.' },
+    { name: 'Stretching', desc: '1 minuut stretching: schouders, polsen, kuiten, hamstrings.' },
+  ]},
+};
+
+const MATCH_SITUATIONS = {
+  beginner: [
+    {
+      name: 'Mini-match best-of-3 games',
+      desc: 'Speel echte games met scoring. Focus op wat je deze sessie hebt geoefend, niet op winnen.'
+    },
+  ],
+  recreant: [
+    {
+      name: 'Themed mini-match',
+      desc: 'Speel 8 games. Regel: in elke game minstens drie keer het focus-thema gebruiken. Verbal commitment voor elke punt.'
+    },
+  ],
+  gevorderd: [
+    {
+      name: 'Patroon-match',
+      desc: 'Speel een set waarbij jullie vooraf afgesproken patroon minstens 5x moet voorkomen, ook als het tactisch niet optimaal lijkt.'
+    },
+  ],
+  competitief: [
+    {
+      name: 'Set met match-druk simulatie',
+      desc: 'Speel een set. Eerste 4 games met scoreboard tellen, laatste games met expliciete match-druk. Focus op proces, niet uitkomst.'
+    },
+  ],
+};
+
+const COACH_TIPS = {
+  bandeja: 'Vraag je maatje tussen punten: "hoe diep landt mijn bandeja?". Als hij geen idee heeft, ben je niet diep genoeg.',
+  volley: 'Tel hoeveel volleys je vandaag hard sloeg. Boven de 20%? Te veel. Pas dat aan in je volgende sessie.',
+  lob: 'Voor elke lob: scan eerst de voet-positie van tegenstanders. Geen scan = automatisch slechte lob.',
+  chiquita: 'Een chiquita die je vandaag goed slaat tussen twee handdoeken, raak je nooit in een match. Dat is normaal. Verwacht 30% match-output van wat je traint.',
+  glas: 'De drie-meter regel: altijd op 3m van het glas wanneer de bal richting glas gaat. Te dichtbij = geen swing-ruimte. Te ver = bal komt onder je rotatie-as.',
+  smash: 'Voor elke smash drie vragen: balans, gaten, beste optie? Twijfel ergens? Bandeja. Niet smash.',
+  positie: 'Onzichtbaar touw is geen poëzie, het is meetbaar. Vraag maatje na elke punt: "stond ik op 4 meter van jou?". Antwoord moet "ja" zijn.',
+  ritme: 'Een rally winnen is leuk, een set winnen is beter, een match winnen is best, een match domineren met ritme is het echte doel.',
+};
+
+const GOAL_LABELS = {
+  bandeja: 'Bandeja',
+  volley: 'Volley',
+  lob: 'Lob',
+  chiquita: 'Chiquita',
+  glas: 'Glas en bajada',
+  smash: 'Smash en aanval',
+  positie: 'Positiespel',
+  ritme: 'Ritme en match-feel',
+};
+
+const LEVEL_LABELS = {
+  beginner: 'Beginner',
+  recreant: 'Recreant',
+  gevorderd: 'Gevorderd',
+  competitief: 'Competitief',
+};
+
+/* =====================================================================
+   SESSION BUILDER
+===================================================================== */
+
+function buildSession(level, goal, players, durationMins) {
+  const phases = [];
+
+  // Warm-up sizing
+  let warmup;
+  if (durationMins <= 30) warmup = WARMUPS.short;
+  else if (durationMins <= 60) warmup = WARMUPS.medium;
+  else warmup = WARMUPS.long;
+
+  let cooldown;
+  if (durationMins <= 45) cooldown = COOLDOWNS.short;
+  else cooldown = COOLDOWNS.medium;
+
+  // How many drills based on duration
+  let drillCount;
+  if (durationMins <= 30) drillCount = 1;
+  else if (durationMins <= 45) drillCount = 2;
+  else if (durationMins <= 60) drillCount = 3;
+  else drillCount = 3;
+
+  // Match situation duration (the rest of the time)
+  const drillsTotal = drillCount * 8; // ~8min per drill
+  let matchMins = durationMins - warmup.duration - cooldown.duration - drillsTotal;
+  if (matchMins < 5) matchMins = 5;
+
+  phases.push(warmup);
+
+  // Drills phase
+  const drillTemplates = DRILLS[goal][level] || DRILLS[goal].recreant;
+  const selectedDrills = [];
+  // Pick drills, randomized but consistent for this build
+  const shuffled = [...drillTemplates].sort(() => Math.random() - 0.5);
+  for (let i = 0; i < drillCount && i < shuffled.length; i++) {
+    selectedDrills.push(shuffled[i]);
+  }
+  phases.push({
+    name: 'Focus-drills: ' + GOAL_LABELS[goal],
+    duration: drillsTotal,
+    drills: selectedDrills,
+    desc: 'De kern van de sessie. Voer elke drill grondig uit, niet op routine.'
+  });
+
+  // Match situation
+  const matchVariant = MATCH_SITUATIONS[level][0];
+  phases.push({
+    name: 'Match-situatie',
+    duration: matchMins,
+    drills: [matchVariant],
+    desc: 'Toepassen onder match-druk. Wat je net geoefend hebt moet zichtbaar zijn in het spel.'
+  });
+
+  phases.push(cooldown);
+
+  // Adapt for players setup
+  if (players === 'machine') {
+    phases.forEach(p => {
+      p.drills.forEach(d => {
+        d.desc = d.desc.replace(/Maatje/g, 'Ball-machine').replace(/maatje/g, 'ball-machine');
+      });
+    });
+  } else if (players === '3') {
+    phases.forEach(p => {
+      p.drills.forEach(d => {
+        if (d.desc.includes('Maatje') || d.desc.includes('maatje')) {
+          d.desc += ' <strong>Met drie spelers: roteer per ronde, één feeder en twee uitvoerders.</strong>';
+        }
+      });
+    });
+  } else if (players === '4') {
+    phases.forEach(p => {
+      p.drills.forEach(d => {
+        if (!d.desc.includes('Vier spelers')) {
+          d.desc += ' <strong>Met vier spelers: speel in match-formatie, twee per kant.</strong>';
+        }
+      });
+    });
+  }
+
+  return {
+    title: `Sessie: ${GOAL_LABELS[goal]}`,
+    meta: `${LEVEL_LABELS[level]} · ${durationMins} min · ${players === 'machine' ? 'met ball-machine' : players + ' spelers'}`,
+    phases,
+    coachTip: COACH_TIPS[goal],
+  };
+}
+
+/* =====================================================================
+   STATE & RENDER
+===================================================================== */
+
+const state = {
+  level: null,
+  goal: null,
+  players: null,
+  duration: null,
+  generated: null,
+};
+
+const app = document.getElementById('tg-app');
+
+function renderForm() {
+  const levelChips = LEVELS.map(l => `
+    <button class="tg-chip ${state.level === l.id ? 'active' : ''}" data-field="level" data-val="${l.id}">${l.label}</button>
+  `).join('');
+  const goalChips = GOALS.map(g => `
+    <button class="tg-chip ${state.goal === g.id ? 'active' : ''}" data-field="goal" data-val="${g.id}">${g.label}</button>
+  `).join('');
+  const playerChips = PLAYERS.map(p => `
+    <button class="tg-chip ${state.players === p.id ? 'active' : ''}" data-field="players" data-val="${p.id}">${p.label}</button>
+  `).join('');
+  const durationChips = DURATIONS.map(d => `
+    <button class="tg-chip ${state.duration === d.id ? 'active' : ''}" data-field="duration" data-val="${d.id}">${d.label}</button>
+  `).join('');
+
+  const allFilled = state.level && state.goal && state.players && state.duration;
+
+  app.innerHTML = `
+    <div class="tg-intro">
+      <div class="tg-eyebrow">Trainings-generator</div>
+      <h1>Een sessie<br>op maat.</h1>
+      <p class="tg-lede">Geef je niveau, doel, aantal spelers en tijd. Krijg een gestructureerde sessie met warm-up, drills, match-situatie en cool-down. Printbaar voor op de baan.</p>
+    </div>
+
+    <div class="tg-form">
+      <div>
+        <div class="tg-field-label">1. Niveau</div>
+        <div class="tg-field-q">Wat is je niveau?</div>
+        <div class="tg-chips">${levelChips}</div>
+      </div>
+      <div>
+        <div class="tg-field-label">2. Doel</div>
+        <div class="tg-field-q">Waar wil je deze sessie aan werken?</div>
+        <div class="tg-chips">${goalChips}</div>
+      </div>
+      <div>
+        <div class="tg-field-label">3. Spelers</div>
+        <div class="tg-field-q">Met hoeveel ben je?</div>
+        <div class="tg-chips">${playerChips}</div>
+      </div>
+      <div>
+        <div class="tg-field-label">4. Tijd</div>
+        <div class="tg-field-q">Hoeveel tijd heb je?</div>
+        <div class="tg-chips">${durationChips}</div>
+      </div>
+    </div>
+
+    <button class="tg-generate-btn" id="tg-generate" ${allFilled ? '' : 'disabled'}>
+      Genereer sessie <span>→</span>
+    </button>
+  `;
+
+  document.querySelectorAll('.tg-chip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const field = btn.dataset.field;
+      state[field] = btn.dataset.val;
+      renderForm();
+    });
+  });
+
+  if (allFilled) {
+    document.getElementById('tg-generate').addEventListener('click', () => {
+      const duration = DURATIONS.find(d => d.id === state.duration);
+      state.generated = buildSession(state.level, state.goal, state.players, duration.mins);
+      renderSession();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+}
+
+function renderSession() {
+  const s = state.generated;
+
+  const phasesHTML = s.phases.map(phase => {
+    const drillsHTML = phase.drills.map(d => `
+      <li class="tg-drill">
+        <div class="tg-drill-name">${d.name}</div>
+        <div class="tg-drill-detail">${d.desc}</div>
+      </li>
+    `).join('');
+
+    return `
+      <div class="tg-phase">
+        <div class="tg-phase-head">
+          <h3 class="tg-phase-title">${phase.name}</h3>
+          <div class="tg-phase-duration">${phase.duration} min</div>
+        </div>
+        ${phase.desc ? `<p class="tg-phase-desc">${phase.desc}</p>` : ''}
+        <ul class="tg-drill-list">${drillsHTML}</ul>
+      </div>
+    `;
+  }).join('');
+
+  app.innerHTML = `
+    <div class="tg-session-wrap">
+      <div class="tg-session-header">
+        <div>
+          <div class="tg-eyebrow">Jouw sessie</div>
+          <h1 class="tg-session-title">${s.title}</h1>
+          <div class="tg-session-meta">${s.meta}</div>
+        </div>
+        <div class="tg-session-actions">
+          <button class="tg-action-btn" id="tg-print">Print</button>
+          <button class="tg-action-btn" id="tg-back">Nieuwe</button>
+        </div>
+      </div>
+
+      ${phasesHTML}
+
+      <div class="tg-coach-tip">
+        <div class="tg-coach-tip-label">Coach-tip voor deze sessie</div>
+        <p>${s.coachTip}</p>
+      </div>
+
+      <div class="tg-regenerate">
+        <button class="tg-action-btn" id="tg-regenerate">Andere drills met zelfde input</button>
+        <button class="tg-action-btn" id="tg-restart">Begin opnieuw</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('tg-print').addEventListener('click', () => window.print());
+  document.getElementById('tg-back').addEventListener('click', () => {
+    state.generated = null;
+    renderForm();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  document.getElementById('tg-regenerate').addEventListener('click', () => {
+    const duration = DURATIONS.find(d => d.id === state.duration);
+    state.generated = buildSession(state.level, state.goal, state.players, duration.mins);
+    renderSession();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  document.getElementById('tg-restart').addEventListener('click', () => {
+    state.level = null;
+    state.goal = null;
+    state.players = null;
+    state.duration = null;
+    state.generated = null;
+    renderForm();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
+
+renderForm();
+</script>
+
+<script>if(location.search.includes('debug'))document.body.classList.add('debug-mode');</script>
+</body>
+</html>
