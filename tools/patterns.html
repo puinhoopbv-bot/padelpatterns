@@ -3571,7 +3571,47 @@ function animate() {
    ===================================================================== */
 
 renderStrategyList();
-loadStrategy('invisible-rope');
+
+// Deep-link support: map URL hash -> strategy ID
+// Hash names align with the slug-pages on PadelLab (bandeja, vibora, chiquita, etc.)
+const HASH_TO_STRATEGY = {
+  'bandeja': 'bandeja',
+  'vibora': 'vibora',
+  'víbora': 'vibora',
+  'chiquita': 'chiquita',
+  'bajada': 'bajada',
+  'smash': 'por-tres',
+  'globo': 'globo-take-net',
+  'lob': 'globo-take-net',
+  'globo-take-net': 'globo-take-net',
+  'volea': 'por-tres',
+  'rulo': 'por-tres',
+  'gancho': 'vibora',
+  'contralob': 'contralob',
+  'saque': 'serve-and-volley',
+  'serve-first-volley': 'serve-and-volley',
+  'dejada': 'chiquita',
+  'invisible-rope': 'invisible-rope',
+  'three-zones': 'three-zones',
+  'middle-ball': 'middle-ball',
+  'poach-trap': 'poach-trap',
+  'x3': 'por-tres',
+  'por-tres': 'por-tres',
+};
+
+function strategyFromHash() {
+  const raw = decodeURIComponent((location.hash || '').replace(/^#/, '').toLowerCase().trim());
+  if (!raw) return 'invisible-rope';
+  return HASH_TO_STRATEGY[raw] || 'invisible-rope';
+}
+
+loadStrategy(strategyFromHash());
+
+// React to hash changes (e.g. internal back-button navigation)
+window.addEventListener('hashchange', () => {
+  loadStrategy(strategyFromHash());
+});
+
 animate();
 
 // Hide loader after a moment
