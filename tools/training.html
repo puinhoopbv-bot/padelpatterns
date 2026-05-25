@@ -382,6 +382,7 @@
           <li><a href="/tools/spelregels">Spelregels Beslisser</a></li>
           <li><a href="/tools/niveau">Niveau Indicator</a></li>
           <li><a href="/tools/training">Trainings-generator</a></li>
+          <li><a href="/tools/match-coach">Match Coach</a></li>
         </ul>
       </div>
       <div>
@@ -1104,6 +1105,13 @@ const state = {
   duration: null,
   generated: null,
 };
+
+// Allow ?goal=bandeja in URL to preselect the focus
+const VALID_GOALS = ['bandeja', 'volley', 'lob', 'chiquita', 'glas', 'smash', 'positie', 'ritme'];
+const urlGoal = new URLSearchParams(location.search).get('goal');
+if (urlGoal && VALID_GOALS.includes(urlGoal)) {
+  state.goal = urlGoal;
+}
 
 const app = document.getElementById('tg-app');
 

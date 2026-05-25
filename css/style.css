@@ -844,6 +844,30 @@ body.has-bg-effects::before {
   background: var(--bg-card);
 }
 
+/* AI variant, the Match Coach tile, signals 'this one is special' */
+.tool-tile-ai {
+  border-color: rgba(212, 255, 0, 0.3);
+  background: linear-gradient(135deg, rgba(212, 255, 0, 0.05) 0%, var(--bg-card) 60%);
+  position: relative;
+  overflow: hidden;
+}
+.tool-tile-ai::before {
+  content: "";
+  position: absolute;
+  top: 0; right: 0;
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle at top right, rgba(212, 255, 0, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+.tool-tile-ai:hover {
+  border-color: var(--accent);
+  background: linear-gradient(135deg, rgba(212, 255, 0, 0.08) 0%, rgba(28, 36, 48, 0.85) 60%);
+}
+.tool-tile-ai .tool-tile-eyebrow {
+  color: var(--accent);
+}
+
 .tool-tile-eyebrow {
   font-family: var(--font-mono);
   font-size: 10px;

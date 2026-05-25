@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#050709" />
+
+  <title>Padel Match Coach, AI-analyse van je wedstrijd | PadelLab</title>
+  <meta name="description" content="Vertel over je padel-match en krijg een tactische AI-analyse. Wat ging fout, waar ligt het aan, en wat je nu zou moeten trainen. Onderscheidend padel-advies, niet generiek." />
+  <meta name="keywords" content="padel match analyse, padel coach AI, padel tactiek advies, padel wedstrijd evaluatie" />
+  <meta name="author" content="PadelLab" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="canonical" href="https://padelpatterns.com/tools/match-coach" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://padelpatterns.com/tools/match-coach" />
+  <meta property="og:title" content="Padel Match Coach, AI-analyse van je wedstrijd" />
+  <meta property="og:description" content="Vertel over je match. Krijg tactisch advies waarom het misging en wat te trainen." />
+  <meta property="og:image" content="https://padelpatterns.com/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="nl_NL" />
+  <meta property="og:site_name" content="PadelLab" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://padelpatterns.com/tools/match-coach" />
+  <meta name="twitter:title" content="Padel Match Coach, AI-analyse van je wedstrijd" />
+  <meta name="twitter:description" content="Vertel over je match. Krijg tactisch advies." />
+  <meta name="twitter:image" content="https://padelpatterns.com/og-image.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fraunces:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+
+  <style>
+    .mc-wrap {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 120px 32px 80px;
+      min-height: 70vh;
+    }
+    @media (max-width: 720px) { .mc-wrap { padding: 100px 18px 60px; } }
+
+    .mc-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .mc-ai-pill {
+      padding: 4px 10px;
+      background: rgba(212, 255, 0, 0.12);
+      border: 1px solid rgba(212, 255, 0, 0.3);
+      border-radius: 100px;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+    }
+
+    .mc-intro h1 {
+      font-family: var(--font-display);
+      font-size: clamp(48px, 8vw, 84px);
+      line-height: 0.95;
+      letter-spacing: 0.01em;
+      margin: 0 0 18px;
+      color: var(--text);
+    }
+    .mc-lede {
+      font-family: var(--font-body);
+      font-size: 20px;
+      line-height: 1.5;
+      color: var(--text-dim);
+      margin: 0 0 32px;
+      max-width: 640px;
+    }
+    .mc-meta {
+      font-family: var(--font-body);
+      color: var(--text-dim);
+      font-size: 14px;
+      margin: 0 0 32px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px 24px;
+    }
+    .mc-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .mc-meta span::before {
+      content: "→";
+      color: var(--accent);
+      font-family: var(--font-mono);
+    }
+
+    /* Form */
+    .mc-form {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+    .mc-field-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 6px;
+      display: block;
+    }
+    .mc-field-q {
+      font-family: var(--font-body);
+      font-size: 18px;
+      color: var(--text);
+      margin: 0 0 4px;
+    }
+    .mc-field-hint {
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: var(--text-faint);
+      font-style: italic;
+      margin: 0 0 12px;
+    }
+    .mc-input, .mc-textarea {
+      width: 100%;
+      padding: 14px 18px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 4px;
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.5;
+      transition: border-color 0.15s ease, background 0.15s ease;
+      box-sizing: border-box;
+    }
+    .mc-input:focus, .mc-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: rgba(212, 255, 0, 0.02);
+    }
+    .mc-textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    .mc-input::placeholder, .mc-textarea::placeholder {
+      color: var(--text-faint);
+      opacity: 0.7;
+    }
+
+    .mc-optional-toggle {
+      background: none;
+      border: none;
+      color: var(--accent);
+      font-family: var(--font-ui);
+      font-size: 14px;
+      cursor: pointer;
+      padding: 0;
+      margin-top: 4px;
+      text-align: left;
+      transition: opacity 0.15s ease;
+    }
+    .mc-optional-toggle:hover { opacity: 0.7; }
+    .mc-optional-fields { display: none; flex-direction: column; gap: 24px; }
+    .mc-optional-fields.open { display: flex; }
+
+    .mc-submit {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 32px;
+      background: var(--accent);
+      color: var(--bg-night);
+      font-family: var(--font-ui);
+      font-weight: 600;
+      font-size: 16px;
+      letter-spacing: 0.02em;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      align-self: flex-start;
+      margin-top: 8px;
+    }
+    .mc-submit:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(212, 255, 0, 0.25);
+    }
+    .mc-submit:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .mc-disclaimer {
+      font-family: var(--font-body);
+      font-size: 13px;
+      color: var(--text-faint);
+      line-height: 1.5;
+      margin-top: 20px;
+      max-width: 580px;
+    }
+
+    /* Loading state */
+    .mc-loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 60px 20px;
+      text-align: center;
+    }
+    .mc-loading-court {
+      width: 200px;
+      height: 100px;
+      position: relative;
+      margin-bottom: 32px;
+    }
+    .mc-loading-ball {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 12px var(--accent);
+      animation: mcRally 2s ease-in-out infinite;
+    }
+    @keyframes mcRally {
+      0%   { left: 0%;   top: 30%; }
+      25%  { left: 100%; top: 0%; }
+      50%  { left: 100%; top: 70%; }
+      75%  { left: 0%;   top: 100%; }
+      100% { left: 0%;   top: 30%; }
+    }
+    .mc-loading-text {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .mc-loading-sub {
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--text-dim);
+    }
+
+    /* Result */
+    .mc-result {
+      animation: mcEnter 0.5s cubic-bezier(.2,.8,.2,1) both;
+    }
+    @keyframes mcEnter {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .mc-result-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .mc-result-headline {
+      font-family: var(--font-display);
+      font-size: clamp(34px, 5.5vw, 56px);
+      line-height: 1.05;
+      letter-spacing: 0.01em;
+      margin: 0 0 24px;
+      color: var(--text);
+    }
+    .mc-result-summary {
+      font-family: var(--font-body);
+      font-size: 19px;
+      line-height: 1.6;
+      color: var(--text);
+      margin: 0 0 36px;
+      max-width: 680px;
+    }
+
+    .mc-section {
+      margin-bottom: 32px;
+      padding: 24px 28px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+    }
+    .mc-section-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 14px;
+    }
+    .mc-section-content {
+      font-family: var(--font-body);
+      font-size: 17px;
+      line-height: 1.55;
+      color: var(--text);
+    }
+
+    .mc-weakness {
+      border-left: 3px solid var(--accent-warm);
+      background: rgba(255, 107, 53, 0.06);
+    }
+    .mc-weakness .mc-section-label { color: var(--accent-warm); }
+
+    .mc-plan ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .mc-plan li {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-light);
+      font-family: var(--font-body);
+      font-size: 17px;
+      line-height: 1.5;
+      color: var(--text);
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .mc-plan li:last-child { border-bottom: none; }
+    .mc-plan li .mc-plan-num {
+      font-family: var(--font-mono);
+      color: var(--accent);
+      font-weight: 600;
+      flex-shrink: 0;
+      min-width: 24px;
+    }
+
+    .mc-next-drill {
+      background: linear-gradient(135deg, rgba(212, 255, 0, 0.10) 0%, rgba(212, 255, 0, 0.02) 100%);
+      border: 1px solid rgba(212, 255, 0, 0.3);
+    }
+    .mc-next-drill .mc-section-label {
+      color: var(--accent);
+    }
+    .mc-next-drill-focus {
+      font-family: var(--font-display);
+      font-size: 28px;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+      margin: 0 0 8px;
+      text-transform: capitalize;
+    }
+    .mc-next-drill-why {
+      font-family: var(--font-body);
+      font-size: 16px;
+      color: var(--text);
+      line-height: 1.5;
+      margin: 0 0 18px;
+    }
+
+    .mc-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 32px;
+    }
+    .mc-btn-primary, .mc-btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 22px;
+      font-family: var(--font-ui);
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.02em;
+      border-radius: 4px;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      transition: transform 0.15s ease;
+    }
+    .mc-btn-primary {
+      background: var(--accent);
+      color: var(--bg-night);
+    }
+    .mc-btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border-medium);
+    }
+    .mc-btn-primary:hover, .mc-btn-secondary:hover {
+      transform: translateY(-1px);
+    }
+
+    /* Trust footer below result, references PadelLab's other tools */
+    .mc-references {
+      margin-top: 40px;
+      padding: 20px 24px;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border-light);
+      border-radius: 4px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: var(--text-dim);
+      line-height: 1.55;
+    }
+    .mc-references-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 10px;
+    }
+    .mc-references a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .mc-references a:hover { text-decoration: underline; }
+
+    /* Error state */
+    .mc-error {
+      padding: 24px 28px;
+      background: rgba(255, 107, 53, 0.08);
+      border-left: 3px solid var(--accent-warm);
+      border-radius: 0 4px 4px 0;
+      font-family: var(--font-body);
+      font-size: 16px;
+      color: var(--text);
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+    .mc-error-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent-warm);
+      margin-bottom: 8px;
+    }
+
+    .mc-remaining {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: var(--text-faint);
+      text-transform: uppercase;
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body class="has-bg-effects">
+
+  <header class="site-header">
+    <a href="/" class="site-logo">
+      <div>
+        <div class="site-logo-mark">PADEL<span>LAB</span></div>
+        <div class="site-logo-tag">Tactische tools</div>
+      </div>
+    </a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" />
+    <label for="nav-toggle" class="nav-burger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </label>
+    <nav class="site-nav">
+      <a href="/tools/patterns" class="nav-link">Patterns 3D</a>
+      <a href="/slagen" class="nav-link">Slagen</a>
+      <a href="/tactiek" class="nav-link">Tactiek</a>
+      <a href="/tools/shot-decider" class="nav-link">Shot Decider</a>
+      <a href="/tools/racket-finder" class="nav-link">Racket Finder</a>
+      <a href="/over" class="nav-link">Over</a>
+    </nav>
+  </header>
+
+  <main class="mc-wrap" id="mc-app"></main>
+
+  <footer class="site-footer">
+    <div class="site-footer-grid">
+      <div class="site-footer-brand">
+        <div class="site-logo-mark">PADEL<span style="color: var(--accent);">LAB</span></div>
+        <p>Tactische tools voor de denkende padelspeler.</p>
+        <p style="font-size: 12px; color: var(--text-faint); margin-top: 12px;">
+          PadelLab gebruikt affiliate-links bij racket-aanbevelingen. Dat be&iuml;nvloedt onze rangschikkingen niet.
+        </p>
+      </div>
+      <div>
+        <h4>Leren</h4>
+        <ul>
+          <li><a href="/slagen">Alle slagen</a></li>
+          <li><a href="/tactiek">Tactiek</a></li>
+          <li><a href="/woordenboek">Padel-woordenboek</a></li>
+          <li><a href="/leren">Waar te beginnen</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Tools</h4>
+        <ul>
+          <li><a href="/tools/patterns">Patterns 3D</a></li>
+          <li><a href="/tools/shot-decider">Shot Decider</a></li>
+          <li><a href="/tools/racket-finder">Racket Finder</a></li>
+          <li><a href="/tools/spelregels">Spelregels Beslisser</a></li>
+          <li><a href="/tools/niveau">Niveau Indicator</a></li>
+          <li><a href="/tools/training">Trainings-generator</a></li>
+          <li><a href="/tools/match-coach">Match Coach</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Site</h4>
+        <ul>
+          <li><a href="/over">Over PadelLab</a></li>
+          <li><a href="/privacy">Privacy</a></li>
+          <li><a href="/disclaimer">Disclaimer</a></li>
+          <li><a href="mailto:hello@padelpatterns.com">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="site-footer-bottom">
+      <span>© 2026 PadelLab</span>
+    </div>
+  </footer>
+
+<script>
+const app = document.getElementById('mc-app');
+
+const state = {
+  screen: 'form',
+  form: {
+    setup: '',
+    opponents: '',
+    ourGame: '',
+    result: '',
+    lostBecause: '',
+    partnerNote: '',
+  },
+  result: null,
+  error: null,
+  remaining: null,
+};
+
+function renderForm() {
+  app.innerHTML = `
+    <div class="mc-intro">
+      <div class="mc-eyebrow">
+        <span>Match Coach</span>
+        <span class="mc-ai-pill">AI-aangedreven</span>
+      </div>
+      <h1>Wat ging er<br>echt mis?</h1>
+      <p class="mc-lede">Vertel over een wedstrijd. Krijg tactisch advies in plaats van vage troost. Wat misging, waar dat aan ligt, en wat je nu zou moeten trainen.</p>
+
+      <div class="mc-meta">
+        <span>1 á 2 minuten invullen</span>
+        <span>~15 seconden analyse</span>
+        <span>Geen account, geen e-mail</span>
+      </div>
+    </div>
+
+    <div class="mc-form">
+      <div>
+        <label class="mc-field-label" for="mc-setup">1. Opstelling</label>
+        <div class="mc-field-q">Wie speelden er en wat is het niveau?</div>
+        <div class="mc-field-hint">Bijvoorbeeld: "Ik (recreant, forehand-kant) en mijn vaste maatje (recreant, backhand-kant)."</div>
+        <textarea class="mc-textarea" id="mc-setup" rows="2" placeholder="Beschrijf jezelf en je partner..."></textarea>
+      </div>
+
+      <div>
+        <label class="mc-field-label" for="mc-opponents">2. Tegenstanders</label>
+        <div class="mc-field-q">Tegen wie speelden jullie?</div>
+        <div class="mc-field-hint">Bijvoorbeeld: "Twee gevorderden, sterk aan het net, beide rechtshandig."</div>
+        <textarea class="mc-textarea" id="mc-opponents" rows="2" placeholder="Wat type spelers waren ze..."></textarea>
+      </div>
+
+      <div>
+        <label class="mc-field-label" for="mc-our-game">3. Ons spel</label>
+        <div class="mc-field-q">Wat ging goed en wat probeerden jullie?</div>
+        <div class="mc-field-hint">Bijvoorbeeld: "Onze service-volley was solide, we probeerden ze achterin te houden met lobs."</div>
+        <textarea class="mc-textarea" id="mc-our-game" rows="3" placeholder="Wat was jullie tactiek..."></textarea>
+      </div>
+
+      <div>
+        <label class="mc-field-label" for="mc-result">4. Uitslag</label>
+        <div class="mc-field-q">Wat was de uitkomst?</div>
+        <div class="mc-field-hint">Bijvoorbeeld: "Verloren 6-3 7-5. Eerste set kansloos, tweede set kwamen we beter in maar hielden niet vol."</div>
+        <textarea class="mc-textarea" id="mc-result" rows="2" placeholder="Score plus context..."></textarea>
+      </div>
+
+      <button type="button" class="mc-optional-toggle" id="mc-toggle-opt">+ Meer detail toevoegen (optioneel)</button>
+
+      <div class="mc-optional-fields" id="mc-opt">
+        <div>
+          <label class="mc-field-label" for="mc-lost">5. Wat misging</label>
+          <div class="mc-field-q">Welke patronen kostten jullie punten?</div>
+          <div class="mc-field-hint">Bijvoorbeeld: "Onze bandeja was te kort, ze pakten elke korte bal aan."</div>
+          <textarea class="mc-textarea" id="mc-lost" rows="2" placeholder="Concrete patronen die misgingen..."></textarea>
+        </div>
+        <div>
+          <label class="mc-field-label" for="mc-partner">6. Samenwerking</label>
+          <div class="mc-field-q">Hoe was de communicatie met je partner?</div>
+          <div class="mc-field-hint">Bijvoorbeeld: "Goede vibe, maar we riepen niet wie de middenbal zou pakken."</div>
+          <textarea class="mc-textarea" id="mc-partner" rows="2" placeholder="Hoe ging het tussen jullie..."></textarea>
+        </div>
+      </div>
+
+      <button type="button" class="mc-submit" id="mc-submit">
+        Analyseer mijn match <span>→</span>
+      </button>
+
+      <p class="mc-disclaimer">
+        De Match Coach is een AI-tool. De analyse is gebaseerd op padel-tactische principes, maar zonder jou daadwerkelijk te zien spelen blijft het inschatting op basis van wat je beschrijft. Hoe specifieker je input, hoe scherper het advies. Maximaal 10 analyses per dag per IP.
+      </p>
+    </div>
+  `;
+
+  // Restore form values
+  ['setup', 'opponents', 'ourGame', 'result', 'lostBecause', 'partnerNote'].forEach(field => {
+    const elId = {
+      setup: 'mc-setup', opponents: 'mc-opponents', ourGame: 'mc-our-game',
+      result: 'mc-result', lostBecause: 'mc-lost', partnerNote: 'mc-partner'
+    }[field];
+    const el = document.getElementById(elId);
+    if (el && state.form[field]) el.value = state.form[field];
+  });
+
+  // Optional toggle
+  document.getElementById('mc-toggle-opt').addEventListener('click', () => {
+    const opt = document.getElementById('mc-opt');
+    const toggle = document.getElementById('mc-toggle-opt');
+    if (opt.classList.contains('open')) {
+      opt.classList.remove('open');
+      toggle.textContent = '+ Meer detail toevoegen (optioneel)';
+    } else {
+      opt.classList.add('open');
+      toggle.textContent = '- Minder detail';
+    }
+  });
+
+  // Auto-open optional if filled
+  if (state.form.lostBecause || state.form.partnerNote) {
+    document.getElementById('mc-opt').classList.add('open');
+    document.getElementById('mc-toggle-opt').textContent = '- Minder detail';
+  }
+
+  // Submit
+  document.getElementById('mc-submit').addEventListener('click', submitForm);
+}
+
+async function submitForm() {
+  // Collect input
+  state.form.setup = document.getElementById('mc-setup').value.trim();
+  state.form.opponents = document.getElementById('mc-opponents').value.trim();
+  state.form.ourGame = document.getElementById('mc-our-game').value.trim();
+  state.form.result = document.getElementById('mc-result').value.trim();
+  state.form.lostBecause = document.getElementById('mc-lost').value.trim();
+  state.form.partnerNote = document.getElementById('mc-partner').value.trim();
+
+  // Validate
+  const required = ['setup', 'opponents', 'ourGame', 'result'];
+  for (const f of required) {
+    if (!state.form[f] || state.form[f].length < 3) {
+      state.error = `Vul minstens de eerste vier velden in. "${f}" is nog leeg of te kort.`;
+      renderError();
+      return;
+    }
+  }
+
+  state.screen = 'loading';
+  renderLoading();
+
+  try {
+    const res = await fetch('/api/match-coach', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(state.form),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      state.error = data.message || 'De analyse kon niet worden uitgevoerd. Probeer het later opnieuw.';
+      state.screen = 'form';
+      renderForm();
+      renderError();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    state.result = data.analysis;
+    state.remaining = data.remaining;
+    state.screen = 'result';
+    state.error = null;
+    renderResult();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  } catch (err) {
+    console.error(err);
+    state.error = 'Geen verbinding met de coach. Check je internet en probeer opnieuw.';
+    state.screen = 'form';
+    renderForm();
+    renderError();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+function renderError() {
+  const errEl = document.createElement('div');
+  errEl.className = 'mc-error';
+  errEl.innerHTML = `
+    <div class="mc-error-label">Er ging iets mis</div>
+    <div>${state.error}</div>
+  `;
+  app.insertBefore(errEl, app.firstChild);
+}
+
+function renderLoading() {
+  const messages = [
+    { main: 'Match wordt geanalyseerd', sub: 'Tactische patronen identificeren...' },
+    { main: 'Match wordt geanalyseerd', sub: 'Zwakke punten in kaart brengen...' },
+    { main: 'Match wordt geanalyseerd', sub: 'Trainingsplan formuleren...' },
+  ];
+  let i = 0;
+  app.innerHTML = `
+    <div class="mc-loading">
+      <div class="mc-loading-court">
+        <svg width="200" height="100" viewBox="0 0 200 100" style="position: absolute;">
+          <rect x="2" y="2" width="196" height="96" fill="none" stroke="rgba(212,255,0,0.25)" stroke-width="1.5" rx="2"/>
+          <line x1="100" y1="0" x2="100" y2="100" stroke="rgba(212,255,0,0.4)" stroke-width="1.5"/>
+          <line x1="50" y1="2" x2="50" y2="98" stroke="rgba(212,255,0,0.15)" stroke-width="1" stroke-dasharray="3 4"/>
+          <line x1="150" y1="2" x2="150" y2="98" stroke="rgba(212,255,0,0.15)" stroke-width="1" stroke-dasharray="3 4"/>
+        </svg>
+        <div class="mc-loading-ball"></div>
+      </div>
+      <div class="mc-loading-text" id="mc-load-main">${messages[0].main}</div>
+      <div class="mc-loading-sub" id="mc-load-sub">${messages[0].sub}</div>
+    </div>
+  `;
+  // Cycle through messages
+  const interval = setInterval(() => {
+    i = (i + 1) % messages.length;
+    const mainEl = document.getElementById('mc-load-main');
+    const subEl = document.getElementById('mc-load-sub');
+    if (mainEl && subEl) {
+      mainEl.textContent = messages[i].main;
+      subEl.textContent = messages[i].sub;
+    } else {
+      clearInterval(interval);
+    }
+  }, 2200);
+}
+
+function renderResult() {
+  const r = state.result;
+  const planItems = r.plan.map((p, i) => `
+    <li><span class="mc-plan-num">${String(i + 1).padStart(2, '0')}</span><span>${escapeHtml(p)}</span></li>
+  `).join('');
+
+  // Map AI's nextDrill.focus to training-generator's goal IDs
+  const goalMap = {
+    'bandeja': 'bandeja',
+    'volley': 'volley',
+    'volea': 'volley',
+    'lob': 'lob',
+    'globo': 'lob',
+    'chiquita': 'chiquita',
+    'glas': 'glas',
+    'bajada': 'glas',
+    'smash': 'smash',
+    'aanval': 'smash',
+    'positie': 'positie',
+    'positiespel': 'positie',
+    'ritme': 'ritme',
+    'match-feel': 'ritme',
+  };
+  const focusLower = (r.nextDrill?.focus || '').toLowerCase();
+  let trainingGoal = 'positie';
+  for (const key of Object.keys(goalMap)) {
+    if (focusLower.includes(key)) {
+      trainingGoal = goalMap[key];
+      break;
+    }
+  }
+
+  app.innerHTML = `
+    <div class="mc-result">
+      <div class="mc-result-eyebrow">Match-analyse</div>
+      <h1 class="mc-result-headline">${escapeHtml(r.headline)}</h1>
+      <p class="mc-result-summary">${escapeHtml(r.summary)}</p>
+
+      <div class="mc-section mc-weakness">
+        <div class="mc-section-label">Het kernpunt</div>
+        <div class="mc-section-content">${escapeHtml(r.weakness)}</div>
+      </div>
+
+      <div class="mc-section mc-plan">
+        <div class="mc-section-label">Wat te doen, in volgorde</div>
+        <ul>${planItems}</ul>
+      </div>
+
+      ${r.nextDrill ? `
+      <div class="mc-section mc-next-drill">
+        <div class="mc-section-label">Train hier verder</div>
+        <h3 class="mc-next-drill-focus">${escapeHtml(r.nextDrill.focus)}</h3>
+        <p class="mc-next-drill-why">${escapeHtml(r.nextDrill.why || '')}</p>
+        <a href="/tools/training?goal=${trainingGoal}" class="mc-btn-primary">
+          Maak een trainingssessie <span>→</span>
+        </a>
+      </div>
+      ` : ''}
+
+      <div class="mc-actions">
+        <button class="mc-btn-secondary" id="mc-new">Nieuwe match analyseren</button>
+        <button class="mc-btn-secondary" id="mc-share">Kopieer als tekst</button>
+      </div>
+
+      <div class="mc-references">
+        <div class="mc-references-label">Hoe deze analyse tot stand kwam</div>
+        <p>De Match Coach gebruikt AI om jouw beschrijving te analyseren op basis van padel-tactische principes. Voor diepere uitleg over concepten in deze analyse:
+          <a href="/tactiek">algemene tactiek</a>,
+          <a href="/slagen">alle slagen</a>,
+          <a href="/padel-posities">posities</a>,
+          <a href="/padel-tactiek-gevorderden">tactiek voor gevorderden</a>.
+        </p>
+      </div>
+
+      ${state.remaining != null ? `<div class="mc-remaining">Nog ${state.remaining} analyses vandaag</div>` : ''}
+    </div>
+  `;
+
+  document.getElementById('mc-new').addEventListener('click', () => {
+    state.screen = 'form';
+    state.result = null;
+    state.error = null;
+    // Keep form values so user can iterate
+    renderForm();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  document.getElementById('mc-share').addEventListener('click', () => {
+    const text = formatAsText(r);
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('mc-share');
+      const orig = btn.textContent;
+      btn.textContent = 'Gekopieerd!';
+      setTimeout(() => { btn.textContent = orig; }, 1500);
+    });
+  });
+}
+
+function formatAsText(r) {
+  const lines = [
+    `MATCH ANALYSE — PadelLab`,
+    ``,
+    r.headline,
+    ``,
+    r.summary,
+    ``,
+    `KERNPUNT:`,
+    r.weakness,
+    ``,
+    `PLAN:`,
+    ...r.plan.map((p, i) => `${i + 1}. ${p}`),
+    ``,
+  ];
+  if (r.nextDrill) {
+    lines.push(`TRAINEN: ${r.nextDrill.focus}`);
+    lines.push(r.nextDrill.why || '');
+  }
+  lines.push('');
+  lines.push('https://padelpatterns.com/tools/match-coach');
+  return lines.join('\n');
+}
+
+function escapeHtml(s) {
+  if (!s) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+renderForm();
+</script>
+
+<script>if(location.search.includes('debug'))document.body.classList.add('debug-mode');</script>
+</body>
+</html>
