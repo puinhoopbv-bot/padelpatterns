@@ -182,8 +182,8 @@ body.has-bg-effects::before {
    ===================================================================== */
 
 .site-footer {
-  margin-top: 80px;
-  padding: 48px 32px 32px;
+  margin-top: 0;
+  padding: 56px 32px 24px;
   border-top: 1px solid var(--border-light);
   font-family: var(--font-ui);
   font-size: 13px;
@@ -193,7 +193,7 @@ body.has-bg-effects::before {
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
   gap: 48px;
 }
 .site-footer-brand .site-logo-mark { font-size: 22px; }
@@ -216,8 +216,8 @@ body.has-bg-effects::before {
 .site-footer a:hover { color: var(--accent); }
 .site-footer-bottom {
   max-width: 1200px;
-  margin: 32px auto 0;
-  padding-top: 24px;
+  margin: 24px auto 0;
+  padding-top: 16px;
   border-top: 1px solid var(--border-light);
   display: flex;
   justify-content: space-between;
