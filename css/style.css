@@ -855,9 +855,10 @@ body.has-bg-effects::before {
 }
 
 /* =====================================================================
-   VERSION MARKER (for cache verification during dev)
+   VERSION MARKER (hidden in production, visible via ?debug query param)
    ===================================================================== */
 .version-marker {
+  display: none;
   position: fixed;
   bottom: 4px; left: 8px;
   z-index: 99;
@@ -868,6 +869,7 @@ body.has-bg-effects::before {
   letter-spacing: 0.1em;
   pointer-events: none;
 }
+body.debug-mode .version-marker { display: block; }
 
 /* =====================================================================
    ARTICLE PAGES — slag/tactiek/hub content pages
