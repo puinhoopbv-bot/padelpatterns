@@ -679,7 +679,9 @@ async function submitForm() {
     const data = await res.json();
 
     if (!res.ok) {
-      state.error = data.message || 'De analyse kon niet worden uitgevoerd. Probeer het later opnieuw.';
+      // Show the actual server-side error so we can debug what went wrong
+      const debugInfo = data.error ? ` [${data.error}]` : ` [HTTP ${res.status}]`;
+      state.error = (data.message || 'De analyse kon niet worden uitgevoerd. Probeer het later opnieuw.') + debugInfo;
       state.screen = 'form';
       renderForm();
       renderError();
