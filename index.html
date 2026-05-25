@@ -357,7 +357,8 @@
         <div class="rally-band-live">Live</div>
       </div>
 
-      <svg class="rally-court" viewBox="0 0 1200 320" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" aria-label="Padel-baan met statistieken">
+      <!-- DESKTOP SVG: horizontale baan, zichtbaar op desktop -->
+      <svg class="rally-court rally-court-desktop" viewBox="0 0 1200 320" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" aria-label="Padel-baan met statistieken">
         <defs>
           <filter id="rallyBallGlow" x="-200%" y="-200%" width="500%" height="500%">
             <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
@@ -409,7 +410,7 @@
         <!-- Impact flash rings -->
         <circle class="rally-flash rally-flash-1" cx="215" cy="100" r="0" fill="none" stroke="#d4ff00" stroke-width="2.5"/>
         <circle class="rally-flash rally-flash-2" cx="985" cy="100" r="0" fill="none" stroke="#d4ff00" stroke-width="2.5"/>
-        <circle class="rally-flash rally-flash-3" cx="475" cy="220" r="0" fill="none" stroke="#d4ff00" stroke-width="2.5"/>
+        <circle class="rally-flash rally-flash-3" cx="475" cy="220" r="0" fill="none" stroke="#ff6b35" stroke-width="2.5"/>
         <circle class="rally-flash rally-flash-4" cx="725" cy="220" r="0" fill="none" stroke="#d4ff00" stroke-width="2.5"/>
 
         <!-- Stat values on court -->
@@ -423,7 +424,7 @@
             <text x="985" y="128" font-size="10" fill="#a0a8b3" font-family="JetBrains Mono, monospace" letter-spacing="0.22em">RALLY-PATRONEN</text>
           </g>
           <g class="rally-stat rally-stat-3">
-            <text x="475" y="212" font-size="58" fill="#d4ff00" letter-spacing="0.02em" style="text-shadow: 0 0 20px rgba(212,255,0,0.4);">&#x20AC;0</text>
+            <text x="475" y="212" font-size="58" fill="#ff6b35" letter-spacing="0.02em" style="text-shadow: 0 0 20px rgba(255,107,53,0.5);">&#x20AC;0</text>
             <text x="475" y="248" font-size="10" fill="#a0a8b3" font-family="JetBrains Mono, monospace" letter-spacing="0.22em">GEEN ABONNEMENT</text>
           </g>
           <g class="rally-stat rally-stat-4">
@@ -469,6 +470,123 @@
             keyTimes="0; 0.25; 0.5; 0.75; 1"
             keySplines="0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1"
             path="M 215 100 Q 600 30 985 100 Q 730 165 475 220 Q 600 235 725 220 Q 470 165 215 100"/>
+        </circle>
+      </svg>
+
+      <!-- MOBILE SVG: verticale portrait baan, zichtbaar op smalle schermen -->
+      <svg class="rally-court rally-court-mobile" viewBox="0 0 320 600" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" aria-label="Padel-baan met statistieken">
+        <defs>
+          <filter id="rallyBallGlowM" x="-200%" y="-200%" width="500%" height="500%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
+            <feMerge>
+              <feMergeNode in="blur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+          <radialGradient id="rallyZoneGlowM" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#d4ff00" stop-opacity="0.18"/>
+            <stop offset="60%" stop-color="#d4ff00" stop-opacity="0.04"/>
+            <stop offset="100%" stop-color="#d4ff00" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="rallyCourtGradM" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#1e6091" stop-opacity="0.20"/>
+            <stop offset="100%" stop-color="#1e6091" stop-opacity="0.06"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Portrait court: 240w x 520h centered in 320x600 viewBox -->
+        <rect x="40" y="40" width="240" height="520" fill="url(#rallyCourtGradM)" rx="2"/>
+        <rect x="40" y="40" width="240" height="520" fill="none" stroke="#d4ff00" stroke-width="1.5" stroke-opacity="0.30" rx="2"/>
+        <!-- Net horizontal in the middle (y=300) -->
+        <line x1="20" y1="300" x2="300" y2="300" stroke="#d4ff00" stroke-width="2" stroke-opacity="0.5"/>
+        <circle cx="20" cy="300" r="4" fill="#d4ff00" fill-opacity="0.8"/>
+        <circle cx="300" cy="300" r="4" fill="#d4ff00" fill-opacity="0.8"/>
+        <!-- Service lines horizontal -->
+        <line x1="40" y1="180" x2="280" y2="180" stroke="#d4ff00" stroke-width="1" stroke-opacity="0.18" stroke-dasharray="4 6"/>
+        <line x1="40" y1="420" x2="280" y2="420" stroke="#d4ff00" stroke-width="1" stroke-opacity="0.18" stroke-dasharray="4 6"/>
+        <line x1="160" y1="180" x2="160" y2="300" stroke="#d4ff00" stroke-width="0.8" stroke-opacity="0.15"/>
+        <line x1="160" y1="300" x2="160" y2="420" stroke="#d4ff00" stroke-width="0.8" stroke-opacity="0.15"/>
+
+        <!-- Zone glows: 4 quadrants -->
+        <circle cx="105" cy="115" r="55" fill="url(#rallyZoneGlowM)"/>
+        <circle cx="215" cy="115" r="55" fill="url(#rallyZoneGlowM)"/>
+        <circle cx="105" cy="485" r="55" fill="url(#rallyZoneGlowM)"/>
+        <circle cx="215" cy="485" r="55" fill="url(#rallyZoneGlowM)"/>
+
+        <!-- Target rings -->
+        <g stroke="#d4ff00" fill="none">
+          <circle cx="105" cy="115" r="28" stroke-width="0.8" stroke-opacity="0.25" stroke-dasharray="2 3"/>
+          <circle cx="215" cy="115" r="28" stroke-width="0.8" stroke-opacity="0.25" stroke-dasharray="2 3"/>
+          <circle cx="105" cy="485" r="28" stroke-width="0.8" stroke-opacity="0.25" stroke-dasharray="2 3"/>
+          <circle cx="215" cy="485" r="28" stroke-width="0.8" stroke-opacity="0.25" stroke-dasharray="2 3"/>
+        </g>
+
+        <!-- Impact flash rings -->
+        <circle class="rally-flash-m rally-flash-m1" cx="105" cy="115" r="0" fill="none" stroke="#d4ff00" stroke-width="2.5"/>
+        <circle class="rally-flash-m rally-flash-m2" cx="215" cy="115" r="0" fill="none" stroke="#d4ff00" stroke-width="2.5"/>
+        <circle class="rally-flash-m rally-flash-m3" cx="105" cy="485" r="0" fill="none" stroke="#ff6b35" stroke-width="2.5"/>
+        <circle class="rally-flash-m rally-flash-m4" cx="215" cy="485" r="0" fill="none" stroke="#d4ff00" stroke-width="2.5"/>
+
+        <!-- Stat numbers and labels, mobile-friendly larger sizes -->
+        <g font-family="Bebas Neue, sans-serif" text-anchor="middle">
+          <g class="rally-stat-m rally-stat-m1">
+            <text x="105" y="105" font-size="56" fill="#d4ff00" letter-spacing="0.02em" style="text-shadow: 0 0 20px rgba(212,255,0,0.4);">7</text>
+          </g>
+          <g class="rally-stat-m rally-stat-m2">
+            <text x="215" y="105" font-size="56" fill="#d4ff00" letter-spacing="0.02em" style="text-shadow: 0 0 20px rgba(212,255,0,0.4);">12</text>
+          </g>
+          <g class="rally-stat-m rally-stat-m3">
+            <text x="105" y="478" font-size="54" fill="#ff6b35" letter-spacing="0.02em" style="text-shadow: 0 0 20px rgba(255,107,53,0.5);">&#x20AC;0</text>
+          </g>
+          <g class="rally-stat-m rally-stat-m4">
+            <text x="215" y="485" font-size="62" fill="#d4ff00" letter-spacing="0.02em" style="text-shadow: 0 0 20px rgba(212,255,0,0.4);">&#x221E;</text>
+          </g>
+        </g>
+        <!-- Labels positioned far from stat centers to avoid overlap -->
+        <g font-family="JetBrains Mono, monospace" fill="#a0a8b3" font-size="8" letter-spacing="0.18em">
+          <text x="105" y="160" text-anchor="middle">TOOLS</text>
+          <text x="215" y="160" text-anchor="middle">PATRONEN</text>
+          <text x="105" y="540" text-anchor="middle">GRATIS</text>
+          <text x="215" y="540" text-anchor="middle">ONBEPERKT</text>
+        </g>
+
+        <!-- Ghost flight paths -->
+        <g stroke="#d4ff00" fill="none" stroke-linecap="round" stroke-opacity="0.10">
+          <path d="M 105 115 Q 160 80 215 115" stroke-width="1.5"/>
+          <path d="M 215 115 Q 280 300 215 485" stroke-width="1.5"/>
+          <path d="M 215 485 Q 160 520 105 485" stroke-width="1.5"/>
+          <path d="M 105 485 Q 40 300 105 115" stroke-width="1.5"/>
+        </g>
+
+        <!-- BALL: outer halo -->
+        <circle r="14" fill="#d4ff00" fill-opacity="0.20" class="rally-ball-m">
+          <animateMotion
+            dur="8s"
+            repeatCount="indefinite"
+            calcMode="spline"
+            keyTimes="0; 0.25; 0.5; 0.75; 1"
+            keySplines="0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1"
+            path="M 105 115 Q 160 80 215 115 Q 280 300 215 485 Q 160 520 105 485 Q 40 300 105 115"/>
+        </circle>
+        <!-- BALL: main body -->
+        <circle r="6" fill="#d4ff00" filter="url(#rallyBallGlowM)" class="rally-ball-m">
+          <animateMotion
+            dur="8s"
+            repeatCount="indefinite"
+            calcMode="spline"
+            keyTimes="0; 0.25; 0.5; 0.75; 1"
+            keySplines="0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1"
+            path="M 105 115 Q 160 80 215 115 Q 280 300 215 485 Q 160 520 105 485 Q 40 300 105 115"/>
+        </circle>
+        <!-- BALL: white core -->
+        <circle r="2.5" fill="#ffffff" class="rally-ball-m">
+          <animateMotion
+            dur="8s"
+            repeatCount="indefinite"
+            calcMode="spline"
+            keyTimes="0; 0.25; 0.5; 0.75; 1"
+            keySplines="0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1"
+            path="M 105 115 Q 160 80 215 115 Q 280 300 215 485 Q 160 520 105 485 Q 40 300 105 115"/>
         </circle>
       </svg>
     </div>

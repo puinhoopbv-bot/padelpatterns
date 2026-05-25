@@ -524,9 +524,10 @@ body.has-bg-effects::before {
   height: auto;
   max-height: 360px;
 }
+.rally-court-mobile { display: none; }
 
 /* Impact flash rings, expand outward when ball lands */
-.rally-flash { opacity: 0; }
+.rally-flash, .rally-flash-m { opacity: 0; }
 @keyframes rallyImpact {
   0%   { opacity: 0; r: 6;  stroke-opacity: 1;   stroke-width: 3; }
   5%   { opacity: 1; r: 14; stroke-opacity: 1; }
@@ -538,6 +539,10 @@ body.has-bg-effects::before {
 .rally-flash-2 { animation: rallyImpact 8s linear infinite; animation-delay: 2s; }
 .rally-flash-3 { animation: rallyImpact 8s linear infinite; animation-delay: 4s; }
 .rally-flash-4 { animation: rallyImpact 8s linear infinite; animation-delay: 6s; }
+.rally-flash-m1 { animation: rallyImpact 8s linear infinite; animation-delay: 0s; }
+.rally-flash-m2 { animation: rallyImpact 8s linear infinite; animation-delay: 2s; }
+.rally-flash-m3 { animation: rallyImpact 8s linear infinite; animation-delay: 4s; }
+.rally-flash-m4 { animation: rallyImpact 8s linear infinite; animation-delay: 6s; }
 
 /* Stat pulse, briefly enlarge + brighten when ball arrives */
 @keyframes rallyStatPulse {
@@ -545,16 +550,20 @@ body.has-bg-effects::before {
   2%      { transform: scale(1.08); filter: brightness(1.4); }
   12%     { transform: scale(1);    filter: brightness(1); }
 }
-.rally-stat { transform-box: fill-box; }
+.rally-stat, .rally-stat-m { transform-box: fill-box; }
 .rally-stat-1 { animation: rallyStatPulse 8s linear infinite; animation-delay: 0s; transform-origin: 215px 100px; }
 .rally-stat-2 { animation: rallyStatPulse 8s linear infinite; animation-delay: 2s; transform-origin: 985px 100px; }
 .rally-stat-3 { animation: rallyStatPulse 8s linear infinite; animation-delay: 4s; transform-origin: 475px 220px; }
 .rally-stat-4 { animation: rallyStatPulse 8s linear infinite; animation-delay: 6s; transform-origin: 725px 220px; }
+.rally-stat-m1 { animation: rallyStatPulse 8s linear infinite; animation-delay: 0s; transform-origin: 105px 115px; }
+.rally-stat-m2 { animation: rallyStatPulse 8s linear infinite; animation-delay: 2s; transform-origin: 215px 115px; }
+.rally-stat-m3 { animation: rallyStatPulse 8s linear infinite; animation-delay: 4s; transform-origin: 215px 485px; }
+.rally-stat-m4 { animation: rallyStatPulse 8s linear infinite; animation-delay: 6s; transform-origin: 105px 485px; }
 
 /* Accessibility: respect reduced-motion */
 @media (prefers-reduced-motion: reduce) {
-  .rally-ball { display: none; }
-  .rally-flash, .rally-stat, .rally-band-live::before {
+  .rally-ball, .rally-ball-m { display: none; }
+  .rally-flash, .rally-flash-m, .rally-stat, .rally-stat-m, .rally-band-live::before {
     animation: none !important;
   }
 }
@@ -568,9 +577,16 @@ body.has-bg-effects::before {
   .rally-band-head { margin-bottom: 18px; }
   .rally-band-label { font-size: 10px; letter-spacing: 0.18em; }
   .rally-band-live  { font-size: 9px;  letter-spacing: 0.18em; }
-  .rally-court { max-height: 320px; min-height: 220px; }
-  /* On mobile the labels under the big numbers are too small to read.
-     They're decorative on mobile, the numbers and the animation are the message. */
+  /* Switch from horizontal desktop court to portrait mobile court */
+  .rally-court-desktop { display: none; }
+  .rally-court-mobile  {
+    display: block;
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto;
+    max-height: none;
+    height: auto;
+  }
 }
 
 /* =====================================================================
@@ -844,10 +860,12 @@ body.has-bg-effects::before {
   background: var(--bg-card);
 }
 
-/* AI variant, the Match Coach tile, signals 'this one is special' */
+/* AI variant, the Match Coach tile, signals 'this one is special'.
+   Uses warm-orange as the secondary accent to distinguish from the
+   six standard (lime) tools — visual signal: "this one is different". */
 .tool-tile-ai {
-  border-color: rgba(212, 255, 0, 0.3);
-  background: linear-gradient(135deg, rgba(212, 255, 0, 0.05) 0%, var(--bg-card) 60%);
+  border-color: rgba(255, 107, 53, 0.35);
+  background: linear-gradient(135deg, rgba(255, 107, 53, 0.06) 0%, var(--bg-card) 60%);
   position: relative;
   overflow: hidden;
 }
@@ -857,15 +875,21 @@ body.has-bg-effects::before {
   top: 0; right: 0;
   width: 120px;
   height: 120px;
-  background: radial-gradient(circle at top right, rgba(212, 255, 0, 0.15) 0%, transparent 70%);
+  background: radial-gradient(circle at top right, rgba(255, 107, 53, 0.18) 0%, transparent 70%);
   pointer-events: none;
 }
 .tool-tile-ai:hover {
-  border-color: var(--accent);
-  background: linear-gradient(135deg, rgba(212, 255, 0, 0.08) 0%, rgba(28, 36, 48, 0.85) 60%);
+  border-color: var(--accent-warm);
+  background: linear-gradient(135deg, rgba(255, 107, 53, 0.10) 0%, rgba(28, 36, 48, 0.85) 60%);
 }
 .tool-tile-ai .tool-tile-eyebrow {
-  color: var(--accent);
+  color: var(--accent-warm);
+}
+.tool-tile-ai .tool-tile-eyebrow .dot {
+  background: var(--accent-warm);
+}
+.tool-tile-ai .tool-tile-arrow {
+  color: var(--accent-warm);
 }
 
 .tool-tile-eyebrow {
@@ -920,6 +944,7 @@ body.has-bg-effects::before {
   gap: 8px;
 }
 .tool-tile.coming-soon .tool-tile-arrow { color: var(--text-faint); }
+.tool-tile-ai .tool-tile-arrow { color: var(--accent-warm); }
 
 @media (max-width: 768px) {
   .tools-section { padding: 36px 18px; }
