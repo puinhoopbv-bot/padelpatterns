@@ -394,6 +394,7 @@ body.has-bg-effects::before {
    ===================================================================== */
 
 .stats-band {
+  /* legacy class, kept for any tool pages that still use the old grid stats */
   border-top: 1px solid var(--border-light);
   border-bottom: 1px solid var(--border-light);
   padding: 48px 32px;
@@ -433,13 +434,143 @@ body.has-bg-effects::before {
     padding: 36px 18px;
     margin: 48px 0 24px;
   }
-  /* 2x2 grid on mobile — much more readable than 1x4 list */
   .stats-grid {
     grid-template-columns: 1fr 1fr;
     gap: 28px 16px;
   }
   .stat-number { font-size: 44px; }
   .stat-label { font-size: 10px; letter-spacing: 0.15em; }
+}
+
+/* =====================================================================
+   RALLY STATS BAND, the homepage stat hero
+   Animated padel court with a ball bouncing between 4 stat zones.
+   Replaces the boring 4-column grid stats.
+   ===================================================================== */
+.rally-band {
+  position: relative;
+  padding: 48px 0 56px;
+  margin: 80px 0 40px;
+  border-top: 1px solid rgba(212, 255, 0, 0.15);
+  border-bottom: 1px solid rgba(212, 255, 0, 0.15);
+  background:
+    radial-gradient(ellipse at center, rgba(212, 255, 0, 0.05) 0%, rgba(212, 255, 0, 0.01) 60%, transparent 100%),
+    linear-gradient(180deg, rgba(5, 7, 9, 0.4) 0%, rgba(212, 255, 0, 0.02) 50%, rgba(5, 7, 9, 0.4) 100%);
+  overflow: hidden;
+}
+.rally-band::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 2px,
+    rgba(212, 255, 0, 0.015) 3px,
+    transparent 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+.rally-band-inner {
+  position: relative;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 32px;
+  z-index: 2;
+}
+.rally-band-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+.rally-band-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: rgba(212, 255, 0, 0.7);
+  text-transform: uppercase;
+}
+.rally-band-arrow {
+  color: var(--accent);
+  margin-left: 8px;
+}
+.rally-band-live {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: rgba(212, 255, 0, 0.8);
+  text-transform: uppercase;
+}
+.rally-band-live::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: rallyLivePulse 1.4s ease-in-out infinite;
+}
+@keyframes rallyLivePulse {
+  0%, 100% { opacity: 0.3; box-shadow: 0 0 0 0 rgba(212, 255, 0, 0.6); }
+  50%      { opacity: 1;   box-shadow: 0 0 0 6px rgba(212, 255, 0, 0); }
+}
+.rally-court {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 360px;
+}
+
+/* Impact flash rings, expand outward when ball lands */
+.rally-flash { opacity: 0; }
+@keyframes rallyImpact {
+  0%   { opacity: 0; r: 6;  stroke-opacity: 1;   stroke-width: 3; }
+  5%   { opacity: 1; r: 14; stroke-opacity: 1; }
+  40%  { opacity: 0.3; r: 36; stroke-opacity: 0.4; stroke-width: 1; }
+  60%  { opacity: 0; r: 48; stroke-opacity: 0; stroke-width: 0.5; }
+  100% { opacity: 0; r: 0;  stroke-opacity: 0; }
+}
+.rally-flash-1 { animation: rallyImpact 8s linear infinite; animation-delay: 0s; }
+.rally-flash-2 { animation: rallyImpact 8s linear infinite; animation-delay: 2s; }
+.rally-flash-3 { animation: rallyImpact 8s linear infinite; animation-delay: 4s; }
+.rally-flash-4 { animation: rallyImpact 8s linear infinite; animation-delay: 6s; }
+
+/* Stat pulse, briefly enlarge + brighten when ball arrives */
+@keyframes rallyStatPulse {
+  0%, 95% { transform: scale(1);    filter: brightness(1); }
+  2%      { transform: scale(1.08); filter: brightness(1.4); }
+  12%     { transform: scale(1);    filter: brightness(1); }
+}
+.rally-stat { transform-box: fill-box; }
+.rally-stat-1 { animation: rallyStatPulse 8s linear infinite; animation-delay: 0s; transform-origin: 215px 100px; }
+.rally-stat-2 { animation: rallyStatPulse 8s linear infinite; animation-delay: 2s; transform-origin: 985px 100px; }
+.rally-stat-3 { animation: rallyStatPulse 8s linear infinite; animation-delay: 4s; transform-origin: 475px 220px; }
+.rally-stat-4 { animation: rallyStatPulse 8s linear infinite; animation-delay: 6s; transform-origin: 725px 220px; }
+
+/* Accessibility: respect reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .rally-ball { display: none; }
+  .rally-flash, .rally-stat, .rally-band-live::before {
+    animation: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .rally-band {
+    padding: 28px 0 32px;
+    margin: 48px 0 24px;
+  }
+  .rally-band-inner { padding: 0 16px; }
+  .rally-band-head { margin-bottom: 18px; }
+  .rally-band-label { font-size: 10px; letter-spacing: 0.18em; }
+  .rally-band-live  { font-size: 9px;  letter-spacing: 0.18em; }
+  .rally-court { max-height: 320px; min-height: 220px; }
+  /* On mobile the labels under the big numbers are too small to read.
+     They're decorative on mobile, the numbers and the animation are the message. */
 }
 
 /* =====================================================================
