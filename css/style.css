@@ -275,8 +275,8 @@ body.has-bg-effects::before {
     linear-gradient(180deg,
       rgba(5, 7, 9, 0.6) 0%,
       rgba(5, 7, 9, 0.15) 35%,
-      rgba(5, 7, 9, 0.7) 78%,
-      rgba(5, 7, 9, 1) 100%);
+      rgba(5, 7, 9, 0.55) 62%,
+      rgba(5, 7, 9, 1) 90%);
 }
 
 .hero-typo-content {
