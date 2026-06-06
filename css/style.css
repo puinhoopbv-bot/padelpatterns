@@ -247,6 +247,22 @@ body.has-bg-effects::before {
   padding: 140px 32px 100px;
 }
 
+/* Bottom fade: dissolves the hero (photo included) into the night-blue section below */
+.hero-typo::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 200px;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(180deg,
+    rgba(5, 7, 9, 0) 0%,
+    rgba(5, 7, 9, 0.7) 55%,
+    rgba(5, 7, 9, 1) 100%);
+}
+
 /* Photo backdrop, tamed to a dark atmospheric layer behind the hero */
 .hero-photo-bg {
   position: absolute;
@@ -275,8 +291,7 @@ body.has-bg-effects::before {
     linear-gradient(180deg,
       rgba(5, 7, 9, 0.6) 0%,
       rgba(5, 7, 9, 0.15) 35%,
-      rgba(5, 7, 9, 0.55) 62%,
-      rgba(5, 7, 9, 1) 90%);
+      rgba(5, 7, 9, 0.55) 100%);
 }
 
 .hero-typo-content {
