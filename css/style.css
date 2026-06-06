@@ -921,7 +921,7 @@ body.has-bg-effects::before {
 }
 .tool-tile-band .tool-tile-eyebrow {
   position: absolute;
-  left: 0; bottom: 12px;
+  left: 20px; bottom: 12px;
   z-index: 2;
   margin: 0;
 }
