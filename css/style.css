@@ -247,6 +247,37 @@ body.has-bg-effects::before {
   padding: 140px 32px 100px;
 }
 
+/* Photo backdrop, tamed to a dark atmospheric layer behind the hero */
+.hero-photo-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.hero-photo-bg img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 72% 28%;
+  opacity: 0.32;
+}
+.hero-photo-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(100deg,
+      rgba(5, 7, 9, 0.92) 30%,
+      rgba(5, 7, 9, 0.78) 60%,
+      rgba(5, 7, 9, 0.55) 100%),
+    linear-gradient(180deg,
+      rgba(5, 7, 9, 0.6) 0%,
+      rgba(5, 7, 9, 0.15) 35%,
+      rgba(5, 7, 9, 0.7) 100%);
+}
+
 .hero-typo-content {
   position: relative;
   z-index: 2;
