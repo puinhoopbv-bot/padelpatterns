@@ -88,11 +88,31 @@
     </label>
 
     <nav class="site-nav">
-      <a href="/tools/patterns" class="nav-link">Patterns 3D</a>
-      <a href="/slagen" class="nav-link">Slagen</a>
-      <a href="/tactiek" class="nav-link">Tactiek</a>
-      <a href="/tools/shot-decider" class="nav-link">Shot Decider</a>
-      <a href="/tools/racket-finder" class="nav-link">Racket Finder</a>
+      <div class="nav-group">
+        <a href="/#tools" class="nav-link nav-group-label">Tools<span class="nav-caret" aria-hidden="true"></span></a>
+        <div class="nav-menu">
+          <div class="nav-menu-inner">
+            <a href="/tools/patterns" class="nav-menu-item is-flagship"><strong>Patterns 3D</strong><span>12 tactische rally's in 3D</span></a>
+            <a href="/tools/shot-decider" class="nav-menu-item"><strong>Shot Decider</strong><span>Welke slag speel je nu?</span></a>
+            <a href="/tools/racket-finder" class="nav-menu-item"><strong>Racket Finder</strong><span>Welk racket past bij jou?</span></a>
+            <a href="/tools/spelregels" class="nav-menu-item"><strong>Spelregels Beslisser</strong><span>17 situaties, officiële FIP-regels</span></a>
+            <a href="/tools/niveau" class="nav-menu-item"><strong>Niveau Indicator</strong><span>Je eerlijke niveau, 1.0 tot 7.0</span></a>
+            <a href="/tools/training" class="nav-menu-item"><strong>Trainings-generator</strong><span>Een sessie op maat</span></a>
+            <a href="/tools/match-coach" class="nav-menu-item"><strong>Match Coach</strong><span>AI-analyse van je wedstrijd</span></a>
+          </div>
+        </div>
+      </div>
+      <div class="nav-group">
+        <a href="/leren" class="nav-link nav-group-label">Leren<span class="nav-caret" aria-hidden="true"></span></a>
+        <div class="nav-menu">
+          <div class="nav-menu-inner">
+            <a href="/leren" class="nav-menu-item"><strong>Waar te beginnen</strong><span>De route door de site</span></a>
+            <a href="/slagen" class="nav-menu-item"><strong>Alle slagen</strong><span>12 slagen uitgelegd</span></a>
+            <a href="/tactiek" class="nav-menu-item"><strong>Padel-tactiek</strong><span>Posities, zones, het net veroveren</span></a>
+            <a href="/woordenboek" class="nav-menu-item"><strong>Padel-woordenboek</strong><span>Spaanse termen, Nederlands uitgelegd</span></a>
+          </div>
+        </div>
+      </div>
       <a href="/over" class="nav-link">Over</a>
     </nav>
   </header>
@@ -187,11 +207,45 @@
 
   </section>
 
+  <!-- START HERE — a short orientation condensed from /leren. Without it the
+       homepage drops you straight into a grid of seven similar-looking tools. -->
+  <section class="start-here" id="start">
+    <div class="section-label">Waar te beginnen</div>
+    <h2 class="section-title">Nieuw hier?<br><span style="color: var(--accent);">Kies je ingang.</span></h2>
+
+    <div class="start-grid">
+      <a href="/padel-voor-beginners" class="start-step">
+        <div class="start-step-num">01</div>
+        <h3>Je bent net begonnen</h3>
+        <p>De vier basisslagen en de eerste tactische principes. Daarna de opslag, de volley en de lob, de drie slagen waar je het hele jaar plezier van hebt.</p>
+        <div class="start-step-link">Padel voor beginners <span>→</span></div>
+      </a>
+
+      <a href="/tools/patterns" class="start-step">
+        <div class="start-step-num">02</div>
+        <h3>Je wilt doorgroeien</h3>
+        <p>De bandeja en de chiquita tillen je van beginner naar gevorderde. Zie ze in 3D uitgespeeld, met posities en balbanen.</p>
+        <div class="start-step-link">Open Patterns 3D <span>→</span></div>
+      </a>
+
+      <a href="#tools" class="start-step">
+        <div class="start-step-num">03</div>
+        <h3>Je hebt één concrete vraag</h3>
+        <p>Welke slag speel je nu? Welk racket past bij jou? Wie heeft gelijk over die regel? Elke tool beantwoordt precies één ding.</p>
+        <div class="start-step-link">Bekijk alle tools <span>→</span></div>
+      </a>
+    </div>
+
+    <p class="start-more">
+      Liever de volledige route door de site? <a href="/leren">Waar te beginnen <span>→</span></a>
+    </p>
+  </section>
+
   <section class="tools-section" id="tools">
     <div class="section-label">Tools, 7 live</div>
     <h2 class="section-title">Een tool per<br><span style="color: var(--accent);">probleem.</span></h2>
     <p style="font-family: var(--font-body); font-size: 18px; color: var(--text-dim); max-width: 640px; margin: -32px 0 56px; line-height: 1.55;">
-      Welke slag speel je nu. Welk racket past bij jou. Wie heeft gelijk over die regel. Een gerichte tool voor elke concrete vraag.
+      Welke slag speel je nu? Welk racket past bij jou? Wie heeft gelijk over die regel? Een gerichte tool voor elke concrete vraag.
     </p>
 
     <div class="tool-grid">
@@ -246,7 +300,7 @@
         <h3>Shot Decider</h3>
         <div class="spanish">¿qué golpe ahora?</div>
         <p>
-          Welke slag speel je nu. Vier vragen over positie, balhoogte, tegenstanders en druk. Tactisch antwoord plus alternatief.
+          Welke slag speel je nu? Vier vragen over positie, balhoogte, tegenstanders en druk. Tactisch antwoord plus alternatief.
         </p>
         <div class="tool-tile-arrow">Open de decider <span>→</span></div>
       </a>
@@ -282,7 +336,7 @@
     <div class="section-label">Bibliotheek, 20 pagina's</div>
     <h2 class="section-title">12 slagen.<br><span style="color: var(--accent);">4 concepten.</span></h2>
     <p style="font-family: var(--font-body); font-size: 18px; color: var(--text-dim); max-width: 640px; margin: -32px 0 56px; line-height: 1.55;">
-      Wat is een bandeja, een víbora, een chiquita. Wanneer speel je ze. Welke fouten zitten erin. Geen YouTube-filler, geen affiliate-spam.
+      Wat is een bandeja, een víbora, een chiquita? Wanneer speel je ze? Welke fouten zitten erin? Geen YouTube-filler, geen affiliate-spam.
     </p>
 
     <div class="tool-grid">
@@ -311,7 +365,7 @@
         <h3>Padel-woordenboek</h3>
         <div class="spanish">el diccionario</div>
         <p>
-          Wat betekent bandeja, víbora, por tres, naranja. Korte begrippenlijst met links naar de uitgebreide pagina's.
+          Wat betekent bandeja, víbora, por tres, naranja? Korte begrippenlijst met links naar de uitgebreide pagina's.
         </p>
         <div class="tool-tile-arrow">Open het woordenboek <span>→</span></div>
       </a>
@@ -720,10 +774,12 @@
     }
 
     // === RALLY PATH ===
-    // Order of words to visit: 0 Padel → 4 blauw veld → 2 schaken → 0 again
-    // We make the rally weave: tap one word, fly to another non-adjacent one,
-    // creating a "rally" feel — never linear.
-    const sequence = [0, 2, 4, 1, 3, 0, 4, 2];
+    // The ball follows the reading order of the headline: De → tactische →
+    // tools → die padel → mist. After the last word it loops back to the first,
+    // which reads as the return of the rally. Earlier versions hopped between
+    // non-adjacent words for a "weave" effect, but that fights the eye: readers
+    // track the ball instead of the sentence.
+    const sequence = [0, 1, 2, 3, 4];
 
     const SEGMENT_DURATION = 1050; // ms per ball-flight — calmer than v21
     const HIT_DURATION = 450;       // ms a word stays "hit" after impact
@@ -787,11 +843,14 @@
         t = 0;
       }
 
-      // Determine bend: alternates per segment for variation
-      const bend = (segmentIdx % 2 === 0 ? 1 : -1) * (80 + (segmentIdx % 3) * 30);
-
       const from = targets[fromTargetIdx] || { x: 0, y: 0 };
       const to = targets[toTargetIdx] || { x: 0, y: 0 };
+
+      // Bend scales with hop length, so short hops between neighbouring words
+      // stay nearly flat and only the long return flight arcs. A fixed bend
+      // made the ball loop wildly between words that sit next to each other.
+      const segLen = Math.hypot(to.x - from.x, to.y - from.y);
+      const bend = (segmentIdx % 2 === 0 ? 1 : -1) * Math.min(segLen * 0.14, 90);
 
       ballPos = curvedPos(from, to, easeOutCubic(t), bend);
 

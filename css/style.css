@@ -121,6 +121,106 @@ body.has-bg-effects::before {
 .nav-link:hover { color: var(--text); background: rgba(255, 255, 255, 0.04); }
 .nav-link.active { color: var(--accent); }
 
+/* ---------------------------------------------------------------------
+   Nav dropdowns.
+   The site has 7 tools and 4 learn pages but the bar only ever showed 6
+   links, so the homepage grid listed things the menu did not. These two
+   groups carry the full inventory. No JS: hover drives it on pointer
+   devices, :focus-within on keyboard, and the mobile panel below drops the
+   absolute positioning so every group is simply expanded.
+   --------------------------------------------------------------------- */
+.nav-group { position: relative; display: flex; align-items: center; }
+
+.nav-group-label { display: inline-flex; align-items: center; gap: 6px; }
+.nav-caret {
+  width: 7px; height: 7px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+  opacity: 0.5;
+  transition: opacity 0.15s, transform 0.15s;
+}
+.nav-group:hover .nav-caret,
+.nav-group:focus-within .nav-caret { opacity: 1; }
+
+.nav-menu {
+  position: absolute;
+  top: 100%;
+  /* Right-aligned, not left. The nav sits at the right edge of the header, so
+     a left-aligned 268px panel pushed the Leren dropdown off-screen on narrower
+     desktop widths. */
+  right: 0;
+  left: auto;
+  z-index: 10;
+  /* Transparent strip so the pointer can cross the gap without the menu
+     closing under it. */
+  padding-top: 12px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  /* visibility is not interpolatable, so it gets a 0s step delayed until the
+     fade-out has finished. Putting it in the transition list as a normal
+     duration makes the panel behave inconsistently between engines. */
+  transition: opacity 0.16s ease, transform 0.16s ease, visibility 0s linear 0.16s;
+}
+.nav-group:hover .nav-menu,
+.nav-group:focus-within .nav-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  /* opening: flip to visible immediately, then fade in */
+  transition: opacity 0.16s ease, transform 0.16s ease, visibility 0s linear 0s;
+}
+
+.nav-menu-inner {
+  min-width: 268px;
+  padding: 8px;
+  background: rgba(10, 13, 18, 0.97);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.55);
+}
+
+.nav-menu-item {
+  display: block;
+  padding: 9px 12px;
+  border-radius: 4px;
+  transition: background 0.14s;
+}
+.nav-menu-item:hover,
+.nav-menu-item:focus-visible { background: rgba(255, 255, 255, 0.05); }
+.nav-menu-item strong {
+  display: block;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.01em;
+}
+.nav-menu-item span {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--font-ui);
+  font-size: 11.5px;
+  font-weight: 400;
+  color: var(--text-dim);
+  line-height: 1.35;
+}
+.nav-menu-item.active strong { color: var(--accent); }
+.nav-menu-item.is-flagship strong::after {
+  content: 'start hier';
+  margin-left: 8px;
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  vertical-align: 1px;
+}
+
 .site-nav-cta {
   margin-left: 8px;
   background: var(--accent);
@@ -172,9 +272,46 @@ body.has-bg-effects::before {
     transform: translateX(100%);
     transition: transform 0.25s ease;
     border-left: 1px solid var(--border-light);
+    overflow-y: auto;
   }
   .nav-toggle:checked ~ .site-nav { transform: translateX(0); }
   .nav-link, .site-nav-cta { width: 100%; text-align: left; }
+
+  /* In the slide-out panel there is nothing to hover, so the groups drop
+     their dropdown behaviour and render as plain labelled sections. */
+  .nav-group { display: block; }
+  .nav-group-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    padding: 16px 10px 4px;
+    pointer-events: none;
+  }
+  .nav-group-label:hover { background: none; }
+  .nav-caret { display: none; }
+  .nav-menu {
+    position: static;
+    padding-top: 0;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+  .nav-menu-inner {
+    min-width: 0;
+    padding: 0;
+    background: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .nav-menu-item { padding: 8px 10px; }
+  /* The one-line descriptors are useful on a wide dropdown but make the
+     phone panel a wall of text. */
+  .nav-menu-item span { display: none; }
 }
 
 /* =====================================================================
@@ -573,15 +710,24 @@ body.has-bg-effects::before {
 }
 .rally-court-mobile { display: none; }
 
-/* Impact flash rings, expand outward when ball lands */
+/* Ball-impact timing.
+   The ball travels an 8s loop over four waypoints, arriving at 0s / 2s / 4s / 6s.
+   Both animations below are keyed to those arrival moments.
+
+   The flash ring fires ON impact and expands outward from there.
+   The stat pulse ANTICIPATES impact: it swells during the 0.4s run-up, peaks at
+   the moment the ball lands, then settles. That reads as the number stepping in
+   to play the ball. Keying the peak after arrival instead made the number swell
+   once the ball had already left. */
 .rally-flash, .rally-flash-m { opacity: 0; }
 @keyframes rallyImpact {
-  0%   { opacity: 0; r: 6;  stroke-opacity: 1;   stroke-width: 3; }
-  5%   { opacity: 1; r: 14; stroke-opacity: 1; }
-  40%  { opacity: 0.3; r: 36; stroke-opacity: 0.4; stroke-width: 1; }
-  60%  { opacity: 0; r: 48; stroke-opacity: 0; stroke-width: 0.5; }
-  100% { opacity: 0; r: 0;  stroke-opacity: 0; }
+  0%    { opacity: 1; r: 6;  stroke-opacity: 1;    stroke-width: 3; }
+  1.5%  { opacity: 1; r: 16; stroke-opacity: 1;    stroke-width: 2.5; }
+  8%    { opacity: 0.3; r: 36; stroke-opacity: 0.4; stroke-width: 1; }
+  13%   { opacity: 0; r: 48; stroke-opacity: 0;    stroke-width: 0.5; }
+  100%  { opacity: 0; r: 0;  stroke-opacity: 0; }
 }
+/* Flash delay == the ball's arrival time at that waypoint. */
 .rally-flash-1 { animation: rallyImpact 8s linear infinite; animation-delay: 0s; }
 .rally-flash-2 { animation: rallyImpact 8s linear infinite; animation-delay: 2s; }
 .rally-flash-3 { animation: rallyImpact 8s linear infinite; animation-delay: 4s; }
@@ -591,21 +737,24 @@ body.has-bg-effects::before {
 .rally-flash-m3 { animation: rallyImpact 8s linear infinite; animation-delay: 6s; }
 .rally-flash-m4 { animation: rallyImpact 8s linear infinite; animation-delay: 2s; }
 
-/* Stat pulse, briefly enlarge + brighten when ball arrives */
+/* Stat pulse, swells into the impact and settles after it.
+   5% of 8s = 0.4s, the run-up; that is also the offset applied to every delay. */
 @keyframes rallyStatPulse {
-  0%, 95% { transform: scale(1);    filter: brightness(1); }
-  2%      { transform: scale(1.08); filter: brightness(1.4); }
-  12%     { transform: scale(1);    filter: brightness(1); }
+  0%   { transform: scale(1);    filter: brightness(1); }
+  5%   { transform: scale(1.09); filter: brightness(1.45); }  /* ball lands here */
+  14%  { transform: scale(1);    filter: brightness(1); }
+  100% { transform: scale(1);    filter: brightness(1); }
 }
 .rally-stat, .rally-stat-m { transform-box: fill-box; }
-.rally-stat-1 { animation: rallyStatPulse 8s linear infinite; animation-delay: 0s; transform-origin: 215px 100px; }
-.rally-stat-2 { animation: rallyStatPulse 8s linear infinite; animation-delay: 2s; transform-origin: 985px 100px; }
-.rally-stat-3 { animation: rallyStatPulse 8s linear infinite; animation-delay: 4s; transform-origin: 475px 220px; }
-.rally-stat-4 { animation: rallyStatPulse 8s linear infinite; animation-delay: 6s; transform-origin: 725px 220px; }
-.rally-stat-m1 { animation: rallyStatPulse 8s linear infinite; animation-delay: 0s; transform-origin: 105px 115px; }
-.rally-stat-m2 { animation: rallyStatPulse 8s linear infinite; animation-delay: 4s; transform-origin: 215px 115px; }
-.rally-stat-m3 { animation: rallyStatPulse 8s linear infinite; animation-delay: 6s; transform-origin: 105px 485px; }
-.rally-stat-m4 { animation: rallyStatPulse 8s linear infinite; animation-delay: 2s; transform-origin: 215px 485px; }
+/* Stat delay == arrival time minus the 0.4s run-up. */
+.rally-stat-1 { animation: rallyStatPulse 8s linear infinite; animation-delay: -0.4s; transform-origin: 215px 100px; }
+.rally-stat-2 { animation: rallyStatPulse 8s linear infinite; animation-delay: 1.6s; transform-origin: 985px 100px; }
+.rally-stat-3 { animation: rallyStatPulse 8s linear infinite; animation-delay: 3.6s; transform-origin: 475px 220px; }
+.rally-stat-4 { animation: rallyStatPulse 8s linear infinite; animation-delay: 5.6s; transform-origin: 725px 220px; }
+.rally-stat-m1 { animation: rallyStatPulse 8s linear infinite; animation-delay: -0.4s; transform-origin: 105px 115px; }
+.rally-stat-m2 { animation: rallyStatPulse 8s linear infinite; animation-delay: 3.6s; transform-origin: 215px 115px; }
+.rally-stat-m3 { animation: rallyStatPulse 8s linear infinite; animation-delay: 5.6s; transform-origin: 105px 485px; }
+.rally-stat-m4 { animation: rallyStatPulse 8s linear infinite; animation-delay: 1.6s; transform-origin: 215px 485px; }
 
 /* Accessibility: respect reduced-motion */
 @media (prefers-reduced-motion: reduce) {
@@ -878,6 +1027,92 @@ body.has-bg-effects::before {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 20px;
+}
+
+/* =====================================================================
+   START HERE — short orientation band under the hero.
+   Deliberately lighter than .tool-tile: numbered, no photo, no border box
+   on the left edge, so it reads as a route rather than a fourth grid of
+   things to choose between.
+   ===================================================================== */
+.start-here {
+  padding: 72px 32px 8px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.start-here .section-title { margin-bottom: 40px; }
+
+.start-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 4px;
+}
+
+.start-step {
+  position: relative;
+  display: block;
+  padding: 28px 28px 26px;
+  text-decoration: none;
+  color: var(--text);
+  border-top: 1px solid var(--border-light);
+  transition: background 0.2s;
+}
+.start-step::after {
+  /* the accent rule grows from the left on hover */
+  content: '';
+  position: absolute;
+  top: -1px; left: 0;
+  width: 0; height: 1px;
+  background: var(--accent);
+  transition: width 0.28s ease;
+}
+.start-step:hover { background: rgba(255, 255, 255, 0.02); }
+.start-step:hover::after { width: 100%; }
+
+.start-step-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+.start-step h3 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  letter-spacing: 0.02em;
+  margin: 0 0 10px;
+  color: var(--text);
+}
+.start-step p {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--text-dim);
+  margin: 0 0 18px;
+}
+.start-step-link {
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+}
+.start-step-link span { transition: transform 0.2s; display: inline-block; }
+.start-step:hover .start-step-link span { transform: translateX(4px); }
+
+.start-more {
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--text-faint);
+  border-top: 1px solid var(--border-light);
+  padding-top: 24px;
+  margin: 0;
+}
+.start-more a { color: var(--text-dim); transition: color 0.15s; }
+.start-more a:hover { color: var(--accent); }
+
+@media (max-width: 768px) {
+  .start-here { padding: 48px 18px 8px; }
+  .start-step { padding: 24px 0 22px; }
 }
 
 .tool-tile {

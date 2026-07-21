@@ -119,8 +119,13 @@
     border-left: 1px solid var(--border);
   }
 
-  /* In-tool navigation to other PadelLab tools */
-  .tool-nav {
+  /* In-tool navigation.
+     Carries the same items as the site header. This file has no access to
+     /css/style.css, so the dropdown styling is duplicated here against the
+     tool's own tokens. Markup for both navs is generated from one list, so
+     the two stay in step. */
+  .tool-nav,
+  .tool-nav-compact {
     display: flex;
     align-items: center;
     gap: 2px;
@@ -129,7 +134,12 @@
     border: 1px solid var(--border-light);
     padding: 4px;
   }
-  .tool-nav-link {
+  .tn-group { position: relative; display: flex; align-items: center; }
+
+  .tn-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     font-family: 'Inter', system-ui, sans-serif;
     font-size: 12px;
     font-weight: 500;
@@ -139,17 +149,112 @@
     text-decoration: none;
     transition: color 0.15s, background 0.15s;
     border-radius: 2px;
+    cursor: pointer;
   }
-  .tool-nav-link:hover {
+  .tn-label:hover { color: var(--text); background: rgba(255, 255, 255, 0.04); }
+  .tn-label.active { color: var(--accent); background: rgba(212, 255, 0, 0.08); }
+
+  .tn-caret {
+    width: 6px; height: 6px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: translateY(-2px) rotate(45deg);
+    opacity: 0.5;
+    transition: opacity 0.15s;
+  }
+  .tn-group:hover .tn-caret, .tn-group:focus-within .tn-caret { opacity: 1; }
+
+  .tn-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 20;
+    padding-top: 10px;           /* hover bridge across the gap */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    /* visibility steps, it does not interpolate — delay it until the fade ends */
+    transition: opacity 0.16s ease, transform 0.16s ease, visibility 0s linear 0.16s;
+  }
+  .tn-group:hover .tn-menu, .tn-group:focus-within .tn-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition: opacity 0.16s ease, transform 0.16s ease, visibility 0s linear 0s;
+  }
+  .tn-menu-inner {
+    min-width: 264px;
+    max-height: 70vh;
+    overflow-y: auto;
+    padding: 8px;
+    background: rgba(10, 13, 18, 0.97);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.6);
+  }
+  .tn-item {
+    display: block;
+    padding: 9px 12px;
+    border-radius: 3px;
+    text-decoration: none;
+    transition: background 0.14s;
+  }
+  .tn-item:hover, .tn-item:focus-visible { background: rgba(255, 255, 255, 0.05); }
+  .tn-item strong {
+    display: block;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
     color: var(--text);
-    background: rgba(255, 255, 255, 0.04);
   }
-  .tool-nav-link.active {
-    color: var(--accent);
-    background: rgba(212, 255, 0, 0.08);
+  .tn-item span {
+    display: block;
+    margin-top: 2px;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 11.5px;
+    color: var(--text-dim);
+    line-height: 1.35;
   }
+  .tn-item.active strong { color: var(--accent); }
+  .tn-heading {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    padding: 14px 12px 5px;
+  }
+
+  /* One nav or the other, never both. Below 1100px the old rule hid the menu
+     outright, which left no route out of the 3D view except the logo. */
+  .tool-nav-compact { display: none; }
   @media (max-width: 1100px) {
     .tool-nav { display: none; }
+    .tool-nav-compact { display: flex; }
+  }
+
+  /* Phone: brand + menu + mode-switch have to share one narrow row, so the
+     menu gives up as much width as it can. */
+  @media (max-width: 768px) {
+    header > div { gap: 10px; }
+    .tool-nav-compact { padding: 2px; }
+    .tool-nav-compact .tn-label { padding: 7px 10px; font-size: 11px; }
+    /* The trigger sits near the left of the right-hand cluster, so a panel
+       anchored to its right edge would hang off the screen. Pin it to the
+       viewport instead. */
+    .tool-nav-compact .tn-menu {
+      position: fixed;
+      top: 56px;
+      left: 12px;
+      right: 12px;
+      padding-top: 0;
+    }
+    .tool-nav-compact .tn-menu-inner { min-width: 0; max-height: 74vh; }
+  }
+  @media (max-width: 400px) {
+    .brand-mark { font-size: 22px; }
+    .tool-nav-compact .tn-label { padding: 6px 8px; }
   }
 
   .mode-switch {
@@ -212,7 +317,7 @@
 
   .panel-title {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 13px;
+    font-size: 15px;
     letter-spacing: 0.18em;
     color: var(--text-dim);
     display: flex;
@@ -222,7 +327,7 @@
 
   .panel-title .count {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
+    font-size: 11px;
     color: var(--text-faint);
     letter-spacing: 0;
   }
@@ -242,7 +347,7 @@
 
   .filter-label {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 9px;
+    font-size: 10.5px;
     text-transform: uppercase;
     letter-spacing: 0.18em;
     color: var(--text-faint);
@@ -260,8 +365,8 @@
     border: 1px solid var(--border-light);
     color: var(--text-dim);
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    padding: 4px 8px;
+    font-size: 12px;
+    padding: 6px 10px;
     cursor: pointer;
     transition: all 0.15s;
   }
@@ -305,7 +410,7 @@
 
   .strat-item-name {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 16px;
+    font-size: 18px;
     letter-spacing: 0.06em;
     color: var(--text);
     margin-bottom: 2px;
@@ -314,7 +419,7 @@
   .strat-item-name em {
     font-family: 'Fraunces', serif;
     font-style: italic;
-    font-size: 11px;
+    font-size: 12.5px;
     color: var(--text-faint);
     letter-spacing: 0;
     text-transform: lowercase;
@@ -326,7 +431,7 @@
     display: flex;
     gap: 6px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 8px;
+    font-size: 9.5px;
     text-transform: uppercase;
     letter-spacing: 0.12em;
     color: var(--text-faint);
@@ -381,7 +486,7 @@
 
   .strat-summary-big {
     font-family: 'Fraunces', serif;
-    font-size: 13px;
+    font-size: 15px;
     color: var(--text-dim);
     line-height: 1.5;
     margin-bottom: 18px;
@@ -399,7 +504,7 @@
 
   .detail-h {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 12px;
+    font-size: 13.5px;
     letter-spacing: 0.2em;
     color: var(--text-dim);
     margin-bottom: 8px;
@@ -407,7 +512,7 @@
 
   .detail-body {
     font-family: 'Fraunces', serif;
-    font-size: 13px;
+    font-size: 15px;
     color: var(--text);
     line-height: 1.55;
   }
@@ -419,7 +524,7 @@
 
   .detail-list li {
     font-family: 'Fraunces', serif;
-    font-size: 12px;
+    font-size: 14px;
     color: var(--text-dim);
     padding: 5px 0 5px 16px;
     position: relative;
@@ -432,7 +537,7 @@
     left: 0;
     color: var(--accent);
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .key-shots {
@@ -443,8 +548,8 @@
 
   .key-shots span {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 9px;
-    padding: 3px 6px;
+    font-size: 10.5px;
+    padding: 4px 7px;
     background: var(--bg-elev);
     color: var(--text);
     text-transform: uppercase;
@@ -455,7 +560,7 @@
   .coach-tip {
     font-style: italic;
     color: var(--accent);
-    font-size: 13px;
+    font-size: 14.5px;
     line-height: 1.5;
     padding: 12px 14px;
     background: rgba(212, 255, 0, 0.04);
@@ -493,7 +598,7 @@
 
   .subtitle-phase {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
+    font-size: 11px;
     color: var(--accent);
     letter-spacing: 0.22em;
     text-transform: uppercase;
@@ -1171,12 +1276,55 @@
     </a>
 
     <div style="display: flex; align-items: center; gap: 20px;">
+      <!-- Wide screens: the same three groups as the site header. -->
       <nav class="tool-nav">
-        <a href="/tools/patterns" class="tool-nav-link active">Patterns 3D</a>
-        <a href="/tools/shot-decider" class="tool-nav-link">Shot Decider</a>
-        <a href="/tools/racket-finder" class="tool-nav-link">Racket Finder</a>
-        <a href="/tools/spelregels" class="tool-nav-link">Spelregels</a>
-        <a href="/over" class="tool-nav-link">Over</a>
+        <div class="tn-group">
+          <a href="/#tools" class="tn-label active">Tools<span class="tn-caret" aria-hidden="true"></span></a>
+          <div class="tn-menu"><div class="tn-menu-inner">
+            <a href="/tools/patterns" class="tn-item active"><strong>Patterns 3D</strong><span>12 tactische rally's in 3D</span></a>
+            <a href="/tools/shot-decider" class="tn-item"><strong>Shot Decider</strong><span>Welke slag speel je nu?</span></a>
+            <a href="/tools/racket-finder" class="tn-item"><strong>Racket Finder</strong><span>Welk racket past bij jou?</span></a>
+            <a href="/tools/spelregels" class="tn-item"><strong>Spelregels Beslisser</strong><span>17 situaties, officiële FIP-regels</span></a>
+            <a href="/tools/niveau" class="tn-item"><strong>Niveau Indicator</strong><span>Je eerlijke niveau, 1.0 tot 7.0</span></a>
+            <a href="/tools/training" class="tn-item"><strong>Trainings-generator</strong><span>Een sessie op maat</span></a>
+            <a href="/tools/match-coach" class="tn-item"><strong>Match Coach</strong><span>AI-analyse van je wedstrijd</span></a>
+          </div></div>
+        </div>
+        <div class="tn-group">
+          <a href="/leren" class="tn-label">Leren<span class="tn-caret" aria-hidden="true"></span></a>
+          <div class="tn-menu"><div class="tn-menu-inner">
+            <a href="/leren" class="tn-item"><strong>Waar te beginnen</strong><span>De route door de site</span></a>
+            <a href="/slagen" class="tn-item"><strong>Alle slagen</strong><span>12 slagen uitgelegd</span></a>
+            <a href="/tactiek" class="tn-item"><strong>Padel-tactiek</strong><span>Posities, zones, het net veroveren</span></a>
+            <a href="/woordenboek" class="tn-item"><strong>Padel-woordenboek</strong><span>Spaanse termen, Nederlands uitgelegd</span></a>
+          </div></div>
+        </div>
+        <a href="/over" class="tn-label">Over</a>
+      </nav>
+
+      <!-- Narrow screens: one panel, same items. -->
+      <nav class="tool-nav-compact">
+        <div class="tn-group">
+          <span class="tn-label">Menu<span class="tn-caret" aria-hidden="true"></span></span>
+          <div class="tn-menu"><div class="tn-menu-inner">
+            <a href="/" class="tn-item"><strong>← PadelLab home</strong></a>
+            <div class="tn-heading">Tools</div>
+            <a href="/tools/patterns" class="tn-item active"><strong>Patterns 3D</strong><span>12 tactische rally's in 3D</span></a>
+            <a href="/tools/shot-decider" class="tn-item"><strong>Shot Decider</strong><span>Welke slag speel je nu?</span></a>
+            <a href="/tools/racket-finder" class="tn-item"><strong>Racket Finder</strong><span>Welk racket past bij jou?</span></a>
+            <a href="/tools/spelregels" class="tn-item"><strong>Spelregels Beslisser</strong><span>17 situaties, officiële FIP-regels</span></a>
+            <a href="/tools/niveau" class="tn-item"><strong>Niveau Indicator</strong><span>Je eerlijke niveau, 1.0 tot 7.0</span></a>
+            <a href="/tools/training" class="tn-item"><strong>Trainings-generator</strong><span>Een sessie op maat</span></a>
+            <a href="/tools/match-coach" class="tn-item"><strong>Match Coach</strong><span>AI-analyse van je wedstrijd</span></a>
+            <div class="tn-heading">Leren</div>
+            <a href="/leren" class="tn-item"><strong>Waar te beginnen</strong><span>De route door de site</span></a>
+            <a href="/slagen" class="tn-item"><strong>Alle slagen</strong><span>12 slagen uitgelegd</span></a>
+            <a href="/tactiek" class="tn-item"><strong>Padel-tactiek</strong><span>Posities, zones, het net veroveren</span></a>
+            <a href="/woordenboek" class="tn-item"><strong>Padel-woordenboek</strong><span>Spaanse termen, Nederlands uitgelegd</span></a>
+            <div class="tn-heading">Site</div>
+            <a href="/over" class="tn-item"><strong>Over PadelLab</strong></a>
+          </div></div>
+        </div>
       </nav>
 
       <div class="mode-switch">
