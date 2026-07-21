@@ -25,11 +25,25 @@
 
   // Segmentlengtes van een figuur van ongeveer 170px hoog.
   var SEG = {
-    torso: 64, neck: 16, headR: 14,
-    thigh: 46, shin: 46,
-    upperArm: 40, foreArm: 38,
-    shaft: 26, head: 20
+    // De nek moet langer zijn dan de halve borstdiepte, anders valt het hoofd
+    // binnen de bovenkant van de romp en lijkt de speler geen nek te hebben.
+    torso: 64, neck: 20, headRx: 11.5, headRy: 13.5,
+    thigh: 46, shin: 44, foot: 21,
+    upperArm: 40, foreArm: 36, hand: 5.5,
+    shaft: 26, head: 20,
+    // Zijaanzicht: "breedte" is hier lichaamsdiepte van voor naar achter.
+    pelvisW: 21, chestW: 28,
+    hipSplit: 4,        // heupen en schouders liggen niet in een punt; zonder
+    shoulderSplit: 5    // deze scheiding blijft het een stokfiguur
   };
+
+  // Dikte per segment, van proximaal naar distaal.
+  var W = {
+    thigh: [23, 15], shin: [15, 9.5], foot: [9.5, 5],
+    upperArm: [16, 12], foreArm: [12, 9], neck: 12
+  };
+
+  var FOOT_ANGLE = -6;  // voeten blijven plat op de grond staan
 
   /* ---- Basis-poses. Slagen verwijzen hiernaar en overschrijven een handvol
      getallen; de hele bovenhandse familie deelt dezelfde ketting. ---- */
@@ -95,7 +109,9 @@
     PREP_LOW: {
       hip: [290, 296], torso: -98, headTilt: 10,
       backThigh: 114, backShin: 70, frontThigh: 68, frontShin: 106,
-      upperArm: 15, foreArm: -30, racket: -160,
+      // Arm omlaag en naar achteren: het racket hoort achter de heup te hangen,
+      // niet voor het gezicht.
+      upperArm: 100, foreArm: 150, racket: 175,
       offUpper: -25, offFore: -5, ball: null
     },
     CONTACT_LOW: {
@@ -452,24 +468,78 @@
   function solve(p) {
     var hip = p.hip;
     var shoulder = step(hip, p.torso, SEG.torso);
-    var head = step(shoulder, p.torso + p.headTilt, SEG.neck + SEG.headR);
-    var backKnee = step(hip, p.backThigh, SEG.thigh);
-    var frontKnee = step(hip, p.frontThigh, SEG.thigh);
-    var elbow = step(shoulder, p.upperArm, SEG.upperArm);
+
+    // Loodrecht op de romp: laat de heup- en schouderscheiding meedraaien als
+    // het lichaam leunt, in plaats van hem horizontaal vast te zetten.
+    var perp = [-Math.sin(p.torso * RAD), Math.cos(p.torso * RAD)];
+    var hipBack = [hip[0] - perp[0] * SEG.hipSplit, hip[1] - perp[1] * SEG.hipSplit];
+    var hipFront = [hip[0] + perp[0] * SEG.hipSplit, hip[1] + perp[1] * SEG.hipSplit];
+    var shBack = [shoulder[0] - perp[0] * SEG.shoulderSplit, shoulder[1] - perp[1] * SEG.shoulderSplit];
+    var shFront = [shoulder[0] + perp[0] * SEG.shoulderSplit, shoulder[1] + perp[1] * SEG.shoulderSplit];
+
+    var headAngle = p.torso + p.headTilt;
+    var headBase = step(shoulder, headAngle, SEG.neck);
+    var head = step(headBase, headAngle, SEG.headRy);
+
+    /* Het hoofd blijft op de nek staan, maar kantelt een deel mee naar de bal.
+       Die kleine secundaire beweging is wat "kijkt naar de bal" oplevert; een
+       volledige draai zou de kop uitrekken in plaats van laten meekijken. */
+    var headLook = headAngle;
+    if (p.ball && p.ball.length === 2) {
+      var toBall = Math.atan2(p.ball[1] - head[1], p.ball[0] - head[0]) / RAD;
+      var delta = ((toBall - headAngle + 540) % 360) - 180;   // kortste weg
+      headLook = headAngle + delta * 0.3;
+    }
+
+    var backKnee = step(hipBack, p.backThigh, SEG.thigh);
+    var backAnkle = step(backKnee, p.backShin, SEG.shin);
+    var frontKnee = step(hipFront, p.frontThigh, SEG.thigh);
+    var frontAnkle = step(frontKnee, p.frontShin, SEG.shin);
+
+    var elbow = step(shFront, p.upperArm, SEG.upperArm);
     var hand = step(elbow, p.foreArm, SEG.foreArm);
     var shaftEnd = step(hand, p.racket, SEG.shaft);
+
+    var offElbow = step(shBack, p.offUpper, SEG.upperArm * 0.95);
+    var offHand = step(offElbow, p.offFore, SEG.foreArm * 0.95);
+
     return {
-      hip: hip, shoulder: shoulder, head: head,
-      backKnee: backKnee, backFoot: step(backKnee, p.backShin, SEG.shin),
-      frontKnee: frontKnee, frontFoot: step(frontKnee, p.frontShin, SEG.shin),
+      hip: hip, shoulder: shoulder,
+      hipBack: hipBack, hipFront: hipFront, shBack: shBack, shFront: shFront,
+      headBase: headBase, head: head, headAngle: headLook,
+      backKnee: backKnee, backAnkle: backAnkle,
+      backToe: step(backAnkle, FOOT_ANGLE, SEG.foot),
+      frontKnee: frontKnee, frontAnkle: frontAnkle,
+      frontToe: step(frontAnkle, FOOT_ANGLE, SEG.foot),
       elbow: elbow, hand: hand,
       shaftEnd: shaftEnd,
       racketHead: step(shaftEnd, p.racket, SEG.head),
       racketAngle: p.racket,
-      offElbow: step(shoulder, p.offUpper, SEG.upperArm * 0.95),
-      offHand: step(step(shoulder, p.offUpper, SEG.upperArm * 0.95), p.offFore, SEG.foreArm * 0.95),
+      offElbow: offElbow, offHand: offHand,
       ball: p.ball, ballAlpha: p.ballAlpha == null ? 1 : p.ballAlpha
     };
+  }
+
+  /* Getailleerde capsule: een segment dat van dik naar dun loopt met ronde
+     uiteinden. Een `line` met stroke-width kan niet taperen, en juist die
+     verjonging (dij naar knie, bovenarm naar pols) maakt het verschil tussen
+     een stok en een ledemaat. */
+  function pt(p) { return p[0].toFixed(2) + ',' + p[1].toFixed(2); }
+
+  function capsule(a, b, wa, wb) {
+    var dx = b[0] - a[0], dy = b[1] - a[1];
+    var len = Math.sqrt(dx * dx + dy * dy) || 1;
+    var ux = dx / len, uy = dy / len;
+    var px = -uy, py = ux;
+    var ra = wa / 2, rb = wb / 2;
+    // Sweep-flag 0, niet 1: met y omlaag in SVG bollen de eindkappen anders de
+    // verkeerde kant op, snijdt het pad zichzelf en vallen er gaten precies op
+    // de gewrichten.
+    return 'M' + pt([a[0] + px * ra, a[1] + py * ra]) +
+           'L' + pt([b[0] + px * rb, b[1] + py * rb]) +
+           'A' + rb + ',' + rb + ' 0 0 0 ' + pt([b[0] - px * rb, b[1] - py * rb]) +
+           'L' + pt([a[0] - px * ra, a[1] - py * ra]) +
+           'A' + ra + ',' + ra + ' 0 0 0 ' + pt([a[0] + px * ra, a[1] + py * ra]) + 'Z';
   }
 
   /* ---- SVG ---- */
@@ -511,29 +581,39 @@
     var g = el('g', { class: 'sa-figure' });
 
     var refs = {};
+
+    // Schaduw onder de speler: koppelt het figuur aan de grond in plaats van
+    // het erboven te laten zweven.
+    refs.shadow = el('ellipse', { class: 'sa-shadow', cy: GROUND, ry: 4.5 });
+    g.appendChild(refs.shadow);
+
     refs.trail = el('g', { class: 'sa-trail' });
     g.appendChild(refs.trail);
 
-    refs.ballPath = el('path', { class: 'sa-ballpath', d: '', fill: 'none' });
-    g.appendChild(refs.ballPath);
-
     // Achterste ledematen eerst, zodat de romp ervoor valt.
-    refs.backThigh = line('sa-limb sa-limb-back', 7);
-    refs.backShin = line('sa-limb sa-limb-back', 6);
-    refs.offUpper = line('sa-limb sa-limb-back', 6);
-    refs.offFore = line('sa-limb sa-limb-back', 5);
-    [refs.backThigh, refs.backShin, refs.offUpper, refs.offFore].forEach(function (n) { g.appendChild(n); });
+    var backNames = ['backThigh', 'backShin', 'backFoot', 'offUpper', 'offFore'];
+    var frontNames = ['torso', 'frontThigh', 'frontShin', 'frontFoot', 'neck',
+                      'upperArm', 'foreArm'];
+    backNames.forEach(function (n) {
+      refs[n] = el('path', { class: 'sa-body sa-body-back', d: '' });
+      g.appendChild(refs[n]);
+    });
+    refs.offHandDot = el('circle', { class: 'sa-body sa-body-back', r: SEG.hand });
+    g.appendChild(refs.offHandDot);
 
-    refs.frontThigh = line('sa-limb', 8);
-    refs.frontShin = line('sa-limb', 7);
-    refs.torso = line('sa-torso', 11);
-    refs.upperArm = line('sa-limb', 7);
-    refs.foreArm = line('sa-limb', 6);
-    [refs.frontThigh, refs.frontShin, refs.torso, refs.upperArm, refs.foreArm]
-      .forEach(function (n) { g.appendChild(n); });
+    /* Geen scheidingsrand tussen voor- en achterhelft: gelijkgekleurde,
+       overlappende vormen vloeien vanzelf tot één silhouet samen. De achterste
+       ledematen krijgen alleen een iets koelere tint als diepte. */
+    frontNames.forEach(function (n) {
+      refs[n] = el('path', { class: 'sa-body', d: '' });
+      g.appendChild(refs[n]);
+    });
 
-    refs.head = el('circle', { class: 'sa-head', r: SEG.headR });
+    refs.head = el('ellipse', { class: 'sa-head', rx: SEG.headRx, ry: SEG.headRy });
     g.appendChild(refs.head);
+
+    refs.handDot = el('circle', { class: 'sa-body', r: SEG.hand });
+    g.appendChild(refs.handDot);
 
     refs.shaft = line('sa-shaft', 4);
     refs.racket = el('ellipse', { class: 'sa-racket', rx: 13, ry: SEG.head });
@@ -553,19 +633,43 @@
 
   function draw(refs, p) {
     var s = solve(p);
-    setLine(refs.backThigh, s.hip, s.backKnee);
-    setLine(refs.backShin, s.backKnee, s.backFoot);
-    setLine(refs.frontThigh, s.hip, s.frontKnee);
-    setLine(refs.frontShin, s.frontKnee, s.frontFoot);
-    setLine(refs.torso, s.hip, s.shoulder);
-    setLine(refs.upperArm, s.shoulder, s.elbow);
-    setLine(refs.foreArm, s.elbow, s.hand);
-    setLine(refs.offUpper, s.shoulder, s.offElbow);
-    setLine(refs.offFore, s.offElbow, s.offHand);
+    var d = function (n, a, b, w) {
+      refs[n].setAttribute('d', capsule(a, b, w[0], w[1]));
+    };
+    var place = function (n, at) {
+      refs[n].setAttribute('cx', at[0]);
+      refs[n].setAttribute('cy', at[1]);
+    };
+
+    d('backThigh', s.hipBack, s.backKnee, W.thigh);
+    d('backShin', s.backKnee, s.backAnkle, W.shin);
+    d('backFoot', s.backAnkle, s.backToe, W.foot);
+    d('offUpper', s.shBack, s.offElbow, W.upperArm);
+    d('offFore', s.offElbow, s.offHand, W.foreArm);
+
+    d('torso', s.hip, s.shoulder, [SEG.pelvisW, SEG.chestW]);
+    d('frontThigh', s.hipFront, s.frontKnee, W.thigh);
+    d('frontShin', s.frontKnee, s.frontAnkle, W.shin);
+    d('frontFoot', s.frontAnkle, s.frontToe, W.foot);
+    d('neck', s.shoulder, s.headBase, [W.neck, W.neck]);
+    d('upperArm', s.shFront, s.elbow, W.upperArm);
+    d('foreArm', s.elbow, s.hand, W.foreArm);
+
+    place('handDot', s.hand);
+    refs.offHandDot.setAttribute('cx', s.offHand[0]);
+    refs.offHandDot.setAttribute('cy', s.offHand[1]);
+
     setLine(refs.shaft, s.hand, s.shaftEnd);
 
-    refs.head.setAttribute('cx', s.head[0]);
-    refs.head.setAttribute('cy', s.head[1]);
+    // Schaduw volgt de standbreedte, zodat een uitval ook breder afdrukt.
+    var mid = (s.backToe[0] + s.frontToe[0]) / 2;
+    var spread = Math.abs(s.frontToe[0] - s.backToe[0]) / 2;
+    refs.shadow.setAttribute('cx', mid);
+    refs.shadow.setAttribute('rx', 22 + spread);
+
+    place('head', s.head);
+    refs.head.setAttribute('transform',
+      'rotate(' + (s.headAngle + 90) + ',' + s.head[0] + ',' + s.head[1] + ')');
 
     var rc = s.racketHead;
     refs.racket.setAttribute('cx', rc[0]);

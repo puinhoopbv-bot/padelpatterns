@@ -1808,11 +1808,15 @@ body.debug-mode .version-marker { display: block; }
 .sa-glass { fill: rgba(120, 190, 255, 0.07); }
 .sa-glass-edge { stroke: rgba(120, 190, 255, 0.3); stroke-width: 1.5; }
 
-.sa-torso { stroke: #e6e9ee; }
-.sa-limb { stroke: #e6e9ee; fill: none; }
-.sa-limb-back { stroke: #7c8595; }
-.sa-head { fill: none; stroke: #e6e9ee; stroke-width: 3.5; }
-.sa-shaft { stroke: #cfd4dc; }
+/* Het lichaam is gevuld, niet gelijnd: getailleerde vormen lezen als ledematen,
+   lijnen van gelijke dikte lezen als stokken. */
+.sa-body { fill: #e6e9ee; stroke: none; }
+/* Alleen een koelere tint als diepte; te veel contrast maakt van de verre
+   ledematen gaten in plaats van een tweede been. */
+.sa-body-back { fill: #9aa4b2; }
+.sa-head { fill: #e6e9ee; stroke: none; }
+.sa-shadow { fill: rgba(0, 0, 0, 0.38); }
+.sa-shaft { stroke: #b9c0ca; }
 .sa-racket {
   fill: rgba(212, 255, 0, 0.10);
   stroke: #d4ff00;
