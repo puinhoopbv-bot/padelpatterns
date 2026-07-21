@@ -1779,3 +1779,135 @@ body.debug-mode .version-marker { display: block; }
   .shot-diagram { padding: 16px; }
   .shot-diagram figcaption { font-size: 12px; }
 }
+
+/* =====================================================================
+   SLAG-ANIMATIE — zijaanzicht van de uitvoering (js/stroke-animation.js)
+   Eigen containerklasse, niet .shot-diagram, zodat de regels voor de
+   statische diagrammen hier niet overheen vallen.
+   ===================================================================== */
+.stroke-anim {
+  margin: 40px 0;
+  padding: 24px 24px 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+}
+.stroke-anim .sa-stage {
+  position: relative;
+  /* hoogte vooraf gereserveerd, zodat de injectie geen layout shift geeft.
+     Moet gelijk blijven aan de viewBox in js/stroke-animation.js. */
+  aspect-ratio: 440 / 375;
+  max-width: 620px;
+  margin: 0 auto;
+}
+.sa-svg { display: block; width: 100%; height: 100%; }
+
+.sa-ground { stroke: rgba(255, 255, 255, 0.16); stroke-width: 1.5; }
+.sa-net { stroke: rgba(255, 255, 255, 0.13); stroke-width: 1.5; stroke-dasharray: 3 5; }
+.sa-net-tape { stroke: rgba(255, 255, 255, 0.22); stroke-width: 2.5; }
+
+.sa-torso { stroke: #e6e9ee; }
+.sa-limb { stroke: #e6e9ee; fill: none; }
+.sa-limb-back { stroke: #7c8595; }
+.sa-head { fill: none; stroke: #e6e9ee; stroke-width: 3.5; }
+.sa-shaft { stroke: #cfd4dc; }
+.sa-racket {
+  fill: rgba(212, 255, 0, 0.10);
+  stroke: #d4ff00;
+  stroke-width: 2.5;
+}
+.sa-trail-seg { stroke: #d4ff00; stroke-linecap: round; fill: none; }
+.sa-ball { fill: #d4ff00; }
+.sa-ball-core { fill: #ffffff; }
+
+.sa-phase {
+  position: absolute;
+  top: 6px; left: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  pointer-events: none;
+}
+
+.sa-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 4px auto 0;
+  max-width: 620px;
+}
+.sa-play {
+  flex-shrink: 0;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border-medium);
+  background: transparent;
+  position: relative;
+  transition: border-color 0.15s, background 0.15s;
+}
+.sa-play:hover { border-color: var(--accent); background: rgba(212, 255, 0, 0.06); }
+/* play-driehoek */
+.sa-play::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-40%, -50%);
+  border-left: 11px solid var(--accent);
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+}
+/* pauze-balken */
+.sa-play.is-playing::before {
+  border: 0;
+  transform: translate(-50%, -50%);
+  width: 4px; height: 13px;
+  background: var(--accent);
+  box-shadow: 7px 0 0 var(--accent);
+  margin-left: -3px;
+}
+
+.sa-dots { display: flex; gap: 4px; flex: 1; }
+.sa-dot {
+  flex: 1;
+  height: 3px;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: var(--border-medium);
+  transition: background 0.25s;
+}
+.sa-dot:hover { background: var(--text-dim); }
+.sa-dot.is-done { background: var(--text-faint); }
+.sa-dot.is-active { background: var(--accent); box-shadow: 0 0 8px rgba(212, 255, 0, 0.5); }
+
+.sa-caption {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text);
+  max-width: 620px;
+  margin: 14px auto 0;
+  min-height: 3em;             /* voorkomt springen bij wisselende faselengte */
+}
+.stroke-anim figcaption {
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  color: var(--text-faint);
+  line-height: 1.5;
+  max-width: 620px;
+  margin: 12px auto 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-light);
+}
+
+@media (max-width: 540px) {
+  .stroke-anim { padding: 16px 16px 14px; }
+  .sa-caption { font-size: 14px; min-height: 4.5em; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sa-trail-seg { display: none; }
+  .sa-dot { transition: none; }
+}
