@@ -18,6 +18,11 @@
 
   var GROUND = 380;
 
+  // Moet hierboven staan, niet bij de rest van de wiskunde verderop: de
+  // contactposes rekenen tijdens het opbouwen van STROKES al hun balpositie
+  // uit, en een `var` die later staat is op dat moment nog undefined.
+  var RAD = Math.PI / 180;
+
   // Segmentlengtes van een figuur van ongeveer 170px hoog.
   var SEG = {
     torso: 64, neck: 16, headR: 14,
@@ -58,6 +63,64 @@
       backThigh: 104, backShin: 80, frontThigh: 76, frontShin: 100,
       upperArm: -42, foreArm: -60, racket: -48,
       offUpper: -46, offFore: -58, ball: null
+    },
+
+    /* --- bandeja-familie: contact naast het hoofd, blad horizontaal --- */
+    PREP_SIDE: {
+      hip: [294, 292], torso: -95, headTilt: 8,
+      backThigh: 110, backShin: 74, frontThigh: 72, frontShin: 102,
+      upperArm: -80, foreArm: -118, racket: -170,
+      offUpper: -58, offFore: -44, ball: null
+    },
+    CONTACT_SHOULDER: {
+      hip: [302, 286], torso: -88, headTilt: -8,
+      backThigh: 100, backShin: 84, frontThigh: 78, frontShin: 98,
+      upperArm: -62, foreArm: -30, racket: 5,
+      offUpper: -34, offFore: -20, ball: 'racket'
+    },
+    FOLLOW_ACROSS: {
+      hip: [306, 286], torso: -82, headTilt: -6,
+      backThigh: 100, backShin: 84, frontThigh: 78, frontShin: 98,
+      upperArm: -28, foreArm: 18, racket: 40,
+      offUpper: 18, offFore: 48, ball: null
+    },
+
+    /* --- lage en midden-slagen --- */
+    READY_BASELINE: {
+      hip: [300, 288], torso: -86, headTilt: -4,
+      backThigh: 106, backShin: 78, frontThigh: 74, frontShin: 102,
+      upperArm: -28, foreArm: -40, racket: -25,
+      offUpper: -20, offFore: -38, ball: null
+    },
+    PREP_LOW: {
+      hip: [290, 296], torso: -98, headTilt: 10,
+      backThigh: 114, backShin: 70, frontThigh: 68, frontShin: 106,
+      upperArm: 15, foreArm: -30, racket: -160,
+      offUpper: -25, offFore: -5, ball: null
+    },
+    CONTACT_LOW: {
+      hip: [305, 292], torso: -80, headTilt: -8,
+      backThigh: 110, backShin: 74, frontThigh: 66, frontShin: 106,
+      upperArm: 18, foreArm: 30, racket: -15,
+      offUpper: -25, offFore: -45, ball: 'racket'
+    },
+    CONTACT_MID: {
+      hip: [303, 287], torso: -84, headTilt: -6,
+      backThigh: 104, backShin: 80, frontThigh: 74, frontShin: 100,
+      upperArm: -20, foreArm: -5, racket: 5,
+      offUpper: -38, offFore: -62, ball: 'racket'
+    },
+    FOLLOW_HIGH: {
+      hip: [307, 284], torso: -86, headTilt: -12,
+      backThigh: 100, backShin: 84, frontThigh: 76, frontShin: 100,
+      upperArm: -62, foreArm: -52, racket: -42,
+      offUpper: -34, offFore: -55, ball: null
+    },
+    FOLLOW_SHORT: {
+      hip: [304, 287], torso: -84, headTilt: -5,
+      backThigh: 103, backShin: 81, frontThigh: 75, frontShin: 100,
+      upperArm: -26, foreArm: -14, racket: -2,
+      offUpper: -36, offFore: -58, ball: null
     }
   };
 
@@ -68,32 +131,287 @@
     return p;
   }
 
-  /* ---- Slagdefinities ---- */
+  // ball: 'racket' betekent "leg de bal op de snaren". Dat wordt eenmalig
+  // uitgerekend uit de pose zelf, zodat het contactpunt nooit een paar pixels
+  // naast het blad kan liggen doordat er een hoek is bijgesteld.
+  function resolveBall(p) {
+    if (p.ball !== 'racket') return p;
+    var at = solve(p).racketHead;
+    if (!isFinite(at[0]) || !isFinite(at[1])) {
+      // Stil falen betekent hier: bal onzichtbaar op precies het frame dat de
+      // slag moet uitleggen. Liever luidruchtig.
+      throw new Error('stroke-animation: contactpunt onbepaald');
+    }
+    p.ball = at;
+    return p;
+  }
+
+  /* ---- Slagdefinities ----
+     Elke slag is vijf fasen. De teksten volgen de techniek-punten die al op de
+     bijbehorende pagina staan, zodat animatie en artikel hetzelfde zeggen. ---- */
+  function P(id, label, hold, ms, ease, text, p) {
+    return { id: id, label: label, hold: hold, ms: ms, ease: ease, text: text,
+             pose: resolveBall(p) };
+  }
+
   var STROKES = {
     smash: {
       name: 'Smash',
       phases: [
-        { id: 'klaar', label: 'Klaar', hold: 480, ms: 780, ease: 'inOut',
-          text: 'Je ziet de lob komen. Racket omhoog, schouders beginnen te draaien.',
-          pose: pose(BASE.READY, { ball: [470, 66] }) },
-        { id: 'trofee', label: 'Trofee-positie', hold: 400, ms: 260, ease: 'in',
-          text: 'Racket achter het hoofd, niet-slaande arm wijst naar de bal. Knie\u00ebn gebogen, gewicht achter.',
-          pose: pose(BASE.TROPHY, { ball: [420, 118] }) },
-        { id: 'contact', label: 'Contact', hold: 150, ms: 210, ease: 'out',
-          text: 'Hoogste punt, net v\u00f3\u00f3r je hoofd. Niet erboven, niet erachter. De pols geeft de versnelling.',
-          pose: pose(BASE.CONTACT_HIGH, { ball: [348, 100] }) },
-        { id: 'doorzwaai', label: 'Doorzwaai', hold: 240, ms: 520, ease: 'out',
-          text: 'Racket zwaait door naar beneden langs het lichaam. De bal vertrekt diagonaal, niet verticaal.',
-          pose: pose(BASE.FOLLOW_DOWN, { ball: [566, 214] }) },
-        { id: 'herstel', label: 'Herstel', hold: 900, ms: 620, ease: 'inOut',
-          text: 'Direct terug in balans. Een smash die je uit positie slaat, kost je het volgende punt.',
-          pose: pose(BASE.RECOVER, { ball: null }) }
+        P('klaar', 'Klaar', 480, 780, 'inOut',
+          'Je ziet de lob komen. Racket omhoog, schouders beginnen te draaien.',
+          pose(BASE.READY, { ball: [470, 66] })),
+        P('trofee', 'Trofee-positie', 400, 260, 'in',
+          'Racket achter het hoofd, niet-slaande arm wijst naar de bal. Knie\u00ebn gebogen, gewicht achter.',
+          pose(BASE.TROPHY, { ball: [420, 118] })),
+        P('contact', 'Contact', 150, 210, 'out',
+          'Hoogste punt, net v\u00f3\u00f3r je hoofd. Niet erboven, niet erachter. De pols geeft de versnelling.',
+          pose(BASE.CONTACT_HIGH, { ball: 'racket' })),
+        P('doorzwaai', 'Doorzwaai', 240, 520, 'out',
+          'Racket zwaait door naar beneden langs het lichaam. De bal vertrekt diagonaal, niet verticaal.',
+          pose(BASE.FOLLOW_DOWN, { ball: [566, 214] })),
+        P('herstel', 'Herstel', 900, 620, 'inOut',
+          'Direct terug in balans. Een smash die je uit positie slaat, kost je het volgende punt.',
+          pose(BASE.RECOVER, {}))
+      ]
+    },
+
+    bandeja: {
+      name: 'Bandeja',
+      phases: [
+        P('klaar', 'Klaar', 480, 760, 'inOut',
+          'De lob komt. Je draait je schouders en stapt zijwaarts achteruit, niet met je rug naar het net.',
+          pose(BASE.READY, { ball: [470, 78] })),
+        P('voorbereiding', 'Voorbereiding', 380, 300, 'in',
+          'Racket omhoog naast je hoofd, niet erachter. Lager dan bij een smash: dit wordt geen krachtslag.',
+          pose(BASE.PREP_SIDE, { ball: [424, 128] })),
+        P('contact', 'Contact', 170, 230, 'out',
+          'Contact naast je hoofd, op schouderhoogte. Het racketblad blijft horizontaal, dat houdt de bal vlak.',
+          pose(BASE.CONTACT_SHOULDER, { ball: 'racket' })),
+        P('doorzwaai', 'Doorzwaai', 240, 480, 'out',
+          'Doorzwaai naar voren en zijwaarts, niet omlaag. Je mikt op de hoek bij de zijwand.',
+          pose(BASE.FOLLOW_ACROSS, { ball: [578, 176] })),
+        P('herstel', 'Herstel', 900, 600, 'inOut',
+          'Je blijft in beweging naar het net. De bandeja is een overgangsslag, geen eindpunt.',
+          pose(BASE.RECOVER, {}))
+      ]
+    },
+
+    vibora: {
+      name: 'V\u00edbora',
+      phases: [
+        P('klaar', 'Klaar', 460, 740, 'inOut',
+          'Zelfde uitgangspositie als de bandeja. Het verschil zit in wat je er straks mee doet.',
+          pose(BASE.READY, { ball: [470, 72] })),
+        P('voorbereiding', 'Voorbereiding', 360, 280, 'in',
+          'Racket iets hoger dan bij de bandeja, en verder naar rechts. Je gaat de bal snijden, niet dragen.',
+          pose(BASE.PREP_SIDE, { upperArm: -84, foreArm: -126, ball: [422, 120] })),
+        P('contact', 'Contact', 160, 200, 'out',
+          'Het racket snijdt schuin over de bal, van buiten naar binnen. Dat geeft de zijwaartse spin.',
+          pose(BASE.CONTACT_SHOULDER, { upperArm: -68, foreArm: -38, racket: -14, ball: 'racket' })),
+        P('doorzwaai', 'Doorzwaai', 220, 440, 'out',
+          'Korte, scherpe doorzwaai langs het lichaam. De bal blijft laag en schiet weg naar de zijkant.',
+          pose(BASE.FOLLOW_ACROSS, { foreArm: 28, racket: 55, ball: [580, 198] })),
+        P('herstel', 'Herstel', 880, 580, 'inOut',
+          'Mix hem met de bandeja, ongeveer dertig om zeventig. Alleen v\u00edbora slaan maakt je leesbaar.',
+          pose(BASE.RECOVER, {}))
+      ]
+    },
+
+    rulo: {
+      name: 'Rulo',
+      phases: [
+        P('klaar', 'Klaar', 470, 760, 'inOut',
+          'Een rulo begint als een gewone smash. Pas op het laatste moment wijkt hij af.',
+          pose(BASE.READY, { ball: [470, 66] })),
+        P('trofee', 'Trofee-positie', 380, 260, 'in',
+          'Volle trofee-positie. Voor de rulo heb je racketsnelheid nodig, dus geen halve voorbereiding.',
+          pose(BASE.TROPHY, { ball: [420, 116] })),
+        P('contact', 'Contact', 160, 210, 'out',
+          'Je borstelt over de bovenkant van de bal in plaats van erdoorheen. Dat is de topspin die hem laat duiken.',
+          pose(BASE.CONTACT_HIGH, { foreArm: -62, racket: -40, ball: 'racket' })),
+        P('doorzwaai', 'Doorzwaai', 240, 540, 'out',
+          'Lange doorzwaai naar beneden en over. De bal stuitert hard, raakt het glas onder de rand en rolt zijwaarts weg.',
+          pose(BASE.FOLLOW_DOWN, { foreArm: 62, racket: 108, ball: [556, 236] })),
+        P('herstel', 'Herstel', 900, 620, 'inOut',
+          'Pas aan de rulo beginnen als je basis-smash al zes van de tien keer goed landt.',
+          pose(BASE.RECOVER, {}))
+      ]
+    },
+
+    gancho: {
+      name: 'Gancho',
+      phases: [
+        P('klaar', 'Klaar', 470, 760, 'inOut',
+          'De lob gaat naar je backhand-kant. Je draait verder door dan bij een bandeja.',
+          pose(BASE.READY, { upperArm: -62, foreArm: -88, racket: -80, ball: [462, 74] })),
+        P('voorbereiding', 'Voorbereiding', 380, 290, 'in',
+          'Schouder onder de bal, racket achter je backhand-schouder. Je rug staat half naar het net.',
+          pose(BASE.PREP_SIDE, { torso: -103, upperArm: -96, foreArm: -150, racket: 150, ball: [420, 124] })),
+        P('contact', 'Contact', 170, 220, 'out',
+          'Contact boven je backhand-schouder. De pols haakt naar buiten, daar komt de naam vandaan.',
+          pose(BASE.CONTACT_SHOULDER, { torso: -92, upperArm: -74, foreArm: -46, racket: -22, ball: 'racket' })),
+        P('doorzwaai', 'Doorzwaai', 230, 470, 'out',
+          'De bal draait weg van je tegenstander richting de zijwand. Een backhand-bandeja gaat rechtdoor, deze niet.',
+          pose(BASE.FOLLOW_ACROSS, { racket: 30, ball: [574, 192] })),
+        P('herstel', 'Herstel', 880, 600, 'inOut',
+          'Bouw hem pas als je backhand-bandeja staat. De gancho is een toplaag op een fundament.',
+          pose(BASE.RECOVER, {}))
+      ]
+    },
+
+    bajada: {
+      name: 'Bajada',
+      backGlass: true,
+      phases: [
+        P('klaar', 'Klaar', 470, 720, 'inOut',
+          'De bal gaat over je heen richting het glas. Je draait mee en loopt met de bal naar achteren.',
+          pose(BASE.READY, { upperArm: -40, foreArm: -60, racket: -50, ball: [372, 108] })),
+        P('wachten', 'Laat het glas werken', 520, 300, 'inOut',
+          'Je wacht de stuit af. Na het glas is het een nieuwe bal: trager, lager en voorspelbaar.',
+          pose(BASE.PREP_LOW, { hip: [286, 294], ball: [208, 248] })),
+        P('contact', 'Contact', 170, 240, 'out',
+          'Contact op heup- tot borsthoogte, gewicht naar voren. Je slaat m\u00e9t de bal mee het veld weer in.',
+          pose(BASE.CONTACT_MID, { ball: 'racket' })),
+        P('doorzwaai', 'Doorzwaai', 230, 480, 'out',
+          'Vlakke doorzwaai naar voren. Geen winner forceren: dit is je uitweg uit de verdediging.',
+          pose(BASE.FOLLOW_SHORT, { upperArm: -34, foreArm: -28, racket: -18, ball: [572, 212] })),
+        P('herstel', 'Herstel', 900, 620, 'inOut',
+          'En dan naar voren. De bajada is pas geslaagd als je er het net mee wint.',
+          pose(BASE.RECOVER, {}))
+      ]
+    },
+
+    chiquita: {
+      name: 'Chiquita',
+      phases: [
+        P('klaar', 'Klaar', 470, 740, 'inOut',
+          'Comfortabele bal achterin. Je instinct zegt hard slaan; dat is precies wat je niet doet.',
+          pose(BASE.READY_BASELINE, { ball: [524, 232] })),
+        P('voorbereiding', 'Voorbereiding', 380, 300, 'in',
+          'Racket kort naar achteren en laag. Korte voorbereiding, want een lange zwaai maakt hem te hard.',
+          pose(BASE.PREP_LOW, { ball: [404, 268] })),
+        P('contact', 'Contact', 180, 230, 'out',
+          'Contact laag en v\u00f3\u00f3r je, met een licht open blad. Geen kracht, alleen richting.',
+          pose(BASE.CONTACT_LOW, { ball: 'racket' })),
+        P('doorzwaai', 'Doorzwaai', 240, 420, 'out',
+          'Nauwelijks doorzwaai. De bal moet net over het net en dan dood naar beneden, op hun voeten.',
+          pose(BASE.FOLLOW_SHORT, { upperArm: 2, foreArm: 6, racket: -10, ball: [572, 302] })),
+        P('herstel', 'Herstel', 900, 600, 'inOut',
+          'Direct doorlopen naar voren. De chiquita is een uitnodiging om het net te pakken.',
+          pose(BASE.RECOVER, {}))
+      ]
+    },
+
+    globo: {
+      name: 'Globo',
+      phases: [
+        P('klaar', 'Klaar', 470, 740, 'inOut',
+          'Kijk eerst naar hun voeten. Hielen tegen het net is het perfecte lob-moment.',
+          pose(BASE.READY_BASELINE, { ball: [522, 246] })),
+        P('voorbereiding', 'Voorbereiding', 370, 300, 'in',
+          'Racket laag en onder de baan van de bal. Je gaat hem optillen, niet wegslaan.',
+          pose(BASE.PREP_LOW, { ball: [400, 282] })),
+        P('contact', 'Contact', 170, 240, 'out',
+          'Contact onder de bal met een open blad. Dezelfde slag als een drive, alleen anders gericht.',
+          pose(BASE.CONTACT_LOW, { racket: -32, ball: 'racket' })),
+        P('doorzwaai', 'Doorzwaai', 250, 520, 'out',
+          'Hoge doorzwaai. Diep mikken, achter hun hoofd: een korte lob is een cadeau.',
+          pose(BASE.FOLLOW_HIGH, { ball: [556, 62] })),
+        P('herstel', 'Herstel', 900, 600, 'inOut',
+          'En meteen naar voren. De lob is een aanval, geen vlucht.',
+          pose(BASE.RECOVER, {}))
+      ]
+    },
+
+    contralob: {
+      name: 'Contralob',
+      backGlass: true,
+      phases: [
+        P('klaar', 'Klaar', 470, 740, 'inOut',
+          'Je staat onder druk achterin. Zij hebben het net en wachten op je fout.',
+          pose(BASE.READY_BASELINE, { hip: [294, 290], ball: [528, 234] })),
+        P('voorbereiding', 'Voorbereiding', 380, 300, 'in',
+          'Vaak na een glas-stuit. Racket laag, lichaam gestrekt, je pakt de bal op het laatste moment.',
+          pose(BASE.PREP_LOW, { hip: [286, 296], ball: [402, 288] })),
+        P('contact', 'Contact', 180, 250, 'out',
+          'Contact laag en uitgestrekt. Blad ver open, want deze bal moet hoog en diep.',
+          pose(BASE.CONTACT_LOW, { hip: [300, 294], racket: -38, ball: 'racket' })),
+        P('doorzwaai', 'Doorzwaai', 250, 520, 'out',
+          'Hoog doorzwaaien. Geen redmiddel maar een reset-knop: je zet de rally weer gelijk.',
+          pose(BASE.FOLLOW_HIGH, { ball: [552, 70] })),
+        P('herstel', 'Herstel', 900, 600, 'inOut',
+          'Terug in positie en opnieuw beginnen. Geduld is hier een offensief wapen.',
+          pose(BASE.RECOVER, {}))
+      ]
+    },
+
+    volea: {
+      name: 'Volea',
+      phases: [
+        P('klaar', 'Klaar', 460, 700, 'inOut',
+          'Je staat aan het net, racket voor je op borsthoogte. Handen klaar, geen zwaai in gedachten.',
+          pose(BASE.READY_BASELINE, { upperArm: -34, foreArm: -48, racket: -20, ball: [540, 204] })),
+        P('voorbereiding', 'Voorbereiding', 300, 240, 'in',
+          'Nauwelijks naar achteren. Alleen je schouder draait mee; de bal heeft zijn snelheid al.',
+          pose(BASE.READY_BASELINE, { torso: -90, upperArm: -44, foreArm: -70, racket: -46, ball: [432, 202] })),
+        P('contact', 'Contact', 160, 200, 'out',
+          'Kort blokkeren v\u00f3\u00f3r je lichaam. Tachtig procent van je volleys hoort controle te zijn, geen winner.',
+          pose(BASE.CONTACT_MID, { ball: 'racket' })),
+        P('doorzwaai', 'Doorzwaai', 230, 400, 'out',
+          'Korte duw naar voren en diep. Placering wint hier van kracht, elke keer.',
+          pose(BASE.FOLLOW_SHORT, { ball: [578, 238] })),
+        P('herstel', 'Herstel', 880, 560, 'inOut',
+          'Racket direct terug in het midden. Aan het net krijg je de volgende bal sneller dan je denkt.',
+          pose(BASE.RECOVER, { upperArm: -34, foreArm: -48, racket: -20 }))
+      ]
+    },
+
+    dejada: {
+      name: 'Dejada',
+      phases: [
+        P('klaar', 'Klaar', 460, 700, 'inOut',
+          'Zelfde houding als elke andere volley. Als ze zien dat je iets anders van plan bent, werkt hij niet.',
+          pose(BASE.READY_BASELINE, { upperArm: -34, foreArm: -48, racket: -20, ball: [536, 208] })),
+        P('voorbereiding', 'Voorbereiding', 300, 250, 'in',
+          'Geen extra voorbereiding. Precies dezelfde aanzet als een diepe volley, tot het laatste moment.',
+          pose(BASE.READY_BASELINE, { torso: -89, upperArm: -42, foreArm: -66, racket: -42, ball: [430, 206] })),
+        P('contact', 'Contact', 190, 230, 'out',
+          'Je vangt de bal op met een open blad en laat je hand meegeven. De snelheid moet eruit.',
+          pose(BASE.CONTACT_MID, { racket: -30, ball: 'racket' })),
+        P('doorzwaai', 'Doorzwaai', 250, 420, 'out',
+          'Vrijwel geen doorzwaai. De bal valt net over het net en stuitert twee keer voordat zij er zijn.',
+          pose(BASE.FOLLOW_SHORT, { upperArm: -22, foreArm: -12, racket: -22, ball: [548, 322] })),
+        P('herstel', 'Herstel', 900, 580, 'inOut',
+          'E\u00e9n keer per wedstrijd, op het juiste moment. Vaker en het verrassingseffect is weg.',
+          pose(BASE.RECOVER, { upperArm: -34, foreArm: -48, racket: -20 }))
+      ]
+    },
+
+    saque: {
+      name: 'Saque',
+      phases: [
+        P('klaar', 'Klaar', 520, 640, 'inOut',
+          'Achter de servicelijn, bal in je vrije hand. Je kiest je plek al voordat je stuitert.',
+          pose(BASE.READY_BASELINE, { upperArm: -18, foreArm: -34, racket: -18,
+                                      offUpper: 18, offFore: 22, ball: [340, 262] })),
+        P('stuit', 'Stuit', 420, 300, 'in',
+          'De bal moet eerst stuiteren en onder heuphoogte geraakt worden. Dat is geen stijl, dat is de regel.',
+          pose(BASE.PREP_LOW, { offUpper: 30, offFore: 46, ball: [346, 370] })),
+        P('contact', 'Contact', 170, 230, 'out',
+          'Contact onder je heup, met een vlak blad. Niet hard, wel gericht: je stuurt hun retour.',
+          pose(BASE.CONTACT_LOW, { racket: -10, ball: 'racket' })),
+        P('doorzwaai', 'Doorzwaai', 240, 460, 'out',
+          'Doorzwaai richting de kruising. Een opslag naar het glas dwingt een voorspelbare retour af.',
+          pose(BASE.FOLLOW_SHORT, { upperArm: -16, foreArm: -6, racket: -12, ball: [578, 276] })),
+        P('herstel', 'Herstel', 900, 600, 'inOut',
+          'En direct naar voren. Opslaan en blijven staan verliest je opslag-games.',
+          pose(BASE.RECOVER, {}))
       ]
     }
   };
 
   /* ---- Wiskunde ---- */
-  var RAD = Math.PI / 180;
   function step(p, deg, len) {
     return [p[0] + Math.cos(deg * RAD) * len, p[1] + Math.sin(deg * RAD) * len];
   }
@@ -182,6 +500,13 @@
     svg.appendChild(el('line', { class: 'sa-ground', x1: 155, y1: GROUND, x2: 585, y2: GROUND }));
     svg.appendChild(el('line', { class: 'sa-net', x1: 556, y1: GROUND, x2: 556, y2: GROUND - 84 }));
     svg.appendChild(el('line', { class: 'sa-net-tape', x1: 538, y1: GROUND - 84, x2: 574, y2: GROUND - 84 }));
+
+    // Slagen die van de achterwand af gespeeld worden hebben die wand nodig,
+    // anders komt de bal uit het niets terug.
+    if (stroke.backGlass) {
+      svg.appendChild(el('rect', { class: 'sa-glass', x: 168, y: GROUND - 196, width: 12, height: 196 }));
+      svg.appendChild(el('line', { class: 'sa-glass-edge', x1: 180, y1: GROUND - 196, x2: 180, y2: GROUND }));
+    }
 
     var g = el('g', { class: 'sa-figure' });
 
