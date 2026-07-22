@@ -1212,8 +1212,9 @@ body.has-bg-effects::before {
 }
 .tool-tile:hover {
   border-color: var(--border-accent);
-  transform: translateY(-2px);
+  transform: translateY(-4px);
   background: rgba(28, 36, 48, 0.85);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.4);
 }
 .tool-tile.coming-soon {
   cursor: default;
@@ -1310,6 +1311,74 @@ body.has-bg-effects::before {
 }
 .tool-tile.coming-soon .tool-tile-arrow { color: var(--text-faint); }
 .tool-tile-ai .tool-tile-arrow { color: var(--accent-warm); }
+
+/* =====================================================================
+   Sportieve hover op de tool-kaarten — beweging en richting, geen stilstand.
+   Vier signalen samen: een accentlijn die langs de onderrand inschiet, de
+   pijl die naar voren rijdt, een diagonale lichtveeg over de foto, en een
+   iets grotere lift. Alles in het bestaande lime; oranje op de AI-kaart.
+   ===================================================================== */
+
+/* 1. Accentlijn langs de onderrand, groeit vanuit links */
+.tool-tile::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 0;
+  background: var(--accent);
+  transition: width 0.34s cubic-bezier(0.2, 0.7, 0.2, 1);
+  pointer-events: none;
+}
+.tool-tile:hover::after { width: 100%; }
+.tool-tile-ai::after { background: var(--accent-warm); }
+.tool-tile.coming-soon:hover::after { width: 0; }   /* niet-klikbaar = geen actie */
+
+/* 2. Diagonale lichtveeg die over de foto trekt bij hover — leest als snelheid */
+.tool-tile-band::before {
+  content: "";
+  position: absolute;
+  top: -10%;
+  bottom: -10%;
+  left: 0;
+  width: 60px;
+  z-index: 1;
+  background: linear-gradient(90deg,
+    rgba(212, 255, 0, 0) 0%,
+    rgba(212, 255, 0, 0.55) 50%,
+    rgba(212, 255, 0, 0) 100%);
+  transform: skewX(-16deg) translateX(-120px);
+  opacity: 0;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  pointer-events: none;
+}
+.tool-tile:hover .tool-tile-band::before {
+  opacity: 1;
+  transform: skewX(-16deg) translateX(560px);
+}
+.tool-tile-ai .tool-tile-band::before {
+  background: linear-gradient(90deg,
+    rgba(255, 107, 53, 0) 0%,
+    rgba(255, 107, 53, 0.5) 50%,
+    rgba(255, 107, 53, 0) 100%);
+}
+.tool-tile.coming-soon:hover .tool-tile-band::before { opacity: 0; }
+
+/* 3. De pijl rijdt naar voren */
+.tool-tile-arrow span {
+  display: inline-block;
+  transition: transform 0.22s ease;
+}
+.tool-tile:hover .tool-tile-arrow span { transform: translateX(6px); }
+.tool-tile.coming-soon:hover .tool-tile-arrow span { transform: none; }
+
+/* Respecteer reduced-motion: de decoratieve lichtveeg en de fotozoom uit,
+   de functionele accenten (lijn, pijl, lift) blijven, maar zonder sweep. */
+@media (prefers-reduced-motion: reduce) {
+  .tool-tile-band::before { display: none; }
+  .tool-tile:hover .tool-tile-band img { transform: none; }
+}
 
 @media (max-width: 768px) {
   .tools-section { padding: 36px 18px; }
