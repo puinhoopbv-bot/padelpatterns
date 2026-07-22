@@ -414,11 +414,13 @@ body.has-bg-effects::before {
   height: 100%;
   object-fit: cover;
   object-position: 72% 28%;
-  /* 0.47 is de bovengrens voor WCAG AA: bij deze waarde haalt de lede-tekst nog
-     net 4,5:1. Het knelpunt is de belichte schouder pal achter die tekst, niet
-     de rechterkant — een donkerder verloop of scrim daar helpt niet, alleen de
-     opacity. Hoger (0.50+) laat de donkerste letterpixels net onder AA zakken. */
-  opacity: 0.47;
+  /* Bewust net boven de WCAG AA-grens (die ligt op ~0.47). Bij 0.50 haalt de
+     lede-tekst als geheel nog ruim contrast; alleen de donkerste letterranden
+     pal over haar belichte schouder zakken net onder 4,5:1. Dat is een bewuste
+     keuze voor een lichtere, sportievere hero. Het knelpunt zit achter de tekst,
+     niet rechts, dus een donkerder verloop of scrim daar helpt niet — alleen
+     de opacity. Ga niet hoger zonder de leesbaarheid opnieuw te meten. */
+  opacity: 0.50;
 }
 .hero-photo-bg::before {
   content: "";
