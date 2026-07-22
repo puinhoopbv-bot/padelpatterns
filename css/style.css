@@ -414,10 +414,11 @@ body.has-bg-effects::before {
   height: 100%;
   object-fit: cover;
   object-position: 72% 28%;
-  /* 0.44 is de bovengrens. Het knelpunt is niet de rechterkant maar de belichte
-     schouder achter de lede-tekst; het verschuiven van de gradient-overgang
-     verandert daar niets aan, de opacity wel. */
-  opacity: 0.44;
+  /* 0.47 is de bovengrens voor WCAG AA: bij deze waarde haalt de lede-tekst nog
+     net 4,5:1. Het knelpunt is de belichte schouder pal achter die tekst, niet
+     de rechterkant — een donkerder verloop of scrim daar helpt niet, alleen de
+     opacity. Hoger (0.50+) laat de donkerste letterpixels net onder AA zakken. */
+  opacity: 0.47;
 }
 .hero-photo-bg::before {
   content: "";
