@@ -413,7 +413,13 @@ body.has-bg-effects::before {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 72% 28%;
+  object-position: 70% 30%;
+  /* Horizontaal gespiegeld. In de bronfoto staat haar gezicht links, precies
+     waar de links uitgelijnde titel valt — daardoor bedekte "MIST." haar mond.
+     Gespiegeld staat haar gezicht rechts, in de lichte zone zonder tekst, en
+     loopt haar uitgestrekte arm achter de titel langs. Dit sluit ook aan op het
+     verloop (donker links achter de tekst, licht rechts achter het gezicht). */
+  transform: scaleX(-1);
   /* Bewust net boven de WCAG AA-grens (die ligt op ~0.47). Bij 0.50 haalt de
      lede-tekst als geheel nog ruim contrast; alleen de donkerste letterranden
      pal over haar belichte schouder zakken net onder 4,5:1. Dat is een bewuste
