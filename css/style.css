@@ -489,6 +489,14 @@ body.has-bg-effects::before {
   flex-wrap: wrap;
   gap: 0.16em 0.28em;
   max-width: 1200px;
+  /* Donkere schaduw zodat de lichte letters loskomen van de foto. Zonder deze
+     versmolt de bovenkant van haar hoofd, dat recht achter de titel valt, met
+     de witte woorden. De brede tweede laag verdonkert het beeld rond de letters
+     en geeft haar silhouet een rand. Sterker dan dit maakt er een zichtbare
+     donkere balk achter de titel van. */
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.5),
+    0 4px 44px rgba(0, 0, 0, 0.62);
 }
 
 .hero-typo-title .word {
@@ -506,7 +514,11 @@ body.has-bg-effects::before {
 
 .hero-typo-title .word.accent {
   color: var(--accent);
+  /* Een eigen text-shadow vervangt de basisschaduw hierboven, dus de donkere
+     laag wordt hier meegenomen naast de lime-gloed. */
   text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.5),
+    0 4px 44px rgba(0, 0, 0, 0.5),
     0 0 40px rgba(212, 255, 0, 0.4),
     0 0 80px rgba(212, 255, 0, 0.2);
 }
