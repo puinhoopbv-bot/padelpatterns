@@ -2170,12 +2170,14 @@ body.debug-mode .version-marker { display: block; }
    ===================================================================== */
 .compare-callout {
   max-width: 1200px;
-  margin: 4px auto 0;
-  padding: 22px 28px;
+  /* Ruime bovenmarge zodat de callout losstaat van de kaart-grid erboven —
+     met 4px plakte hij eraan vast. */
+  margin: 48px auto 0;
+  padding: 28px 34px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px 16px;
+  gap: 14px 28px;
   background: var(--bg-card);
   border: 1px solid var(--border-light);
   border-left: 3px solid var(--accent);
