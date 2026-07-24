@@ -2072,3 +2072,94 @@ body.debug-mode .version-marker { display: block; }
 @media (max-width: 540px) {
   .tool-about { padding: 40px 18px 56px; }
 }
+
+/* =====================================================================
+   FAQ — veelgestelde vragen onder een artikel. Native <details>/<summary>,
+   dus toegankelijk en crawlbaar zonder JS. Targets long-tail zoekvragen.
+   ===================================================================== */
+.faq {
+  margin: 8px 0 8px;
+  border-top: 1px solid var(--border-light);
+}
+.faq-item {
+  border-bottom: 1px solid var(--border-light);
+}
+.faq-item > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 20px 40px 20px 0;
+  position: relative;
+  font-family: var(--font-ui);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.4;
+  transition: color 0.15s;
+}
+.faq-item > summary::-webkit-details-marker { display: none; }
+.faq-item > summary:hover { color: var(--accent); }
+/* plus/kruis-teken rechts */
+.faq-item > summary::after {
+  content: "";
+  position: absolute;
+  right: 6px;
+  top: 26px;
+  width: 12px;
+  height: 12px;
+  background:
+    linear-gradient(var(--accent), var(--accent)) center/12px 2px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) center/2px 12px no-repeat;
+  transition: transform 0.25s ease;
+}
+.faq-item[open] > summary::after { transform: rotate(45deg); }
+.faq-item > p {
+  margin: 0 0 22px;
+  padding-right: 40px;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--text-dim);
+}
+@media (max-width: 540px) {
+  .faq-item > summary { font-size: 16px; padding-right: 32px; }
+}
+
+/* =====================================================================
+   COMPARE-TABLE — vergelijkingstabel op de "X vs Y"-pagina's.
+   Scrollt horizontaal op smalle schermen i.p.v. de pagina te breken.
+   ===================================================================== */
+.compare-wrap { overflow-x: auto; margin: 8px 0 32px; }
+.compare-table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+  font-family: var(--font-ui);
+}
+.compare-table th, .compare-table td {
+  text-align: left;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-light);
+  vertical-align: top;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.compare-table thead th {
+  font-family: var(--font-display);
+  font-size: 20px;
+  letter-spacing: 0.02em;
+  color: var(--text);
+  border-bottom: 1px solid var(--border-medium);
+}
+.compare-table thead th:first-child { color: var(--text-faint); font-size: 12px;
+  font-family: var(--font-mono); letter-spacing: 0.16em; text-transform: uppercase; }
+.compare-table tbody th {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  font-weight: 400;
+  white-space: nowrap;
+}
+.compare-table td { color: var(--text-dim); }
+.compare-table td.col-a { color: var(--text); }
