@@ -2163,3 +2163,37 @@ body.debug-mode .version-marker { display: block; }
 }
 .compare-table td { color: var(--text-dim); }
 .compare-table td.col-a { color: var(--text); }
+
+/* =====================================================================
+   COMPARE-CALLOUT — verwijzing naar de vergelijkingspagina's, o.a. onder
+   de homepage-leersectie en als hub-blok op /slagen.
+   ===================================================================== */
+.compare-callout {
+  max-width: 1200px;
+  margin: 4px auto 0;
+  padding: 22px 28px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-left: 3px solid var(--accent);
+}
+.compare-callout p {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--text-dim);
+  flex: 1 1 320px;
+}
+.compare-callout p strong { color: var(--text); font-weight: 600; }
+.compare-callout a {
+  font-family: var(--font-display);
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  white-space: nowrap;
+}
+.compare-callout a span { display: inline-block; transition: transform 0.2s; }
+.compare-callout a:hover span { transform: translateX(4px); }
