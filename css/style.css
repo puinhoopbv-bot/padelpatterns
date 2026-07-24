@@ -2033,3 +2033,44 @@ body.debug-mode .version-marker { display: block; }
   .sa-trail-seg { display: none; }
   .sa-dot { transition: none; }
 }
+
+/* =====================================================================
+   TOOL-ABOUT — statische SEO/uitleg-sectie onder de interactieve tool.
+   Blijvend in de DOM (de JS-app raakt 'm niet aan), zodat crawlers en
+   bezoekers zonder JS de tool-uitleg + H1 zien. Onder de app geplaatst,
+   dus het verstoort de interactie niet.
+   ===================================================================== */
+.tool-about {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 56px 32px 72px;
+  border-top: 1px solid var(--border-light);
+}
+.tool-about h1 {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 40px);
+  letter-spacing: 0.01em;
+  line-height: 1.05;
+  color: var(--text);
+  margin: 0 0 20px;
+}
+.tool-about p {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--text-dim);
+  margin: 0 0 16px;
+  max-width: 68ch;
+}
+.tool-about p strong { color: var(--text); font-weight: 600; }
+.tool-about .tool-about-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+@media (max-width: 540px) {
+  .tool-about { padding: 40px 18px 56px; }
+}
