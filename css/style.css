@@ -420,13 +420,11 @@ body.has-bg-effects::before {
      loopt haar uitgestrekte arm achter de titel langs. Dit sluit ook aan op het
      verloop (donker links achter de tekst, licht rechts achter het gezicht). */
   transform: scaleX(-1);
-  /* Bewust net boven de WCAG AA-grens (die ligt op ~0.47). Bij 0.50 haalt de
-     lede-tekst als geheel nog ruim contrast; alleen de donkerste letterranden
-     pal over haar belichte schouder zakken net onder 4,5:1. Dat is een bewuste
-     keuze voor een lichtere, sportievere hero. Het knelpunt zit achter de tekst,
-     niet rechts, dus een donkerder verloop of scrim daar helpt niet — alleen
-     de opacity. Ga niet hoger zonder de leesbaarheid opnieuw te meten. */
-  opacity: 0.50;
+  /* Sinds de spiegeling staat de tekst over haar arm en de donkere baan (niet
+     meer over haar witte shirt), dus er is ruim contrast-marge: bij 0.50 haalde
+     de lede al ~6,2:1 tegen 4,5 nodig. Daardoor kan de foto lichter zonder de
+     leesbaarheid te raken. Boven ~0.65 zou ik het contrast opnieuw meten. */
+  opacity: 0.58;
 }
 .hero-photo-bg::before {
   content: "";
