@@ -14,7 +14,7 @@
 
   <style>
     /* =====================================================================
-       SHOT DECIDER — tool-specific styles
+       SHOT DECIDER, tool-specific styles
        Reuses RF/Spelregels patterns: progress bar, options, verdict layout
        ===================================================================== */
     .sd-wrap {
@@ -666,7 +666,7 @@
     'use strict';
 
     // =================================================================
-    // DATA — Questions
+    // DATA, Questions
     // =================================================================
     const QUESTIONS = [
       {
@@ -731,7 +731,7 @@
     ];
 
     // =================================================================
-    // DATA — Shots (the vocabulary the engine picks from)
+    // DATA, Shots (the vocabulary the engine picks from)
     // =================================================================
     const SHOTS = {
       smash: {
@@ -841,7 +841,7 @@
     //   • Position at net + opponents at net + green ball  → smash / middle-ball
     //   • Position at net + opp at net + orange            → bandeja or low volley to feet
     //   • Position at net + low ball                       → low volley defensive
-    //   • Mid-court + any                                  → recover the net (lob or rush) — never stay there
+    //   • Mid-court + any                                  → recover the net (lob or rush), never stay there
     //   • Back-court + low                                 → defensive lift / globo
     //   • Back-court + green from wall                     → bajada
     //   • Wall position = explicitly after-glass shot
@@ -888,7 +888,7 @@
           alt: 'globo', altWhy: 'Als je echt niets kan: leg een verdedigende lob, vanaf het net. Geeft jullie tijd om te herstellen.' };
       }
 
-      // --- Position: MID-COURT (the no-man's-land — never stay here) ---
+      // --- Position: MID-COURT (the no-man's-land, never stay here) ---
       if (position === 'mid') {
         if (height === 'green') {
           return { primary: 'bandeja', primaryWhy:
@@ -900,7 +900,7 @@
             'Mid-court is dé positie waar je niet wil blijven. Middelhoge bal = lob over hun hoofd, dan loop je naar het net waar je hoort.',
             alt: 'flat-volley', altWhy: 'Of de korte half-volley diep: speel de bal terug en sprint mee. Eerst de slag, dán de positie.' };
         }
-        // red — worst spot on the court
+        // red, worst spot on the court
         if (pressure === 'pressed') {
           return { primary: 'globo', primaryWhy:
             'Lage bal in mid-court onder druk = de slechtste situatie. Eén ding telt: tijd kopen. Hoge lob, diep, vergeet de hoek. Overleven dan herpakken.',
@@ -931,7 +931,7 @@
               'Hoge bal achterin tegen tegenstanders óók achterin: niemand drukt. Geen reden om te lobben, niemand staat aan het net. Speel een diepe rally-bal en kijk wie als eerste fouten maakt.',
               alt: 'bandeja', altWhy: 'Als je de bal écht hoog en op tijd raakt: een bandeja-stijl slice diep. Zet jullie team in marscamodus naar het net.' };
           }
-          // split: one opp at net — lob over their net player
+          // split: one opp at net, lob over their net player
           return { primary: 'globo', primaryWhy:
             'Eén tegenstander aan het net, één achterin + hoge bal voor jou = lob over de net-speler heen, diep in hun helft. Forceer een collision-moment tussen hen.',
             alt: 'contralob', altWhy: 'Met tijd: een diepe contralob naar de open hoek. De net-speler kan onmogelijk recoveren.' };
@@ -990,7 +990,7 @@
             'Bal stuit middelhoog uit glas, niemand drukt jullie aan het net: geen reden voor risico. Diepe rally-bal middenin, behoud positie.',
             alt: 'globo', altWhy: 'Of lob als je de extra meter onder de bal kunt komen. Neutraliseert hun net-formatie als die zich vormt.' };
         }
-        // red — low after wall
+        // red, low after wall
         if (pressure === 'pressed') {
           return { primary: 'globo', primaryWhy:
             'Lage stuit uit glas onder druk = de moeilijkste bal in padel. Buig diep door je benen, schep de bal omhoog. Hoogte vóór alles. Diep helpt, maar omhoog is wat telt.',
@@ -1004,7 +1004,7 @@
 
     // Override: a few special cases catch all states
     function overrideForSpecialCases(choices) {
-      // Service return (back-court, free choice, opponents at net = serving team) — only when at back-court & free pressure
+      // Service return (back-court, free choice, opponents at net = serving team), only when at back-court & free pressure
       // Skipped because it's well covered by defensive-return + globo logic
       return null;
     }
@@ -1114,7 +1114,7 @@
       svg.appendChild(net);
 
       // --- 2. Player positions (you = bottom half) ---
-      // Your partner — always at front (net), since standard padel
+      // Your partner, always at front (net), since standard padel
       const partner = document.createElementNS(ns, 'circle');
       partner.setAttribute('cx', '85');
       partner.setAttribute('cy', '195');
@@ -1123,7 +1123,7 @@
       partner.setAttribute('opacity', '0.5');
       svg.appendChild(partner);
 
-      // YOU — position changes by choices.position
+      // YOU, position changes by choices.position
       let yourCx = 155, yourCy = 285; // default back-court
       if (choices.position === 'net')  { yourCx = 155; yourCy = 195; }
       if (choices.position === 'mid')  { yourCx = 155; yourCy = 230; }
@@ -1174,7 +1174,7 @@
       if (choices.height) {
         // Direction the ball comes from (toward the opponents' half = "up" in SVG)
         // For 'wall' position, the ball comes from your side (back glass), not
-        // straight from the opponents — reflect that by approaching from behind you.
+        // straight from the opponents, reflect that by approaching from behind you.
         const fromBehind = (choices.position === 'wall');
         // x-offset: slight forehand-side bias (right of player for right-handers)
         const xOff = fromBehind ? 14 : -10;
@@ -1192,7 +1192,7 @@
         const traj = document.createElementNS(ns, 'path');
         let trajStart;
         if (fromBehind) {
-          // From behind the player — from the back-glass region
+          // From behind the player, from the back-glass region
           trajStart = { x: yourCx + 35, y: 315 };
         } else {
           // From opponents
@@ -1245,7 +1245,7 @@
         const shotId = decision.primary;
         const target = recommendedTarget(shotId, choices);
         if (target) {
-          // Curve depending on shot type — lob/contralob = high arc;
+          // Curve depending on shot type, lob/contralob = high arc;
           // smash/bajada = sharper straighter line; bandeja/víbora = mid-arc
           const arc = ({
             globo: 60, contralob: 50,
@@ -1279,7 +1279,7 @@
           path.setAttribute('marker-end', 'url(#shot-arrow)');
           svg.appendChild(path);
 
-          // Tiny target indicator at the impact point — small ring, not a filled disc
+          // Tiny target indicator at the impact point, small ring, not a filled disc
           const targetRing = document.createElementNS(ns, 'circle');
           targetRing.setAttribute('cx', target.x);
           targetRing.setAttribute('cy', target.y);
@@ -1291,7 +1291,7 @@
           targetRing.setAttribute('stroke-dasharray', '2 2');
           svg.appendChild(targetRing);
 
-          // Shot-name label near the target — robust clamp.
+          // Shot-name label near the target, robust clamp.
           // The label is Bebas Neue 14px with 0.05em letter-spacing.
           // Approx char width ~7.5px. Cap at SHOT name's char count.
           const shotName = SHOTS[shotId].name.toUpperCase();
@@ -1320,8 +1320,8 @@
           }
           // Vertical placement: keep inside court y: 20–320
           let labelY;
-          if (target.y < 50)       labelY = target.y + 22;   // near top — push down
-          else if (target.y > 300) labelY = target.y - 14;   // near bottom — push up
+          if (target.y < 50)       labelY = target.y + 22;   // near top, push down
+          else if (target.y > 300) labelY = target.y - 14;   // near bottom, push up
           else                     labelY = target.y - 14;
           shotLabel.setAttribute('y', labelY);
           shotLabel.setAttribute('font-family', 'Bebas Neue, sans-serif');
@@ -1356,7 +1356,7 @@
 
       switch (shotId) {
         case 'smash':
-          // Target between or behind opponents — out via side wall
+          // Target between or behind opponents, out via side wall
           if (choices.opponents === 'both-net')  return { x: 50, y: 165 };  // at feet
           if (choices.opponents === 'both-back') return { x: 215, y: 50 };  // side wall out
           return { x: 155, y: 55 };  // on back opponent
@@ -1402,7 +1402,7 @@
       items.forEach(([k, v]) => {
         const line = el('div', {}, [
           el('span', { class: 'rkey' }, k.padEnd(12, '\u00a0') + ' '),
-          el('span', { class: v ? (isVerdict ? 'rval accent' : 'rval') : 'rval empty' }, v || '—')
+          el('span', { class: v ? (isVerdict ? 'rval accent' : 'rval') : 'rval empty' }, v || '-')
         ]);
         readout.appendChild(line);
       });
@@ -1429,7 +1429,7 @@
     // ---- Intro screen ----
     function renderIntro() {
       const intro = el('div', { class: 'sd-intro' });
-      intro.appendChild(el('div', { class: 'sd-eyebrow' }, '— Shot Decider · Live'));
+      intro.appendChild(el('div', { class: 'sd-eyebrow' }, 'Shot Decider · Live'));
       intro.appendChild(el('h1', { html: 'Welke slag<br><em>nu?</em>' }));
       intro.appendChild(el('p', { class: 'sd-intro-lede' },
         'Vier vragen over positie, balhoogte, tegenstanders en druk. Daarna één aanbevolen slag, met drie dingen erbij: waarom die slag werkt, wat het alternatief is, en in welk patroon hij thuishoort.'));
@@ -1622,7 +1622,7 @@
       ].forEach(([k, v]) => {
         recap.appendChild(el('div', { class: 'sd-recap-chip' }, [
           el('span', { class: 'rkey' }, k),
-          v || '—'
+          v || '-'
         ]));
       });
       left.appendChild(recap);

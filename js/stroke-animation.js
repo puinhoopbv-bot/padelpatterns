@@ -1,9 +1,9 @@
 /* =====================================================================
-   PADELLAB — Slag-animatie
+   PADELLAB, Slag-animatie
    Een zijaanzicht van de slag-uitvoering: stokfiguur, racketbaan en balbaan.
 
    Waarom 2D-SVG en niet de 3D-engine van Patterns 3D: die tool toont waar
-   spelers STAAN, niet hoe ze slaan — de speler-tokens daar hebben geen armen,
+   spelers STAAN, niet hoe ze slaan, de speler-tokens daar hebben geen armen,
    handen of racket. Techniek is bovendien juist een zij-aanzicht-verhaal
    (contactpunt t.o.v. het lichaam, bladhoek, elleboogstrekking), en SVG houdt
    de fase-teksten leesbare DOM-tekst op pagina's die het van zoekverkeer

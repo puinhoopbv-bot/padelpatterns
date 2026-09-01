@@ -1,18 +1,18 @@
 /* =====================================================================
-   PADELLAB — Shared Design System
+   PADELLAB, Shared Design System
    Premium tactical · broadcast feel · F1/NBA coaching software vibe
    ===================================================================== */
 
 :root {
-  /* Core palette — premium dark with strategic lime accent */
+  /* Core palette, premium dark with strategic lime accent */
   --bg-night:       #050709;
   --bg-deep:        #0a0d12;
   --bg-panel:       rgba(14, 18, 24, 0.7);
   --bg-card:        rgba(20, 26, 34, 0.75);
 
-  --accent:         #d4ff00;  /* electric lime — main brand accent */
-  --accent-warm:    #ff6b35;  /* warm orange — secondary */
-  --accent-cool:    #00d4ff;  /* cyan — tertiary */
+  --accent:         #d4ff00;  /* electric lime, main brand accent */
+  --accent-warm:    #ff6b35;  /* warm orange, secondary */
+  --accent-cool:    #00d4ff;  /* cyan, tertiary */
 
   --text:           #e6e9ee;
   --text-dim:       #8a93a3;
@@ -61,7 +61,7 @@ body.has-bg-effects::before {
 }
 
 /* =====================================================================
-   SITE HEADER — shared across all pages
+   SITE HEADER, shared across all pages
    ===================================================================== */
 
 .site-header {
@@ -371,7 +371,7 @@ body.has-bg-effects::before {
 }
 
 /* =====================================================================
-   HERO TYPO — typographic with neon-trail animation
+   HERO TYPO, typographic with neon-trail animation
    The text IS the hero. A glowing ball flies across the words.
    ===================================================================== */
 
@@ -415,7 +415,7 @@ body.has-bg-effects::before {
   object-fit: cover;
   object-position: 70% 30%;
   /* Horizontaal gespiegeld. In de bronfoto staat haar gezicht links, precies
-     waar de links uitgelijnde titel valt — daardoor bedekte "MIST." haar mond.
+     waar de links uitgelijnde titel valt, daardoor bedekte "MIST." haar mond.
      Gespiegeld staat haar gezicht rechts, in de lichte zone zonder tekst, en
      loopt haar uitgestrekte arm achter de titel langs. Dit sluit ook aan op het
      verloop (donker links achter de tekst, licht rechts achter het gezicht). */
@@ -431,7 +431,7 @@ body.has-bg-effects::before {
   position: absolute;
   inset: 0;
   /* Horizontaal (90deg), niet schuin. Bij 100deg zit tekst lager op de pagina
-     verder in het verloop, waardoor juist de lede — de kleinste tekst — het
+     verder in het verloop, waardoor juist de lede, de kleinste tekst, het
      lichtste stuk foto kreeg. Het verloop blijft donker tot voorbij de
      tekstkolom en gaat pas daarna open. */
   background:
@@ -481,7 +481,7 @@ body.has-bg-effects::before {
   50% { opacity: 0.35; transform: scale(0.7); }
 }
 
-/* THE TITLE — broadcast-poster scale */
+/* THE TITLE, broadcast-poster scale */
 .hero-typo-title {
   font-family: var(--font-display);
   font-size: clamp(64px, 11vw, 168px);
@@ -527,7 +527,7 @@ body.has-bg-effects::before {
     0 0 80px rgba(212, 255, 0, 0.2);
 }
 
-/* When the rally-ball is hitting a word, light it up — subtle flash */
+/* When the rally-ball is hitting a word, light it up, subtle flash */
 .hero-typo-title .word.hit {
   color: var(--accent);
   text-shadow:
@@ -539,12 +539,12 @@ body.has-bg-effects::before {
   color: var(--accent);
 }
 
-/* Title transitions — smooth in/out for hit effect */
+/* Title transitions, smooth in/out for hit effect */
 .hero-typo-title .word {
   transition: color 0.45s ease, text-shadow 0.45s ease;
 }
 
-/* THE SUBTITLE — the punchline */
+/* THE SUBTITLE, the punchline */
 .hero-typo-subtitle {
   font-family: var(--font-body);
   font-style: italic;
@@ -557,7 +557,7 @@ body.has-bg-effects::before {
   max-width: 720px;
 }
 
-/* THE LEDE — concrete tool description */
+/* THE LEDE, concrete tool description */
 .hero-typo-lede {
   font-family: var(--font-body);
   font-size: clamp(17px, 1.5vw, 20px);
@@ -571,7 +571,7 @@ body.has-bg-effects::before {
   font-weight: 500;
 }
 
-/* THE NEON RALLY SVG — absolute positioned over the title */
+/* THE NEON RALLY SVG, absolute positioned over the title */
 .hero-trail-svg {
   position: absolute;
   /* Roughly aligns with the title area */
@@ -602,7 +602,7 @@ body.has-bg-effects::before {
 }
 
 /* =====================================================================
-   STATS BAND — trust signals between sections
+   STATS BAND, trust signals between sections
    ===================================================================== */
 
 .stats-band {
@@ -861,12 +861,12 @@ body.has-bg-effects::before {
 }
 
 /* =====================================================================
-   SITE HEADER mobile improvements — make logo + tagline cleaner
+   SITE HEADER mobile improvements, make logo + tagline cleaner
    ===================================================================== */
 @media (max-width: 768px) {
   .site-header { padding: 14px 16px; }
   .site-logo-tag {
-    /* Hide tagline on mobile — header gets crowded with burger */
+    /* Hide tagline on mobile, header gets crowded with burger */
     display: none;
   }
 }
@@ -928,7 +928,7 @@ body.has-bg-effects::before {
     margin: 0 0 32px;
   }
 
-  /* Trail SVG: better proportions for portrait — sits closer behind text */
+  /* Trail SVG: better proportions for portrait, sits closer behind text */
   .hero-trail-svg {
     top: 78px;
     height: 60%;
@@ -1075,7 +1075,7 @@ body.has-bg-effects::before {
 }
 
 /* =====================================================================
-   START HERE — short orientation band under the hero.
+   START HERE, short orientation band under the hero.
    Deliberately lighter than .tool-tile: numbered, no photo, no border box
    on the left edge, so it reads as a route rather than a fourth grid of
    things to choose between.
@@ -1226,7 +1226,7 @@ body.has-bg-effects::before {
 
 /* AI variant, the Match Coach tile, signals 'this one is special'.
    Uses warm-orange as the secondary accent to distinguish from the
-   six standard (lime) tools — visual signal: "this one is different". */
+   six standard (lime) tools, visual signal: "this one is different". */
 .tool-tile-ai {
   border-color: rgba(255, 107, 53, 0.35);
   background: linear-gradient(135deg, rgba(255, 107, 53, 0.06) 0%, var(--bg-card) 60%);
@@ -1311,7 +1311,7 @@ body.has-bg-effects::before {
 .tool-tile-ai .tool-tile-arrow { color: var(--accent-warm); }
 
 /* =====================================================================
-   Sportieve hover op de tool-kaarten — beweging en richting, geen stilstand.
+   Sportieve hover op de tool-kaarten, beweging en richting, geen stilstand.
    Vier signalen samen: een accentlijn die langs de onderrand inschiet, de
    pijl die naar voren rijdt, een diagonale lichtveeg over de foto, en een
    iets grotere lift. Alles in het bestaande lime; oranje op de AI-kaart.
@@ -1333,7 +1333,7 @@ body.has-bg-effects::before {
 .tool-tile-ai::after { background: var(--accent-warm); }
 .tool-tile.coming-soon:hover::after { width: 0; }   /* niet-klikbaar = geen actie */
 
-/* 2. Diagonale lichtveeg die over de foto trekt bij hover — leest als snelheid */
+/* 2. Diagonale lichtveeg die over de foto trekt bij hover, leest als snelheid */
 .tool-tile-band::before {
   content: "";
   position: absolute;
@@ -1484,7 +1484,7 @@ body.has-bg-effects::before {
 body.debug-mode .version-marker { display: block; }
 
 /* =====================================================================
-   ARTICLE PAGES — slag/tactiek/hub content pages
+   ARTICLE PAGES, slag/tactiek/hub content pages
    ===================================================================== */
 .article-shell {
   max-width: 760px;
@@ -1762,7 +1762,7 @@ body.debug-mode .version-marker { display: block; }
   font-family: var(--font-body);
 }
 
-/* Hub page — list of slagen */
+/* Hub page, list of slagen */
 .hub-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -1895,7 +1895,7 @@ body.debug-mode .version-marker { display: block; }
 }
 
 /* =====================================================================
-   SLAG-ANIMATIE — zijaanzicht van de uitvoering (js/stroke-animation.js)
+   SLAG-ANIMATIE, zijaanzicht van de uitvoering (js/stroke-animation.js)
    Eigen containerklasse, niet .shot-diagram, zodat de regels voor de
    statische diagrammen hier niet overheen vallen.
    ===================================================================== */
@@ -2033,7 +2033,7 @@ body.debug-mode .version-marker { display: block; }
 }
 
 /* =====================================================================
-   TOOL-ABOUT — statische SEO/uitleg-sectie onder de interactieve tool.
+   TOOL-ABOUT, statische SEO/uitleg-sectie onder de interactieve tool.
    Blijvend in de DOM (de JS-app raakt 'm niet aan), zodat crawlers en
    bezoekers zonder JS de tool-uitleg + H1 zien. Onder de app geplaatst,
    dus het verstoort de interactie niet.
@@ -2074,7 +2074,7 @@ body.debug-mode .version-marker { display: block; }
 }
 
 /* =====================================================================
-   FAQ — veelgestelde vragen onder een artikel. Native <details>/<summary>,
+   FAQ, veelgestelde vragen onder een artikel. Native <details>/<summary>,
    dus toegankelijk en crawlbaar zonder JS. Targets long-tail zoekvragen.
    ===================================================================== */
 .faq {
@@ -2125,7 +2125,7 @@ body.debug-mode .version-marker { display: block; }
 }
 
 /* =====================================================================
-   COMPARE-TABLE — vergelijkingstabel op de "X vs Y"-pagina's.
+   COMPARE-TABLE, vergelijkingstabel op de "X vs Y"-pagina's.
    Scrollt horizontaal op smalle schermen i.p.v. de pagina te breken.
    ===================================================================== */
 .compare-wrap { overflow-x: auto; margin: 8px 0 32px; }
@@ -2165,7 +2165,7 @@ body.debug-mode .version-marker { display: block; }
 .compare-table td.col-a { color: var(--text); }
 
 /* =====================================================================
-   COMPARE-CALLOUT — verwijzing naar de vergelijkingspagina's, o.a. onder
+   COMPARE-CALLOUT, verwijzing naar de vergelijkingspagina's, o.a. onder
    de homepage-leersectie en als hub-blok op /slagen.
    ===================================================================== */
 .compare-callout {

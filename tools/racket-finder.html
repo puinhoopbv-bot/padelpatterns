@@ -490,10 +490,10 @@
     'use strict';
 
     // ============================================================
-    // RACKET DATABASE — with visual properties (shape, brand colors)
+    // RACKET DATABASE, with visual properties (shape, brand colors)
     // ============================================================
     // ============================================================
-    // RACKET DATABASE — 30 modellen, gespreid over alle niveaus & prijspunten
+    // RACKET DATABASE, 30 modellen, gespreid over alle niveaus & prijspunten
     // Per racket: searchUrl wordt automatisch gegenereerd
     // Later vervangen door echte affiliate-URLs (Padelnuestro, Padel.shop, Bol, etc.)
     // ============================================================
@@ -554,17 +554,17 @@
       const name = racket.name;
       const brand = racket.brand;
 
-      // Shape definitions — drawn at 200x250 viewBox
+      // Shape definitions, drawn at 200x250 viewBox
       // Head of racket is 100x130, handle is below
       let headPath;
       if (racket.shape === 'rond') {
-        // Round shape — elliptical, slightly wider than tall
+        // Round shape, elliptical, slightly wider than tall
         headPath = 'M 100,30 C 145,30 175,65 175,115 C 175,165 145,200 100,200 C 55,200 25,165 25,115 C 25,65 55,30 100,30 Z';
       } else if (racket.shape === 'diamond') {
-        // Diamond shape — taller, narrower at bottom
+        // Diamond shape, taller, narrower at bottom
         headPath = 'M 100,25 C 150,30 175,80 170,125 C 165,165 135,200 100,205 C 65,200 35,165 30,125 C 25,80 50,30 100,25 Z';
       } else { // druppel / teardrop
-        // Teardrop — narrower top, wider bottom
+        // Teardrop, narrower top, wider bottom
         headPath = 'M 100,28 C 138,30 165,60 168,105 C 170,155 142,200 100,202 C 58,200 30,155 32,105 C 35,60 62,30 100,28 Z';
       }
 
@@ -619,7 +619,7 @@
           <!-- Throat (connecting handle to head) -->
           <path d="M 88,190 L 95,200 L 105,200 L 112,190 Z" fill="${accent}" opacity="0.9"/>
 
-          <!-- Racket head — main body -->
+          <!-- Racket head, main body -->
           <path d="${headPath}" fill="url(#grad-${brand}-${name.replace(/\s+/g, '')})" stroke="${accent}" stroke-width="2"/>
 
           <!-- Dots / strings pattern -->
@@ -791,7 +791,7 @@
 
       wrap.innerHTML =
         '<div class="rf-question-wrap" id="rf-qwrap">'
-      + '<div class="rf-eyebrow">— Racket Finder · Stap ' + (state.step + 1) + ' van ' + steps.length + '</div>'
+      + '<div class="rf-eyebrow">Racket Finder · Stap ' + (state.step + 1) + ' van ' + steps.length + '</div>'
       + '<div class="rf-progress">' + progressHtml + '</div>'
       + '<h1 class="rf-question">' + stepDef.q + '</h1>'
       + '<p class="rf-subq">' + stepDef.sub + '</p>'
@@ -851,7 +851,7 @@
       // Build 6 mini-rackets to "scan"
       // Pick 6 diverse rackets from across the price spectrum for visual variety
       const sampleRackets = [
-        RACKETS[0],   // pro tier — colorful
+        RACKETS[0],   // pro tier, colorful
         RACKETS[10],  // intermediate
         RACKETS[15],  // intermediate
         RACKETS[19],  // beginner-intermediate
@@ -864,7 +864,7 @@
 
       wrap.innerHTML =
         '<div class="rf-scanning">'
-      + '<div class="rf-eyebrow" style="margin: 0 auto 16px;">— Racket Finder</div>'
+      + '<div class="rf-eyebrow" style="margin: 0 auto 16px;">Racket Finder</div>'
       + '<h1 class="rf-scanning-title">We zoeken voor je...</h1>'
       + '<p class="rf-scanning-sub">30 rackets worden gewogen tegen je antwoorden.</p>'
       + '<div class="rf-scan-rackets">' + scanGridHtml + '</div>'
@@ -947,7 +947,7 @@
 
       wrap.innerHTML =
         '<div class="rf-results-intro">'
-      + '<div class="rf-eyebrow">— Racket Finder · Jouw resultaten</div>'
+      + '<div class="rf-eyebrow">Racket Finder · Jouw resultaten</div>'
       + '<h1 class="rf-results-title">Drie rackets voor jou.</h1>'
       + '<p class="rf-results-sub">Gebaseerd op je antwoorden. De top-match scoort het hoogst op de combinatie van niveau, speelstijl, fysiek en budget. Niet de duurste, wel de juiste.</p>'
       + '</div>'

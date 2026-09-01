@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#050709" />
 
-  <title>Padel Tactiek in 3D — Slagen, Tools & Strategie | PadelLab</title>
+  <title>Padel Tactiek in 3D, Slagen, Tools & Strategie | PadelLab</title>
   <meta name="description" content="Padel tactiek in 3D: bandeja, víbora, chiquita en meer. Plus Shot Decider, Racket Finder, FIP-spelregels en niveau-test. Door padelspelers, voor padelspelers." />
   <meta name="keywords" content="padel tactiek, padel strategie, bandeja, vibora, víbora, chiquita, padel lob, padel coaching, padel racket kopen, padel spelregels, padel niveau, padellab, padel patterns" />
   <meta name="author" content="PadelLab" />
@@ -190,7 +190,7 @@
               opacity="0.65"
               filter="url(#trailGlow)" />
 
-        <!-- The ball — keep multi-layered but tame the size -->
+        <!-- The ball, keep multi-layered but tame the size -->
         <circle class="trail-ball-halo" cx="0" cy="0" r="20"
                 fill="#d4ff00" opacity="0.12"
                 filter="url(#ballGlow2)" />
@@ -207,7 +207,7 @@
 
   </section>
 
-  <!-- START HERE — a short orientation condensed from /leren. Without it the
+  <!-- START HERE, a short orientation condensed from /leren. Without it the
        homepage drops you straight into a grid of seven similar-looking tools. -->
   <section class="start-here" id="start">
     <div class="section-label">Waar te beginnen</div>
@@ -381,7 +381,7 @@
       </a>
     </div>
     <div class="compare-callout">
-      <p>Twijfel je tussen twee slagen — <strong>bandeja of víbora</strong>, <strong>smash of bandeja</strong>? De vergelijkingen zetten ze naast elkaar.</p>
+      <p>Twijfel je tussen twee slagen, <strong>bandeja of víbora</strong>, <strong>smash of bandeja</strong>? De vergelijkingen zetten ze naast elkaar.</p>
       <a href="/slagen#vergelijkingen">Bekijk de vergelijkingen <span>→</span></a>
     </div>
   
@@ -786,7 +786,7 @@
     // track the ball instead of the sentence.
     const sequence = [0, 1, 2, 3, 4];
 
-    const SEGMENT_DURATION = 1050; // ms per ball-flight — calmer than v21
+    const SEGMENT_DURATION = 1050; // ms per ball-flight, calmer than v21
     const HIT_DURATION = 450;       // ms a word stays "hit" after impact
     const TRAIL_LENGTH = 32;        // trail samples
 
@@ -797,7 +797,7 @@
     let lastImpactTime = 0;       // for ball pulse-on-impact effect
     let ballPos = { x: 0, y: 0 };
 
-    // Easing — slight curve so ball decelerates near the word
+    // Easing, slight curve so ball decelerates near the word
     const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
 
     // Curve control: bend the path so it doesn't go straight
@@ -836,7 +836,7 @@
       const toTargetIdx = sequence[(segmentIdx + 1) % sequence.length];
 
       if (t >= 1) {
-        // Segment complete — register hit on the target word
+        // Segment complete, register hit on the target word
         const target = targets[toTargetIdx];
         if (target && target.el) {
           target.el.classList.add('hit');
@@ -861,7 +861,7 @@
 
       // === BALL SIZE: subtle pulse on impact + slight breathing during flight ===
       const sinceImpact = now - lastImpactTime;
-      // Impact pulse: ball expands briefly (0-180ms after hit) — toned down from v21
+      // Impact pulse: ball expands briefly (0-180ms after hit), toned down from v21
       const pulseT = Math.min(sinceImpact / 180, 1);
       const pulseSize = pulseT < 1 ? (1 + (1 - pulseT) * 0.45) : 1;
       // Breathing while flying: subtle oscillation

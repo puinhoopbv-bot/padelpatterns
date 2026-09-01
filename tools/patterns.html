@@ -173,7 +173,7 @@
     opacity: 0;
     visibility: hidden;
     transform: translateY(-6px);
-    /* visibility steps, it does not interpolate — delay it until the fade ends */
+    /* visibility steps, it does not interpolate, delay it until the fade ends */
     transition: opacity 0.16s ease, transform 0.16s ease, visibility 0s linear 0.16s;
   }
   .tn-group:hover .tn-menu, .tn-group:focus-within .tn-menu {
@@ -289,7 +289,7 @@
     color: var(--text);
   }
 
-  /* LEFT PANEL — strategy list */
+  /* LEFT PANEL, strategy list */
   .panel-left {
     position: fixed;
     left: 24px;
@@ -446,7 +446,7 @@
   .strat-item-meta .lvl.intermediate { color: #ffaa5e; border-color: #ffaa5e44; }
   .strat-item-meta .lvl.advanced { color: #ff6b35; border-color: #ff6b3544; }
 
-  /* RIGHT PANEL — detail */
+  /* RIGHT PANEL, detail */
   .panel-right {
     position: fixed;
     right: 24px;
@@ -568,9 +568,9 @@
   }
 
   /* PLAYBACK BAR */
-  /* ===== NEW PLAYBACK DESIGN — prominent play button + floating subtitle ===== */
+  /* ===== NEW PLAYBACK DESIGN, prominent play button + floating subtitle ===== */
 
-  /* Floating subtitle card — sits above the play button */
+  /* Floating subtitle card, sits above the play button */
   .subtitle-card {
     position: fixed;
     bottom: 112px;
@@ -713,7 +713,7 @@
     }
   }
 
-  /* Compact speed pill — discreet, not competing for attention */
+  /* Compact speed pill, discreet, not competing for attention */
   .speed-toggle {
     display: flex;
     gap: 0;
@@ -934,7 +934,7 @@
      Both side panels become slide-in drawers.
      ======================================== */
   @media (max-width: 768px) {
-    /* Header — compact, fixed at top with safe area */
+    /* Header, compact, fixed at top with safe area */
     header {
       padding: 10px 14px;
       padding-top: calc(10px + env(safe-area-inset-top, 0px));
@@ -950,7 +950,7 @@
       letter-spacing: 0.08em;
     }
 
-    /* Left panel — full-height slide-in drawer from left */
+    /* Left panel, full-height slide-in drawer from left */
     .panel-left {
       left: 0;
       top: 0;
@@ -975,7 +975,7 @@
     }
     .filters { max-height: none; }
 
-    /* Right panel — full-height slide-in from right */
+    /* Right panel, full-height slide-in from right */
     .panel-right {
       right: 0;
       top: 0;
@@ -1003,7 +1003,7 @@
     .strat-spanish-big { font-size: 14px; }
     .strat-summary-big { font-size: 12px; }
 
-    /* Desktop toggle arrows — hide on mobile */
+    /* Desktop toggle arrows, hide on mobile */
     .toggle-left, .toggle-right {
       display: none;
     }
@@ -1056,7 +1056,7 @@
       pointer-events: none;
     }
 
-    /* Camera controls — small horizontal bar */
+    /* Camera controls, small horizontal bar */
     .camera-controls {
       display: flex !important;
       position: fixed;
@@ -1083,7 +1083,7 @@
       border-bottom-color: var(--accent);
     }
 
-    /* New playback layout — mobile adjustments */
+    /* New playback layout, mobile adjustments */
     .subtitle-card {
       bottom: 102px;
       left: 12px;
@@ -1173,7 +1173,7 @@
     .subtitle-text { font-size: 12px; }
   }
 </style>
-  <title>Padel Patterns 3D — Rally's & Slagen in 3D | PadelLab</title>
+  <title>Padel Patterns 3D, Rally's & Slagen in 3D | PadelLab</title>
   <meta name="description" content="Interactieve 3D-visualisatie van padel-strategieën: bandeja, víbora, chiquita, lob, bajada en meer. Bekijk elke rally vanuit elke camerahoek. Gratis." />
   <meta name="keywords" content="padel patterns, padel tactiek, bandeja, vibora, víbora, chiquita, bajada, padel lob 3d, padel strategie visualisatie" />
   <meta name="author" content="PadelLab" />
@@ -1183,8 +1183,8 @@
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://padelpatterns.com/tools/patterns" />
-  <meta property="og:title" content="Padel Patterns 3D — Tactiek in 3D" />
-  <meta property="og:description" content="Bandeja, víbora, chiquita, lob & meer — interactief in 3D uitgelegd." />
+  <meta property="og:title" content="Padel Patterns 3D, Tactiek in 3D" />
+  <meta property="og:description" content="Bandeja, víbora, chiquita, lob & meer, interactief in 3D uitgelegd." />
   <meta property="og:image" content="https://padelpatterns.com/og-image.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
@@ -1194,8 +1194,8 @@
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:url" content="https://padelpatterns.com/tools/patterns" />
-  <meta name="twitter:title" content="Padel Patterns 3D — Tactiek in 3D" />
-  <meta name="twitter:description" content="Bandeja, víbora, chiquita, lob & meer — interactief in 3D uitgelegd." />
+  <meta name="twitter:title" content="Padel Patterns 3D, Tactiek in 3D" />
+  <meta name="twitter:description" content="Bandeja, víbora, chiquita, lob & meer, interactief in 3D uitgelegd." />
   <meta name="twitter:image" content="https://padelpatterns.com/og-image.png" />
 
   <script type="application/ld+json">
@@ -1368,7 +1368,7 @@
 
   <!-- RIGHT PANEL -->
   <aside class="panel-right" id="panel-right">
-    <div class="strat-name-big" id="strat-title">—</div>
+    <div class="strat-name-big" id="strat-title">-</div>
     <div class="strat-spanish-big" id="strat-spanish"></div>
     <div class="strat-summary-big" id="strat-summary"></div>
 
@@ -1423,7 +1423,7 @@
     <div class="subtitle-text" id="step-text">Selecteer een strategie om te beginnen.</div>
   </div>
 
-  <!-- BIG ROUND PLAY BUTTON — centered, prominent -->
+  <!-- BIG ROUND PLAY BUTTON, centered, prominent -->
   <div class="play-cluster">
     <button class="play-btn-big" id="play-btn" aria-label="Play">
       <svg class="play-icon-play" viewBox="0 0 24 24" fill="currentColor">
@@ -1464,7 +1464,7 @@
 import * as THREE from 'three';
 
 /* =====================================================================
-   PADEL COURT — real dimensions
+   PADEL COURT, real dimensions
    Court: 10m × 20m. Net at center (height 0.88m at center, 0.92m sides).
    Wall heights: 3m back glass + 1m mesh on top = 4m total at back.
    Side: 3m glass for 2m, then 4m fence above to corner.
@@ -1479,7 +1479,7 @@ const FENCE_H = 4;         // total fence height
 const SERVICE_LINE_DIST = 6.95; // from net
 
 /* =====================================================================
-   STRATEGIES — same content as v1, with positions in 3D space
+   STRATEGIES, same content as v1, with positions in 3D space
    Positions: { x, z } in meters. x: -5 to 5 (width). z: -10 to 10 (length).
    Negative z = team A side (top). Positive z = team B side (bottom).
    ===================================================================== */
@@ -1985,14 +1985,14 @@ window.addEventListener('resize', () => {
 });
 
 /* =====================================================================
-   LIGHTING — bright, broadcast-quality court lighting
+   LIGHTING, bright, broadcast-quality court lighting
    ===================================================================== */
 
-// Strong ambient — court should feel well-lit and inviting
+// Strong ambient, court should feel well-lit and inviting
 const ambient = new THREE.AmbientLight(0xc4d4e8, 0.65);
 scene.add(ambient);
 
-// Main key light — strong overhead like main court flood
+// Main key light, strong overhead like main court flood
 const keyLight = new THREE.DirectionalLight(0xfff8e7, 1.4);
 keyLight.position.set(8, 25, 5);
 keyLight.castShadow = true;
@@ -2007,21 +2007,21 @@ keyLight.shadow.camera.bottom = -20;
 keyLight.shadow.bias = -0.0005;
 scene.add(keyLight);
 
-// Fill light from opposite side — fills shadows
+// Fill light from opposite side, fills shadows
 const fillLight = new THREE.DirectionalLight(0xb8d4e8, 0.55);
 fillLight.position.set(-10, 15, -8);
 scene.add(fillLight);
 
-// Rim accent — adds warm depth
+// Rim accent, adds warm depth
 const rimLight = new THREE.DirectionalLight(0xff8a4a, 0.25);
 rimLight.position.set(0, 5, -15);
 scene.add(rimLight);
 
-// Hemisphere — soft top-to-bottom lift
+// Hemisphere, soft top-to-bottom lift
 const hemi = new THREE.HemisphereLight(0x90a8c0, 0x1a2030, 0.55);
 scene.add(hemi);
 
-// === FOUR OVERHEAD SPOTLIGHTS — extra punch on the court itself ===
+// === FOUR OVERHEAD SPOTLIGHTS, extra punch on the court itself ===
 // Bright pools of light on the play area, but with strong ambient backing
 // the court overall stays bright (no dramatic shadows between pools).
 const SPOT_HEIGHT = 13;
@@ -2049,7 +2049,7 @@ spotPositions.forEach(pos => {
 const courtGroup = new THREE.Group();
 scene.add(courtGroup);
 
-// === COURT FLOOR — with procedural texture ===
+// === COURT FLOOR, with procedural texture ===
 // Build a subtle noise texture so the court doesn't look like a flat plastic plane.
 // Real padel courts have artificial grass / textured paint with fine grain.
 const floorCanvas = document.createElement('canvas');
@@ -2061,7 +2061,7 @@ const fctx = floorCanvas.getContext('2d');
 fctx.fillStyle = '#2a7eb8';
 fctx.fillRect(0, 0, 512, 1024);
 
-// Subtle radial gradient — slightly brighter in the center
+// Subtle radial gradient, slightly brighter in the center
 // (simulates uneven lighting / wear pattern)
 const radial = fctx.createRadialGradient(256, 512, 50, 256, 512, 600);
 radial.addColorStop(0, 'rgba(45, 130, 180, 0.25)');
@@ -2069,7 +2069,7 @@ radial.addColorStop(1, 'rgba(0, 0, 0, 0)');
 fctx.fillStyle = radial;
 fctx.fillRect(0, 0, 512, 1024);
 
-// Fine grain noise — thousands of tiny dots
+// Fine grain noise, thousands of tiny dots
 for (let i = 0; i < 8000; i++) {
   const x = Math.random() * 512;
   const y = Math.random() * 1024;
@@ -2080,7 +2080,7 @@ for (let i = 0; i < 8000; i++) {
   fctx.fillRect(x, y, 1.4, 1.4);
 }
 
-// A few faint horizontal scuffs — wear marks across the court
+// A few faint horizontal scuffs, wear marks across the court
 for (let i = 0; i < 12; i++) {
   fctx.strokeStyle = `rgba(255, 255, 255, ${0.02 + Math.random() * 0.02})`;
   fctx.lineWidth = 0.5 + Math.random();
@@ -2132,7 +2132,7 @@ function makeLine(x1, z1, x2, z2, width = 0.06, color = 0xfafaf2) {
   return line;
 }
 
-// Outer baseline + sidelines (the perimeter) — slightly thicker than inner lines
+// Outer baseline + sidelines (the perimeter), slightly thicker than inner lines
 courtGroup.add(makeLine(-COURT_W/2, -COURT_L/2, COURT_W/2, -COURT_L/2, 0.08));
 courtGroup.add(makeLine(-COURT_W/2, COURT_L/2, COURT_W/2, COURT_L/2, 0.08));
 courtGroup.add(makeLine(-COURT_W/2, -COURT_L/2, -COURT_W/2, COURT_L/2, 0.08));
@@ -2145,7 +2145,7 @@ courtGroup.add(makeLine(-COURT_W/2, SERVICE_LINE_DIST, COURT_W/2, SERVICE_LINE_D
 // Center service line (between service lines, only)
 courtGroup.add(makeLine(0, -SERVICE_LINE_DIST, 0, SERVICE_LINE_DIST));
 
-// === NET (with realistic sag — catenary curve) ===
+// === NET (with realistic sag, catenary curve) ===
 const netGroup = new THREE.Group();
 scene.add(netGroup);
 
@@ -2158,11 +2158,11 @@ ctx.fillStyle = 'rgba(0,0,0,0)';
 ctx.fillRect(0, 0, 512, 96);
 ctx.strokeStyle = 'rgba(230, 230, 235, 0.78)';
 ctx.lineWidth = 1.4;
-// Vertical strings — slightly closer together
+// Vertical strings, slightly closer together
 for (let x = 0; x < 512; x += 7) {
   ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 96); ctx.stroke();
 }
-// Horizontal strings — slightly varied opacity for depth
+// Horizontal strings, slightly varied opacity for depth
 for (let y = 0; y < 96; y += 7) {
   ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(512, y); ctx.stroke();
 }
@@ -2207,7 +2207,7 @@ net.position.y = NET_TOP_AT_POST / 2;
 net.position.z = 0;
 netGroup.add(net);
 
-// Net top band — a smooth white tape that follows the sag curve
+// Net top band, a smooth white tape that follows the sag curve
 const bandPoints = [];
 for (let i = 0; i <= NET_SEGMENTS_W; i++) {
   const t = i / NET_SEGMENTS_W;
@@ -2229,7 +2229,7 @@ const bandMat = new THREE.MeshStandardMaterial({
 const netBand = new THREE.Mesh(bandGeo, bandMat);
 netGroup.add(netBand);
 
-// Net posts — slightly thicker, with a subtle white cap at the top
+// Net posts, slightly thicker, with a subtle white cap at the top
 const postGeo = new THREE.CylinderGeometry(0.06, 0.07, NET_TOP_AT_POST + 0.05, 12);
 const postMat = new THREE.MeshStandardMaterial({
   color: 0x1a1a1a,
@@ -2245,7 +2245,7 @@ postR.position.set(COURT_W/2 + 0.2, (NET_TOP_AT_POST + 0.05) / 2, 0);
 postR.castShadow = true;
 netGroup.add(postR);
 
-// Post caps — small white cylinder on top for that pro-court look
+// Post caps, small white cylinder on top for that pro-court look
 const capGeo = new THREE.CylinderGeometry(0.075, 0.075, 0.04, 12);
 const capMat = new THREE.MeshStandardMaterial({ color: 0xeeeeee, roughness: 0.35 });
 const capL = new THREE.Mesh(capGeo, capMat);
@@ -2286,7 +2286,7 @@ function addBackGlass(zPos) {
 addBackGlass(-COURT_L/2);
 addBackGlass(COURT_L/2);
 
-// Side glass walls — 3m for the back 2m, then steps down
+// Side glass walls, 3m for the back 2m, then steps down
 // In a real court: back 2m has 3m glass, then 4m fence. Side has glass for ~4m corners.
 function addSideGlassCorner(xPos, zStart, zEnd, mirror = false) {
   const length = Math.abs(zEnd - zStart);
@@ -2407,21 +2407,21 @@ addZoneOverlay(3, 7, 0xff8c00);
 addZoneOverlay(7, 10, 0xff3030);
 
 /* =====================================================================
-   PLAYERS — stylized 3D figures
+   PLAYERS, stylized 3D figures
    ===================================================================== */
 
 function createPlayer(label, teamColor, accentColor) {
   const group = new THREE.Group();
 
-  // Dark base material — for lower body and head (like "shorts and a cap")
+  // Dark base material, for lower body and head (like "shorts and a cap")
   const darkBodyMat = new THREE.MeshStandardMaterial({
     color: 0x14171c,
     roughness: 0.6,
     metalness: 0.1
   });
 
-  // Bright team material — for the entire upper body (like "the jersey")
-  // This is the main team identifier — visible from any angle.
+  // Bright team material, for the entire upper body (like "the jersey")
+  // This is the main team identifier, visible from any angle.
   const jerseyMat = new THREE.MeshStandardMaterial({
     color: accentColor,
     roughness: 0.42,
@@ -2437,7 +2437,7 @@ function createPlayer(label, teamColor, accentColor) {
     metalness: 0.2
   });
 
-  // === LEGS / LOWER BODY — DARK ===
+  // === LEGS / LOWER BODY, DARK ===
   // Tapered cylinder representing both legs combined (like padel shorts).
   const lowerGeo = new THREE.CylinderGeometry(0.22, 0.18, 0.85, 16);
   const lower = new THREE.Mesh(lowerGeo, darkBodyMat);
@@ -2445,14 +2445,14 @@ function createPlayer(label, teamColor, accentColor) {
   lower.castShadow = true;
   group.add(lower);
 
-  // Belt / waistline — thin dark separator
+  // Belt / waistline, thin dark separator
   const beltGeo = new THREE.TorusGeometry(0.235, 0.025, 6, 24);
   const belt = new THREE.Mesh(beltGeo, darkDetailMat);
   belt.position.y = 0.87;
   belt.rotation.x = Math.PI / 2;
   group.add(belt);
 
-  // === TORSO / JERSEY — BRIGHT TEAM COLOR ===
+  // === TORSO / JERSEY, BRIGHT TEAM COLOR ===
   // The whole upper body is the team color so it's readable from any angle.
   const torsoGeo = new THREE.CylinderGeometry(0.32, 0.24, 0.7, 16);
   const torso = new THREE.Mesh(torsoGeo, jerseyMat);
@@ -2460,7 +2460,7 @@ function createPlayer(label, teamColor, accentColor) {
   torso.castShadow = true;
   group.add(torso);
 
-  // === SHOULDERS / DOME — DARK (like a cap/head) ===
+  // === SHOULDERS / DOME, DARK (like a cap/head) ===
   // Top of the figure is dark so the bright jersey reads clearly against
   // the court background. Acts as visual anchor.
   const topGeo = new THREE.SphereGeometry(0.32, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2);
@@ -2469,7 +2469,7 @@ function createPlayer(label, teamColor, accentColor) {
   top.castShadow = true;
   group.add(top);
 
-  // === COLLAR ACCENT — narrow accent line at the shoulder seam ===
+  // === COLLAR ACCENT, narrow accent line at the shoulder seam ===
   // A thin emissive ring where the jersey meets the dark dome.
   const collarRingGeo = new THREE.TorusGeometry(0.31, 0.018, 8, 32);
   const collarRingMat = new THREE.MeshBasicMaterial({
@@ -2482,7 +2482,7 @@ function createPlayer(label, teamColor, accentColor) {
   collarRing.rotation.x = Math.PI / 2;
   group.add(collarRing);
 
-  // === CHEST STRIPE — darker contour across the jersey ===
+  // === CHEST STRIPE, darker contour across the jersey ===
   // A horizontal dark band for visual detail (like a logo line).
   const stripeGeo = new THREE.TorusGeometry(0.30, 0.022, 6, 32, Math.PI * 1.2);
   const stripe = new THREE.Mesh(stripeGeo, darkDetailMat);
@@ -2491,8 +2491,8 @@ function createPlayer(label, teamColor, accentColor) {
   stripe.rotation.y = Math.PI * 0.4;
   group.add(stripe);
 
-  // === DIRECTION INDICATOR — triangle arrow at feet ===
-  // Shows which way the player is facing — pure tactical signal
+  // === DIRECTION INDICATOR, triangle arrow at feet ===
+  // Shows which way the player is facing, pure tactical signal
   const arrowShape = new THREE.Shape();
   arrowShape.moveTo(0, 0.5);
   arrowShape.lineTo(-0.25, -0.2);
@@ -2512,7 +2512,7 @@ function createPlayer(label, teamColor, accentColor) {
   arrow.position.z = 0.15; // slightly in front of player
   group.add(arrow);
 
-  // === FLOOR RING — subtle position marker ===
+  // === FLOOR RING, subtle position marker ===
   const ringGeo = new THREE.RingGeometry(0.42, 0.5, 64);
   const ringMat = new THREE.MeshBasicMaterial({
     color: accentColor,
@@ -2525,7 +2525,7 @@ function createPlayer(label, teamColor, accentColor) {
   ring.position.y = 0.015;
   group.add(ring);
 
-  // Inner ring (thinner, brighter — gives it depth)
+  // Inner ring (thinner, brighter, gives it depth)
   const innerRingGeo = new THREE.RingGeometry(0.36, 0.38, 64);
   const innerRingMat = new THREE.MeshBasicMaterial({
     color: accentColor,
@@ -2538,7 +2538,7 @@ function createPlayer(label, teamColor, accentColor) {
   innerRing.position.y = 0.015;
   group.add(innerRing);
 
-  // === LABEL — high-contrast, large, team-coded ===
+  // === LABEL, high-contrast, large, team-coded ===
   const labelCanvas = document.createElement('canvas');
   labelCanvas.width = 320;
   labelCanvas.height = 140;
@@ -2576,7 +2576,7 @@ function createPlayer(label, teamColor, accentColor) {
   lctx.shadowBlur = 0;
   lctx.shadowOffsetY = 0;
 
-  // Thick colored left bar — instant team identifier
+  // Thick colored left bar, instant team identifier
   lctx.fillStyle = accentHex;
   lctx.fillRect(pillX, pillY + radius / 2, 10, pillH - radius);
 
@@ -2727,7 +2727,7 @@ document.querySelectorAll('.cam-btn').forEach(btn => {
 });
 
 /* =====================================================================
-   ORBIT CONTROLS — simple custom (no extra import)
+   ORBIT CONTROLS, simple custom (no extra import)
    ===================================================================== */
 
 let isDraggingCam = false;
@@ -2798,7 +2798,7 @@ renderer.domElement.addEventListener('touchmove', (e) => {
 }, { passive: true });
 
 /* =====================================================================
-   ANIMATION ENGINE — CONTINUOUS TIMELINE
+   ANIMATION ENGINE, CONTINUOUS TIMELINE
    The whole rally is one uninterrupted film. We pre-build a timeline
    with all segments stitched together, then a single render-loop driver
    advances time linearly. No setTimeout pauses, no per-step resets.
@@ -2834,16 +2834,16 @@ function easeInQuad(t)     { return t * t; }
 function getPeakHeight(arcType, from, to) {
   const dist = Math.hypot(to.x - from.x, to.z - from.z);
   switch (arcType) {
-    // Big arcs — high lobs that nearly touch ceiling height
+    // Big arcs, high lobs that nearly touch ceiling height
     case 'high-lob': return Math.max(5.5, dist * 0.45);
     case 'lob':      return Math.max(3.0, dist * 0.28);
     case 'por-tres': return Math.max(4.5, dist * 0.35);
     // Mid-height attack shots that peak and dive
     case 'bandeja':  return Math.max(2.2, dist * 0.16);
     case 'vibora':   return Math.max(2.6, dist * 0.19);
-    // Chiquita — soft float over the net at net-height
+    // Chiquita, soft float over the net at net-height
     case 'chiquita': return Math.max(1.4, dist * 0.07);
-    // Flat shots — barely lift off
+    // Flat shots, barely lift off
     case 'serve':    return Math.max(0.9, dist * 0.08);
     case 'drive':    return Math.max(0.25, dist * 0.025);
     case 'volley':   return Math.max(0.15, dist * 0.02);
@@ -2887,7 +2887,7 @@ function buildTimeline(strategy) {
         if (d < closestDist) { closestDist = d; closestPos = p; }
       });
       // If the ball is more than 1.5m from the nearest player, snap it.
-      // 1.5m is roughly "arm's reach" tolerance — beyond that, ball must be in someone's hand.
+      // 1.5m is roughly "arm's reach" tolerance, beyond that, ball must be in someone's hand.
       if (closestPos && closestDist > 1.5) {
         // Use a sensible hit-height depending on shot type
         let hitY = 0.9; // default chest-height
@@ -2931,12 +2931,12 @@ function applyTimelineState(tlTime) {
   if (!seg) return;
   const localT = Math.max(0, Math.min(1, (tlTime - seg.startTime) / seg.duration));
 
-  // === PLAYERS — reposition AFTER the ball is hit ===
+  // === PLAYERS, reposition AFTER the ball is hit ===
   // Real padel rhythm:
   //   1. Player stands ready at previous position (0—15%: anticipation)
   //   2. Ball gets hit and flies (15—65%)
   //   3. Player moves to next position to recover/prepare (30—100%)
-  // The slight overlap (30—65%) is natural — pros start moving the moment
+  // The slight overlap (30—65%) is natural, pros start moving the moment
   // the ball leaves the racket, not after.
   ['A1', 'A2', 'B1', 'B2'].forEach(id => {
     const path = seg.playerPaths[id];
@@ -2972,7 +2972,7 @@ function applyTimelineState(tlTime) {
       player.position.y *= 0.82;
     }
 
-    // Rotate to face direction of movement — only while moving
+    // Rotate to face direction of movement, only while moving
     if (moveDist > 0.1 && localT >= PLAYER_MOVE_START && localT < PLAYER_MOVE_END) {
       const targetRot = Math.atan2(dx, dz);
       let dr = targetRot - player.rotation.y;
@@ -2982,7 +2982,7 @@ function applyTimelineState(tlTime) {
     }
   });
 
-  // === BALL — flies from previous segment's end to this segment's end ===
+  // === BALL, flies from previous segment's end to this segment's end ===
   // Continuous: no stops between segments. The ball is always in motion
   // (except during 'idle' segments).
   let bx, by, bz;
@@ -3005,7 +3005,7 @@ function applyTimelineState(tlTime) {
       ballT = (localT - BALL_PHASE_START) / (BALL_PHASE_END - BALL_PHASE_START);
     }
 
-    // Horizontal progress easing — how the ball travels in X/Z
+    // Horizontal progress easing, how the ball travels in X/Z
     // Drives/volleys/serves: fast linear (energy from the hit), no slow-down
     // Lobs: smooth sine
     // Chiquita: starts fast, decelerates (it dips and dies)
@@ -3027,7 +3027,7 @@ function applyTimelineState(tlTime) {
     const baseY = seg.ballFrom.y + (seg.ballTo.y - seg.ballFrom.y) * eB;
 
     // === SHOT-SPECIFIC HEIGHT PROFILE ===
-    // Each shot has its own "feel" — peak height + when the peak occurs +
+    // Each shot has its own "feel", peak height + when the peak occurs +
     // how the trajectory looks (flat, dipping, arcing, falling).
     const peakH = getPeakHeight(seg.ballArc, seg.ballFrom, seg.ballTo);
     let arcOffset;
@@ -3035,13 +3035,13 @@ function applyTimelineState(tlTime) {
     switch (seg.ballArc) {
       case 'drive':
       case 'volley': {
-        // Nearly flat — slight ground-skimming arc. Drive/volley travel
+        // Nearly flat, slight ground-skimming arc. Drive/volley travel
         // almost horizontally. Tiny bump in the middle for realism.
         arcOffset = peakH * 4 * eB * (1 - eB);
         break;
       }
       case 'serve': {
-        // Low underhand serve — peak at ~40%, gentle descent.
+        // Low underhand serve, peak at ~40%, gentle descent.
         // The ball must clear the net and land in the service box.
         const t = eB;
         arcOffset = peakH * Math.sin(Math.PI * Math.pow(t, 0.85));
@@ -3057,7 +3057,7 @@ function applyTimelineState(tlTime) {
           const k = t / 0.30;
           arcOffset = peakH * Math.sin(k * Math.PI * 0.5);
         } else {
-          // Sharp dip — uses a steeper falloff curve
+          // Sharp dip, uses a steeper falloff curve
           const k = (t - 0.30) / 0.70;
           arcOffset = peakH * Math.pow(1 - k, 1.8);
         }
@@ -3065,7 +3065,7 @@ function applyTimelineState(tlTime) {
       }
       case 'bandeja': {
         // Sliced overhead. Peak early (~30%), then descends with slice spin
-        // toward opponent's back zone. Asymmetric — rises fast, falls slow.
+        // toward opponent's back zone. Asymmetric, rises fast, falls slow.
         const t = eB;
         if (t < 0.30) {
           const k = t / 0.30;
@@ -3077,7 +3077,7 @@ function applyTimelineState(tlTime) {
         break;
       }
       case 'vibora': {
-        // Like bandeja but more aggressive — side-spin, sharper descent.
+        // Like bandeja but more aggressive, side-spin, sharper descent.
         // Peak even earlier (~25%), then snaps down.
         const t = eB;
         if (t < 0.25) {
@@ -3091,7 +3091,7 @@ function applyTimelineState(tlTime) {
       }
       case 'lob':
       case 'high-lob': {
-        // Symmetric parabola — true upward arc. High-lob is taller.
+        // Symmetric parabola, true upward arc. High-lob is taller.
         // Use a slightly compressed top so the ball hangs at apex briefly.
         const t = eB;
         // Modified parabola: rise + slight hang + descent
@@ -3107,7 +3107,7 @@ function applyTimelineState(tlTime) {
         break;
       }
       case 'por-tres': {
-        // Lob that exits through the side cage — high, fast, escapes.
+        // Lob that exits through the side cage, high, fast, escapes.
         // Tall asymmetric arc.
         const t = eB;
         if (t < 0.45) {
@@ -3169,7 +3169,7 @@ function applyTimelineState(tlTime) {
 
   zoneOverlays.visible = currentStrategy?.id === 'three-zones';
 
-  // Cinematic camera — smooth follow with inertia, no per-frame snap
+  // Cinematic camera, smooth follow with inertia, no per-frame snap
   if (activeCam === 'cinematic') {
     const tCam = tlTime * 0.3;
     const camTarget = new THREE.Vector3(bx * 0.4, 1, bz * 0.4);
@@ -3655,18 +3655,18 @@ function animate() {
   const now = performance.now();
   const elapsed = clock.getElapsedTime();
 
-  // === CONTINUOUS PLAYBACK — the rally as one film ===
+  // === CONTINUOUS PLAYBACK, the rally as one film ===
   if (isPlaying && timeline) {
     const elapsedMs = now - playbackStartTime;
     const tlTime = (elapsedMs / 1000) * playSpeed;
     // Add a 1-second hold after the last frame so the final state is visible
     const HOLD_AFTER_END = 1.0;
     if (tlTime >= timeline.totalDuration + HOLD_AFTER_END) {
-      // Fully finished — stop playback
+      // Fully finished, stop playback
       applyTimelineState(timeline.totalDuration - 0.001);
       stopPlayback();
     } else if (tlTime >= timeline.totalDuration) {
-      // In the hold period — show final state
+      // In the hold period, show final state
       applyTimelineState(timeline.totalDuration - 0.001);
     } else {
       applyTimelineState(tlTime);
@@ -3697,7 +3697,7 @@ function animate() {
     }
   }
 
-  // Subtle ball idle bob — only when not playing and ball is at rest height
+  // Subtle ball idle bob, only when not playing and ball is at rest height
   if (!isPlaying && animations.length === 0 && Math.abs(ballGroup.position.y - 0.5) < 0.15) {
     ballGroup.position.y = 0.5 + Math.sin(elapsed * 2) * 0.02;
     glow.material.opacity = 0.12 + Math.sin(elapsed * 3) * 0.04;

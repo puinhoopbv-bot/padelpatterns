@@ -9,7 +9,7 @@
  * Returns: { analysis: { headline, summary, weakness, plan, nextDrill } }
  *
  * Env vars:
- *   ANTHROPIC_API_KEY (required) — your Anthropic API key
+ *   ANTHROPIC_API_KEY (required), your Anthropic API key
  */
 
 export const config = {
